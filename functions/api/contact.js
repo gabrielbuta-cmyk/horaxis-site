@@ -26,7 +26,7 @@ export const onRequest = async (context) => {
     "access-control-allow-headers": "content-type",
   };
 
-  // Preflight
+  // Handle preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 204, headers: corsHeaders });
   }
@@ -35,7 +35,7 @@ export const onRequest = async (context) => {
     return json({ ok: false, error: "Method Not Allowed" }, 405, corsHeaders);
   }
 
-  // Same-origin protection
+  // Same-site protection
   if (origin) {
     let originHost = "";
     try { originHost = new URL(origin).host; } catch {}
@@ -81,21 +81,20 @@ export const onRequest = async (context) => {
     return json({ ok: false, error: "Invalid email" }, 400, corsHeaders);
   }
 
-  // SEND EMAIL VIA MAILCHANNELS
   try {
     const mailResponse = await fetch("https://api.mailchannels.net/tx/v1/send", {
       method: "POST",
       headers: {
-        "content-type": "application/json"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         personalizations: [
           {
-            to: [{ email: "demo@horaxis.com" }]  // <-- CHANGE IF NEEDED
+            to: [{ email: "demo@horaxis.com" }]
           }
         ],
         from: {
-          email: "noreply@horaxis.com",
+          email: "demo@horaxis.com",
           name: "Horaxis Website"
         },
         reply_to: {
@@ -106,20 +105,23 @@ export const onRequest = async (context) => {
         content: [
           {
             type: "text/plain",
-            value:
-              `Name: ${name}\n` +
-              `Email: ${email}\n` +
-              `Company: ${company}\n` +
-              `ERP: ${erp}\n\n` +
-              `Message:\n${message}`
+            value: `
+Name: ${name}
+Email: ${email}
+Company: ${company}
+ERP: ${erp}
+
+Message:
+${message}
+`
           }
         ]
       })
     });
 
     if (!mailResponse.ok) {
-      const text = await mailResponse.text();
-      console.error("MailChannels error:", text);
+      const errorText = await mailResponse.text();
+      console.error("MailChannels error:", errorText);
       return json({ ok: false, error: "Email failed" }, 500, corsHeaders);
     }
 
