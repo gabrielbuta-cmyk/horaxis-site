@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 60" fill="none">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="220" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#60A5FA"/><stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="10" width="40" height="40" rx="12" fill="url(#g)" opacity="0.95"/>
+  <path d="M22 18c6.2 0 11.2 5 11.2 11.2S28.2 40.4 22 40.4 10.8 35.4 10.8 29.2 15.8 18 22 18Zm0 6.4a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Z" fill="#0B0F1A"/>
+  <text x="56" y="38" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial" font-size="26" font-weight="700" fill="#E5E7EB">Horaxis</text>
+</svg>

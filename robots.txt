@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://horaxis.com/sitemap.xml

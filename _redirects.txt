@@ -1,0 +1,8 @@
+https://www.horaxis.com/* https://horaxis.com/:splat 301!
+
+/contact    /contact.html   200
+/product    /product.html   200
+/security   /security.html  200
+/pricing    /pricing.html   200
+/privacy    /privacy.html   200
+/cookies    /cookies.html   200
