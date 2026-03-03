@@ -19,7 +19,6 @@ export const onRequest = async (context) => {
   const req = context.request;
   const url = new URL(req.url);
 
-  // CORS (safe defaults)
   const origin = req.headers.get("Origin") || "";
   const corsHeaders = {
     "access-control-allow-origin": origin || "*",
@@ -27,17 +26,16 @@ export const onRequest = async (context) => {
     "access-control-allow-headers": "content-type",
   };
 
-  // Handle preflight
+  // Preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 204, headers: corsHeaders });
   }
 
-  // Only allow POST
   if (req.method !== "POST") {
     return json({ ok: false, error: "Method Not Allowed" }, 405, corsHeaders);
   }
 
-  // Same-site protection (allow www/non-www)
+  // Same-origin protection
   if (origin) {
     let originHost = "";
     try { originHost = new URL(origin).host; } catch {}
@@ -45,17 +43,16 @@ export const onRequest = async (context) => {
 
     if (normalizeHost(originHost) !== normalizeHost(reqHost)) {
       return json(
-        { ok: false, error: "Origin not allowed", originHost, reqHost },
+        { ok: false, error: "Origin not allowed" },
         403,
         corsHeaders
       );
     }
   }
 
-  // Read JSON
   const contentType = req.headers.get("content-type") || "";
   if (!contentType.includes("application/json")) {
-    return json({ ok: false, error: "Invalid content-type", contentType }, 400, corsHeaders);
+    return json({ ok: false, error: "Invalid content-type" }, 400, corsHeaders);
   }
 
   let body;
@@ -79,12 +76,57 @@ export const onRequest = async (context) => {
   if (!name || !email || !company || !erp) {
     return json({ ok: false, error: "Missing required fields" }, 400, corsHeaders);
   }
+
   if (!/^\S+@\S+\.\S+$/.test(email)) {
     return json({ ok: false, error: "Invalid email" }, 400, corsHeaders);
   }
 
-  // If you haven't configured an email provider yet, just log and return success.
-  console.log("CONTACT_FORM_SUBMISSION", { name, email, company, erp, message });
+  // SEND EMAIL VIA MAILCHANNELS
+  try {
+    const mailResponse = await fetch("https://api.mailchannels.net/tx/v1/send", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json"
+      },
+      body: JSON.stringify({
+        personalizations: [
+          {
+            to: [{ email: "demo@horaxis.com" }]  // <-- CHANGE IF NEEDED
+          }
+        ],
+        from: {
+          email: "noreply@horaxis.com",
+          name: "Horaxis Website"
+        },
+        reply_to: {
+          email: email,
+          name: name
+        },
+        subject: `New Contact from ${name}`,
+        content: [
+          {
+            type: "text/plain",
+            value:
+              `Name: ${name}\n` +
+              `Email: ${email}\n` +
+              `Company: ${company}\n` +
+              `ERP: ${erp}\n\n` +
+              `Message:\n${message}`
+          }
+        ]
+      })
+    });
 
-  return json({ ok: true, queued: false }, 200, corsHeaders);
+    if (!mailResponse.ok) {
+      const text = await mailResponse.text();
+      console.error("MailChannels error:", text);
+      return json({ ok: false, error: "Email failed" }, 500, corsHeaders);
+    }
+
+    return json({ ok: true }, 200, corsHeaders);
+
+  } catch (err) {
+    console.error("Mail send exception:", err);
+    return json({ ok: false, error: "Server error" }, 500, corsHeaders);
+  }
 };
