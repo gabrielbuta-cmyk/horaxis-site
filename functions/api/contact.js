@@ -40,11 +40,15 @@ function emailTemplate(content) {
 
             <!-- Footer -->
             <tr>
-              <td style="background:#f9fafb;padding:20px;text-align:center;font-size:12px;color:#6b7280;">
-                © 2026 Horaxis • ProcureAI<br>
-                Enterprise Supply Chain Intelligence
-              </td>
-            </tr>
+  <td style="background:#0f172a;padding:24px;text-align:center;">
+    <img 
+      src="data:image/png;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMjAgNjAiIGZpbGw9Im5vbmUiPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIyMjAiIHkyPSI2MCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgogICAgICA8c3RvcCBzdG9wLWNvbG9yPSIjNjBBNUZBIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMjJEM0VFIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cmVjdCB4PSIyIiB5PSIxMCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iMTIiIGZpbGw9InVybCgjZykiIG9wYWNpdHk9IjAuOTUiLz4KICA8cGF0aCBkPSJNMjIgMThjNi4yIDAgMTEuMiA1IDExLjIgMTEuMlMyOC4yIDQwLjQgMjIgNDAuNCAxMC44IDM1LjQgMTAuOCAyOS4yIDE1LjggMTggMjIgMThabTAgNi40YTQuOCA0LjggMCAxIDAgMCA5LjYgNC44IDQuOCAwIDAgMCAwLTkuNloiIGZpbGw9IiMwQjBGMUEiLz4KICA8dGV4dCB4PSI1NiIgeT0iMzgiIGZvbnQtZmFtaWx5PSJJbnRlciwgc3lzdGVtLXVpLCAtYXBwbGUtc3lzdGVtLCBTZWdvZSBVSSwgUm9ib3RvLCBBcmlhbCIgZm9udC1zaXplPSIyNiIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI0U1RTdFQiI+SG9yYXhpczwvdGV4dD4KPC9zdmc+"
+      width="140"
+      alt="Horaxis"
+      style="display:block;margin:0 auto;"
+    >
+  </td>
+</tr>
 
           </table>
         </td>
