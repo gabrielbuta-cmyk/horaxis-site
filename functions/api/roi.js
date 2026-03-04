@@ -75,89 +75,160 @@ export const onRequest = async (context) => {
 
   // ---------------- PDF GENERATION ----------------
 
-  const pdfDoc = await PDFDocument.create();
-  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-  const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+const pdfDoc = await PDFDocument.create();
+const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-  function footer(page) {
-    page.drawText("CONFIDENTIAL – ProcureAI Board Financial Assessment", {
-      x: 40,
-      y: 30,
-      size: 8,
-      font,
-      color: rgb(0.4, 0.4, 0.4),
-    });
-  }
-
-  let page = pdfDoc.addPage();
-  let { height } = page.getSize();
-
-  page.drawText("ProcureAI Board Financial Impact Report", {
-    x: 50,
-    y: height - 80,
-    size: 22,
-    font: bold,
+function footer(page) {
+  const { width } = page.getSize();
+  page.drawLine({
+    start: { x: 40, y: 50 },
+    end: { x: width - 40, y: 50 },
+    thickness: 0.5,
   });
 
-  page.drawText(`Scenario: ${scenario.toUpperCase()}`, {
-    x: 50,
-    y: height - 120,
-    size: 12,
+  page.drawText("CONFIDENTIAL — Horaxis ProcureAI Financial Assessment", {
+    x: 40,
+    y: 35,
+    size: 8,
     font,
+    color: rgb(0.5, 0.5, 0.5),
   });
+}
 
-  page.drawText(`Projected Annual Value: €${Math.round(total).toLocaleString()}`, {
-    x: 50,
-    y: height - 160,
-    size: 16,
+// COVER PAGE
+let page = pdfDoc.addPage();
+let { width, height } = page.getSize();
+
+page.drawRectangle({
+  x: 0,
+  y: 0,
+  width,
+  height,
+  color: rgb(0.06, 0.09, 0.16),
+});
+
+page.drawText("ProcureAI", {
+  x: 50,
+  y: height - 100,
+  size: 30,
+  font: bold,
+  color: rgb(1, 1, 1),
+});
+
+page.drawText("Board Financial Impact Assessment", {
+  x: 50,
+  y: height - 140,
+  size: 18,
+  font,
+  color: rgb(1, 1, 1),
+});
+
+page.drawText(`Scenario: ${scenario.toUpperCase()}`, {
+  x: 50,
+  y: height - 180,
+  size: 12,
+  font,
+  color: rgb(0.8, 0.85, 1),
+});
+
+page.drawText(`€${Math.round(total).toLocaleString()}`, {
+  x: 50,
+  y: height - 240,
+  size: 40,
+  font: bold,
+  color: rgb(0.6, 0.8, 1),
+});
+
+page.drawText("Projected Annual Value Creation", {
+  x: 50,
+  y: height - 280,
+  size: 14,
+  font,
+  color: rgb(1, 1, 1),
+});
+
+// EXECUTIVE SUMMARY
+page = pdfDoc.addPage();
+height = page.getSize().height;
+
+page.drawText("Executive Financial Summary", {
+  x: 50,
+  y: height - 60,
+  size: 20,
+  font: bold,
+});
+
+let y = height - 100;
+
+[
+  `Annual Value Creation: €${Math.round(total).toLocaleString()}`,
+  `Annual Platform Investment: €${Math.round(platformCost).toLocaleString()}`,
+  `Return on Investment: ${roi.toFixed(1)}x`,
+  `Capital Payback Period: ${Math.ceil(paybackMonths)} months`,
+].forEach(line => {
+  page.drawText(line, { x: 50, y, size: 13, font });
+  y -= 24;
+});
+
+footer(page);
+
+// VALUE BREAKDOWN
+page = pdfDoc.addPage();
+height = page.getSize().height;
+
+page.drawText("Annual Value Breakdown", {
+  x: 50,
+  y: height - 60,
+  size: 20,
+  font: bold,
+});
+
+y = height - 100;
+
+[
+  ["Delivery Performance Gains", deliverySave],
+  ["Operational Automation", processSave],
+  ["Risk Mitigation & Disruption Avoidance", riskSave],
+  ["Working Capital Optimization", workingCapitalSave],
+].forEach(item => {
+  page.drawText(item[0], { x: 50, y, size: 12, font });
+  page.drawText(`€${Math.round(item[1]).toLocaleString()}`, {
+    x: 400,
+    y,
+    size: 12,
     font: bold,
   });
+  y -= 26;
+});
 
-  footer(page);
+footer(page);
 
-  // PAGE 2 – EXECUTIVE SUMMARY
-  page = pdfDoc.addPage();
-  height = page.getSize().height;
+// 3 YEAR STRATEGIC VIEW
+page = pdfDoc.addPage();
+height = page.getSize().height;
 
-  page.drawText("Executive Summary", { x: 50, y: height - 60, size: 18, font: bold });
+page.drawText("3-Year Strategic Capital Projection", {
+  x: 50,
+  y: height - 60,
+  size: 20,
+  font: bold,
+});
 
-  let y = height - 100;
+y = height - 100;
 
-  [
-    `Annual Value Creation: €${Math.round(total).toLocaleString()}`,
-    `Annual Platform Investment: €${Math.round(platformCost).toLocaleString()}`,
-    `ROI Multiple: ${roi.toFixed(1)}x`,
-    `Capital Payback Period: ${Math.ceil(paybackMonths)} months`,
-    "",
-    "ProcureAI enables predictive margin protection,",
-    "supplier risk visibility, and capital efficiency."
-  ].forEach(line => {
-    page.drawText(line, { x: 50, y, size: 12, font });
-    y -= 18;
-  });
+[
+  `Total 3-Year Value Creation: €${Math.round(threeYearValue).toLocaleString()}`,
+  `Total 3-Year Investment: €${Math.round(threeYearInvestment).toLocaleString()}`,
+  `Net Contribution: €${Math.round(net3Year).toLocaleString()}`,
+].forEach(line => {
+  page.drawText(line, { x: 50, y, size: 13, font });
+  y -= 26;
+});
 
-  footer(page);
+footer(page);
 
-  // PAGE 3 – 3 YEAR PROJECTION
-  page = pdfDoc.addPage();
-  height = page.getSize().height;
-
-  page.drawText("3-Year Strategic Projection", { x: 50, y: height - 60, size: 18, font: bold });
-
-  y = height - 100;
-
-  [
-    `Total 3-Year Value: €${Math.round(threeYearValue).toLocaleString()}`,
-    `Total 3-Year Investment: €${Math.round(threeYearInvestment).toLocaleString()}`,
-    `Net Contribution: €${Math.round(net3Year).toLocaleString()}`,
-  ].forEach(line => {
-    page.drawText(line, { x: 50, y, size: 12, font });
-    y -= 18;
-  });
-
-  footer(page);
-
-  const pdfBytes = await pdfDoc.save();
+const pdfBytes = await pdfDoc.save();
 
   // ✅ SAFE BASE64 CONVERSION
   const pdfBase64 = arrayBufferToBase64(pdfBytes);
