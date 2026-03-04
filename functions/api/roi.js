@@ -176,4 +176,3 @@ const pdfBase64 = arrayBufferToBase64(pdfBytes);
     });
   }
 };
-};
