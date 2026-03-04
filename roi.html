@@ -6,19 +6,19 @@
 </head>
 <body>
   <header class="nav">
-    <div class="container nav-inner">
-      <a href="index.html" class="brand" style="display:flex; align-items:center; gap:12px; text-decoration:none;">
-        <img src="assets/img/horaxis-logo.svg" alt="Horaxis" style="height:34px;">
-        <span style="font-weight:900; font-size:22px; color:white; letter-spacing:-0.05em;">HORAXIS<span style="color:var(--orange)">.</span></span>
-      </a>
-      <nav class="nav-links">
-        <a href="product.html">Product</a>
-        <a href="security.html">Security</a>
-        <a href="roi.html">ROI Calculator</a>
-        <a href="contact.html" class="btn primary" style="padding:8px 16px; margin-left:20px;">Pilot Proposal</a>
-      </nav>
-    </div>
-  </header>
+  <div class="container nav-inner" style="display:flex; align-items:center; justify-content:space-between; height:74px;">
+    <a href="index.html" style="display:flex; align-items:center; gap:12px; text-decoration:none;">
+      <div class="brand-mark"></div>
+      <div class="brand-text">HORAXIS<span>.</span></div>
+    </a>
+    <nav class="nav-links" style="display:flex; align-items:center; gap:24px;">
+      <a href="product.html" style="color:#94A3B8; font-weight:600; text-decoration:none; font-size:14px;">Product</a>
+      <a href="security.html" style="color:#94A3B8; font-weight:600; text-decoration:none; font-size:14px;">Security</a>
+      <a href="roi.html" style="color:#94A3B8; font-weight:600; text-decoration:none; font-size:14px;">ROI Calculator</a>
+      <a href="contact.html" class="btn primary" style="background:#EA580C; color:white; padding:10px 20px; border-radius:4px; font-weight:700; text-decoration:none; font-size:13px; text-transform:uppercase;">Pilot Proposal</a>
+    </nav>
+  </div>
+</header>
 <section class="section">
   <div class="container">
     <div class="card" style="display:grid; grid-template-columns: 1.2fr 0.8fr; gap:40px;">
@@ -60,20 +60,19 @@ function calculate() {
 }
 calculate();
 </script>
-<footer class="footer">
-    <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;">
-      <div style="display:flex; align-items:center; gap:10px;">
-        <img src="assets/img/horaxis-logo.svg" alt="Horaxis" style="height:20px; opacity:0.6;">
-        <span style="font-size:12px; color:var(--muted);">© 2026 Horaxis Enterprise Solutions</span>
-      </div>
-      <div style="display:flex; gap:20px; font-size:12px; font-weight:700; text-transform:uppercase;">
-        <a href="privacy.html" style="color:var(--muted); text-decoration:none;">Privacy</a>
-        <a href="terms.html" style="color:var(--muted); text-decoration:none;">Terms</a>
-        <a href="cookies.html" style="color:var(--muted); text-decoration:none;">Cookies</a>
-        <a href="dpa.html" style="color:var(--muted); text-decoration:none;">DPA</a>
-      </div>
+<footer style="background:#0B1020; border-top:1px solid #334155; padding:40px 0;">
+  <div class="container" style="max-width:1200px; margin:0 auto; padding:0 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div class="brand-mark" style="width:24px; height:24px; border-radius:4px;"></div>
+      <span style="color:#94A3B8; font-size:12px;">© 2026 Horaxis Enterprise Solutions</span>
     </div>
-  </footer>
-
+    <div style="display:flex; gap:24px; font-size:12px; font-weight:700; text-transform:uppercase;">
+      <a href="privacy.html" style="color:#64748B; text-decoration:none;">Privacy</a>
+      <a href="terms.html" style="color:#64748B; text-decoration:none;">Terms</a>
+      <a href="cookies.html" style="color:#64748B; text-decoration:none;">Cookies</a>
+      <a href="dpa.html" style="color:#64748B; text-decoration:none;">DPA</a>
+    </div>
+  </div>
+</footer>
 </body>
 </html>
