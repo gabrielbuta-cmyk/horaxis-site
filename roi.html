@@ -7,107 +7,74 @@
 <link rel="stylesheet" href="assets/css/styles.css"/>
 
 <style>
-body{background:#f8fafc}
-.roi-hero{padding:70px 0 40px;text-align:center}
-.roi-hero h1{font-size:44px;margin-bottom:12px}
-.roi-hero p{color:#475569;font-size:18px}
-
-.roi-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:30px}
-.roi-card{padding:26px;background:white;border-radius:16px}
-
-.roi-results{
-background:#0f172a;
-padding:36px;
-border-radius:18px;
-color:white;
-}
-
-.metric{margin-bottom:22px}
-.metric .value{font-size:28px;font-weight:900}
-.metric .label{font-size:13px;color:#cbd5e1}
-
-.big-roi{
-font-size:42px;
-font-weight:900;
-color:#93c5fd;
-}
-
+body{background:#0b1020;color:white;font-family:Inter, sans-serif}
+.section{padding:60px 0}
+.container{max-width:1100px;margin:auto;padding:0 20px}
+h1{font-size:42px;margin-bottom:10px}
+h2{margin-bottom:20px}
+label{font-size:13px;color:#cbd5e1}
 input,select{
 width:100%;
 padding:12px;
+margin-bottom:15px;
 border-radius:8px;
-border:1px solid #cbd5e1;
-margin-bottom:14px;
-font-size:14px;
+border:1px solid #334155;
+background:#0f172a;
+color:white;
 }
-
-.board-section{
-margin-top:80px;
-padding:60px;
-background:white;
-border-radius:18px;
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:40px;
 }
-
-.board-section h2{
-margin-bottom:25px;
-font-size:28px;
+.card{
+background:#111827;
+padding:30px;
+border-radius:16px;
 }
-
-.board-section p{
-margin-bottom:18px;
-line-height:1.8;
-color:#334155;
-}
-
-.board-table{
-width:100%;
-border-collapse:collapse;
-margin-top:20px;
-}
-
-.board-table td{
-padding:12px 8px;
-border-bottom:1px solid #e2e8f0;
-}
-
-.cta{
-margin-top:40px;
-padding:24px;
+.metric{margin-bottom:20px}
+.metric .value{font-size:28px;font-weight:800}
+.metric .label{font-size:13px;color:#94a3b8}
+.big{font-size:40px;font-weight:900;color:#93c5fd}
+button{
 background:#1e293b;
 color:white;
-border-radius:14px;
+padding:14px 18px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+width:100%;
+margin-top:10px;
 }
-
-.cta strong{color:#93c5fd}
+button:hover{background:#334155}
+.footer{
+margin-top:80px;
+padding:30px 0;
+text-align:center;
+color:#64748b;
+font-size:12px;
+}
+@media(max-width:900px){
+.grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 
 <body>
 
-<header class="nav">
-<div class="container nav-inner">
-<a class="brand" href="index.html">
-<img src="assets/img/horaxis-logo.svg" alt="Horaxis"/>
-</a>
-<nav class="nav-links">
-<a href="index.html">Home</a>
-<a href="product.html">Product</a>
-<a href="contact.html">Contact</a>
-</nav>
-</div>
-</header>
+<div class="section">
+<div class="container">
 
-<section class="roi-hero container">
-<h1>Board-Level Financial Impact Assessment</h1>
-<p>Capital allocation modeling for AI-driven procurement control.</p>
-</section>
+<h1>Board-Level ROI Assessment</h1>
+<p style="color:#94a3b8;margin-bottom:40px">
+Capital efficiency modeling for predictive procurement intelligence.
+</p>
 
-<section class="container">
-<div class="roi-grid">
+<div class="grid">
 
-<div class="roi-card">
+<div class="card">
 
-<label><strong>Scenario</strong></label>
+<label>Scenario</label>
 <select id="scenario" onchange="calc()">
 <option value="conservative">Conservative</option>
 <option value="base" selected>Base Case</option>
@@ -137,7 +104,7 @@ border-radius:14px;
 
 </div>
 
-<div class="roi-results">
+<div class="card">
 
 <h2>Financial Projection</h2>
 
@@ -152,7 +119,7 @@ border-radius:14px;
 </div>
 
 <div class="metric">
-<div class="big-roi" id="roi">0x</div>
+<div class="big" id="roi">0x</div>
 <div class="label">Return on Investment</div>
 </div>
 
@@ -161,37 +128,22 @@ border-radius:14px;
 <div class="label">Capital Payback Period</div>
 </div>
 
-</div>
-</div>
-</section>
+<hr style="border:1px solid #1e293b;margin:30px 0">
 
-<section class="container board-section">
+<input placeholder="Executive Email" id="leadEmail">
+<button onclick="emailReport()">Send Board Report (PDF)</button>
 
-<h2>Capital Allocation Logic</h2>
-
-<p>This model evaluates procurement performance improvement as a capital efficiency initiative. Value creation derives from delivery cost mitigation, automation efficiency, disruption risk reduction, and working capital optimization.</p>
-
-<table class="board-table">
-<tr><td>Delivery Performance Recovery</td><td>Reduced expediting, penalties, lost margin</td></tr>
-<tr><td>Operational Efficiency</td><td>Manual intervention replaced by AI workflow automation</td></tr>
-<tr><td>Risk Mitigation</td><td>Predictive disruption avoidance before financial impact</td></tr>
-<tr><td>Working Capital</td><td>Improved inventory velocity and supply predictability</td></tr>
-</table>
-
-<div class="cta">
-<strong>Board Recommendation:</strong><br>
-ProcureAI should be evaluated as a strategic resilience and margin-protection initiative rather than a traditional software expense.
 </div>
 
-</section>
+</div>
+</div>
+</div>
 
-<footer class="footer">
-<div class="container">© 2026 Horaxis — ProcureAI Enterprise Platform</div>
-</footer>
+<div class="footer">
+© 2026 Horaxis — ProcureAI Enterprise Platform
+</div>
 
 <script>
-let lastData={}
-
 function calc(){
 
 const scenario=document.getElementById("scenario").value;
@@ -210,6 +162,7 @@ if(scenario==="base"){deliveryFactor=0.30;automationFactor=0.60;riskFactor=0.02;
 if(scenario==="optimistic"){deliveryFactor=0.40;automationFactor=0.75;riskFactor=0.03;wcFactor=0.15;}
 
 const latePOs=pos*lateRate;
+
 const deliverySave=latePOs*lateCost*deliveryFactor;
 const processSave=hours*rate*52*automationFactor;
 const riskSave=spend*lateRate*riskFactor;
@@ -223,9 +176,40 @@ const payback=total>0?(platformCost/total*12):0;
 document.getElementById("totalSave").textContent="€"+Math.round(total).toLocaleString();
 document.getElementById("platformCost").textContent="€"+Math.round(platformCost).toLocaleString();
 document.getElementById("roi").textContent=roi.toFixed(1)+"x";
-document.getElementById("payback").textContent=payback<1?"< 1 month":Math.ceil(payback)+" months";
+document.getElementById("payback").textContent=
+payback<1?"< 1 month":Math.ceil(payback)+" months";
+}
 
-lastData={total,roi,payback,scenario};
+function emailReport(){
+
+const email=document.getElementById("leadEmail").value;
+
+if(!email){
+alert("Enter executive email");
+return;
+}
+
+fetch("/api/roi",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+email,
+spend:document.getElementById("spend").value,
+pos:document.getElementById("pos").value,
+lateRate:document.getElementById("lateRate").value,
+lateCost:document.getElementById("lateCost").value,
+hours:document.getElementById("hours").value,
+rate:document.getElementById("rate").value,
+suppliers:document.getElementById("suppliers").value,
+scenario:document.getElementById("scenario").value
+})
+})
+.then(r=>r.json())
+.then(d=>{
+if(d.ok) alert("Board report sent.");
+else alert("Server error.");
+})
+.catch(()=>alert("Server error."));
 }
 
 calc();
