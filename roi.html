@@ -22,16 +22,8 @@ border:1px solid #334155;
 background:#0f172a;
 color:white;
 }
-.grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:40px;
-}
-.card{
-background:#111827;
-padding:30px;
-border-radius:16px;
-}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.card{background:#111827;padding:30px;border-radius:16px}
 .metric{margin-bottom:20px}
 .metric .value{font-size:28px;font-weight:800}
 .metric .label{font-size:13px;color:#94a3b8}
@@ -47,22 +39,29 @@ width:100%;
 margin-top:10px;
 }
 button:hover{background:#334155}
-.footer{
-margin-top:80px;
-padding:30px 0;
-text-align:center;
-color:#64748b;
-font-size:12px;
-}
-@media(max-width:900px){
-.grid{grid-template-columns:1fr}
-}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
 
 <body>
 
-<div class="section">
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html">
+      <img src="assets/img/horaxis-logo.svg" alt="Horaxis"/>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="product.html">Product</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="security.html">Security</a>
+      <a href="roi.html">ROI</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<section class="section">
 <div class="container">
 
 <h1>Board-Level ROI Assessment</h1>
@@ -134,14 +133,25 @@ Capital efficiency modeling for predictive procurement intelligence.
 <button onclick="emailReport()">Send Board Report (PDF)</button>
 
 </div>
+</div>
+</div>
+</section>
 
-</div>
-</div>
-</div>
-
-<div class="footer">
-© 2026 Horaxis — ProcureAI Enterprise Platform
-</div>
+<footer class="footer">
+  <div class="container footer-grid">
+    <div>
+      <div class="smallprint">
+        <a href="privacy.html">Privacy</a> ·
+        <a href="cookies.html">Cookies</a> ·
+        <a href="terms.html">Terms</a> ·
+        <a href="dpa.html">DPA</a>
+      </div>
+      <div class="smallprint" style="margin-top:8px;">
+        © 2026 Horaxis — ProcureAI Enterprise Platform
+      </div>
+    </div>
+  </div>
+</footer>
 
 <script>
 function calc(){
@@ -204,10 +214,14 @@ suppliers:document.getElementById("suppliers").value,
 scenario:document.getElementById("scenario").value
 })
 })
-.then(r=>r.json())
-.then(d=>{
-if(d.ok) alert("Board report sent.");
-else alert("Server error.");
+.then(async r=>{
+const data=await r.json();
+if(r.ok && data.ok){
+alert("Board report sent.");
+}else{
+console.log(data);
+alert("Server error. Check console.");
+}
 })
 .catch(()=>alert("Server error."));
 }
