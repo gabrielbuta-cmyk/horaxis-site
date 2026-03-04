@@ -79,170 +79,228 @@ const pdfDoc = await PDFDocument.create();
 const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-// FETCH LOGO AFTER pdfDoc EXISTS
+// Fetch logo
 const logoUrl = "https://horaxis.com/assets/img/horaxis-logo.png";
 const logoResponse = await fetch(logoUrl);
 const logoBytes = await logoResponse.arrayBuffer();
 const logoImage = await pdfDoc.embedPng(logoBytes);
 
-function footer(page) {
-  const { width } = page.getSize();
-  page.drawLine({
-    start: { x: 40, y: 50 },
-    end: { x: width - 40, y: 50 },
-    thickness: 0.5,
-  });
-
-  page.drawText("CONFIDENTIAL — Horaxis ProcureAI Financial Assessment", {
-    x: 40,
-    y: 35,
-    size: 8,
-    font,
-    color: rgb(0.5, 0.5, 0.5),
+function blueBackground(page) {
+  const { width, height } = page.getSize();
+  page.drawRectangle({
+    x: 0,
+    y: 0,
+    width,
+    height,
+    color: rgb(0.06, 0.10, 0.20),
   });
 }
 
-// COVER PAGE
+function footer(page) {
+  const { width } = page.getSize();
+  page.drawText(
+    "CONFIDENTIAL — Horaxis | ProcureAI Financial Simulation",
+    {
+      x: 40,
+      y: 30,
+      size: 9,
+      font,
+      color: rgb(0.7, 0.8, 1),
+    }
+  );
+}
+
+//
+// ---------------- PAGE 1 — INTRO + INPUT DATA ----------------
+//
+
 let page = pdfDoc.addPage();
 let { width, height } = page.getSize();
+blueBackground(page);
 
-page.drawRectangle({
-  x: 0,
-  y: 0,
-  width,
-  height,
-  color: rgb(0.06, 0.09, 0.16),
-});
-
-const logoDims = logoImage.scale(0.4);
 page.drawImage(logoImage, {
   x: 50,
-  y: height - 90,
-  width: logoDims.width,
-  height: logoDims.height,
+  y: height - 80,
+  width: 140,
+  height: 40,
 });
 
-page.drawText("ProcureAI", {
+page.drawText("ProcureAI Financial Impact Simulation", {
   x: 50,
   y: height - 130,
-  size: 28,
+  size: 24,
   font: bold,
   color: rgb(1, 1, 1),
 });
 
-page.drawText("Board Financial Impact Assessment", {
-  x: 50,
-  y: height - 160,
-  size: 16,
-  font,
-  color: rgb(1, 1, 1),
+let y = height - 170;
+
+[
+  "This document represents a simulation of potential cost reductions",
+  "and capital efficiency improvements achievable by implementing",
+  "the AI-driven procurement intelligence platform ProcureAI by Horaxis.",
+  "",
+  "The projections below are calculated using the operational data",
+  "you provided and reflect modeled financial impact under the",
+  "selected strategic scenario.",
+].forEach(line => {
+  page.drawText(line, {
+    x: 50,
+    y,
+    size: 13,
+    font,
+    color: rgb(1, 1, 1),
+  });
+  y -= 22;
 });
 
-page.drawText(`€${Math.round(total).toLocaleString()}`, {
+y -= 20;
+
+page.drawText("Selected Scenario & Input Parameters", {
   x: 50,
-  y: height - 220,
-  size: 38,
+  y,
+  size: 16,
   font: bold,
   color: rgb(0.6, 0.8, 1),
 });
 
-// EXECUTIVE SUMMARY
+y -= 28;
+
+[
+  `Scenario: ${scenario.toUpperCase()}`,
+  `Annual Procurement Spend: €${spend.toLocaleString()}`,
+  `Annual Purchase Orders: ${pos.toLocaleString()}`,
+  `Late Delivery Rate: ${(lateRate * 100).toFixed(1)}%`,
+  `Average Cost per Late Delivery: €${lateCost.toLocaleString()}`,
+  `Manual Follow-up Hours per Week: ${hours}`,
+  `Average Hourly Cost: €${rate}`,
+  `Active Suppliers: ${suppliers}`,
+].forEach(line => {
+  page.drawText(line, {
+    x: 60,
+    y,
+    size: 12,
+    font,
+    color: rgb(1, 1, 1),
+  });
+  y -= 20;
+});
+
+y -= 20;
+
+page.drawText(
+  "See the following pages for your projected financial impact using ProcureAI.",
+  {
+    x: 50,
+    y,
+    size: 14,
+    font: bold,
+    color: rgb(0.8, 0.9, 1),
+  }
+);
+
+footer(page);
+
+
+//
+// ---------------- PAGE 2 — RESULTS & CALCULATIONS ----------------
+//
+
 page = pdfDoc.addPage();
 height = page.getSize().height;
+blueBackground(page);
 
 page.drawImage(logoImage, {
   x: 50,
-  y: height - 70,
+  y: height - 80,
   width: 120,
-  height: 30,
+  height: 35,
 });
 
-page.drawText("Executive Financial Summary", {
+page.drawText("Financial Results & Calculation Breakdown", {
   x: 50,
-  y: height - 100,
+  y: height - 130,
   size: 20,
   font: bold,
+  color: rgb(1, 1, 1),
 });
 
-let y = height - 140;
+y = height - 170;
 
 [
-  `Annual Value Creation: €${Math.round(total).toLocaleString()}`,
+  `Delivery Performance Improvement: €${Math.round(deliverySave).toLocaleString()}`,
+  `Operational Automation Savings: €${Math.round(processSave).toLocaleString()}`,
+  `Risk Mitigation Value: €${Math.round(riskSave).toLocaleString()}`,
+  `Working Capital Optimization: €${Math.round(workingCapitalSave).toLocaleString()}`,
+  "",
+  `Total Annual Value Creation: €${Math.round(total).toLocaleString()}`,
+  "",
   `Annual Platform Investment: €${Math.round(platformCost).toLocaleString()}`,
-  `ROI: ${roi.toFixed(1)}x`,
-  `Payback: ${Math.ceil(paybackMonths)} months`,
+  `Return on Investment: ${roi.toFixed(1)}x`,
+  `Estimated Payback Period: ${Math.ceil(paybackMonths)} months`,
 ].forEach(line => {
-  page.drawText(line, { x: 50, y, size: 13, font });
+  page.drawText(line, {
+    x: 50,
+    y,
+    size: 13,
+    font,
+    color: rgb(1, 1, 1),
+  });
   y -= 24;
 });
 
 footer(page);
 
-// VALUE BREAKDOWN
+
+//
+// ---------------- PAGE 3 — EXECUTIVE SUMMARY + CTA ----------------
+//
+
 page = pdfDoc.addPage();
 height = page.getSize().height;
+blueBackground(page);
 
 page.drawImage(logoImage, {
   x: 50,
-  y: height - 70,
+  y: height - 80,
   width: 120,
-  height: 30,
+  height: 35,
 });
 
-page.drawText("Annual Value Breakdown", {
+page.drawText("Executive Summary & Strategic Implications", {
   x: 50,
-  y: height - 100,
+  y: height - 130,
   size: 20,
   font: bold,
+  color: rgb(1, 1, 1),
 });
 
-y = height - 140;
+y = height - 170;
 
 [
-  ["Delivery Gains", deliverySave],
-  ["Process Automation", processSave],
-  ["Risk Mitigation", riskSave],
-  ["Working Capital", workingCapitalSave],
-].forEach(item => {
-  page.drawText(item[0], { x: 50, y, size: 12, font });
-  page.drawText(`€${Math.round(item[1]).toLocaleString()}`, {
-    x: 400,
-    y,
-    size: 12,
-    font: bold,
-  });
-  y -= 26;
-});
-
-footer(page);
-
-// 3 YEAR VIEW
-page = pdfDoc.addPage();
-height = page.getSize().height;
-
-page.drawImage(logoImage, {
-  x: 50,
-  y: height - 70,
-  width: 120,
-  height: 30,
-});
-
-page.drawText("3-Year Strategic Projection", {
-  x: 50,
-  y: height - 100,
-  size: 20,
-  font: bold,
-});
-
-y = height - 140;
-
-[
-  `3-Year Value: €${Math.round(threeYearValue).toLocaleString()}`,
-  `3-Year Investment: €${Math.round(threeYearInvestment).toLocaleString()}`,
-  `Net Contribution: €${Math.round(net3Year).toLocaleString()}`,
+  `Projected Annual Value Creation: €${Math.round(total).toLocaleString()}`,
+  "",
+  "ProcureAI transforms procurement into a predictive",
+  "margin protection and capital efficiency engine.",
+  "",
+  "By reducing disruption exposure, improving supplier",
+  "performance visibility, and automating workflows,",
+  "organizations unlock structural cost improvements",
+  "and measurable financial resilience.",
+  "",
+  "Next Step:",
+  "Schedule an executive session with Horaxis",
+  "to validate these projections against live data",
+  "and build a tailored implementation roadmap.",
 ].forEach(line => {
-  page.drawText(line, { x: 50, y, size: 13, font });
-  y -= 26;
+  page.drawText(line, {
+    x: 50,
+    y,
+    size: 13,
+    font,
+    color: rgb(1, 1, 1),
+  });
+  y -= 24;
 });
 
 footer(page);
