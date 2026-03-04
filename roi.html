@@ -182,15 +182,70 @@ document.getElementById("summaryText").textContent=text
 }
 
 function downloadPDF(){
-const {jsPDF}=window.jspdf
-const doc=new jsPDF()
-doc.text("ProcureAI ROI Report",20,20)
-doc.text("Total Annual Savings: "+fmt(lastData.total),20,40)
-doc.text("ROI: "+lastData.roi.toFixed(1)+"x",20,50)
-doc.text("Payback: "+Math.ceil(lastData.payback)+" months",20,60)
-doc.save("ProcureAI_ROI_Report.pdf")
-}
+  const {jsPDF}=window.jspdf
+  const doc=new jsPDF()
 
+  const pageWidth = doc.internal.pageSize.getWidth()
+  const pageHeight = doc.internal.pageSize.getHeight()
+
+  // Dark header
+  doc.setFillColor(15,23,42)
+  doc.rect(0,0,pageWidth,40,'F')
+
+  // Logo (must exist in /assets/img/logo-png.png)
+  const logoUrl = "assets/img/horaxis-logo.png"
+
+  doc.addImage(logoUrl,"PNG",20,10,40,15)
+
+  doc.setTextColor(255,255,255)
+  doc.setFontSize(18)
+  doc.text("ProcureAI Executive ROI Report",20,32)
+
+  // Watermark
+  doc.setTextColor(230,230,230)
+  doc.setFontSize(60)
+  doc.text("CONFIDENTIAL",35,160,{angle:45})
+
+  // Reset color
+  doc.setTextColor(0,0,0)
+  doc.setFontSize(12)
+
+  let y=60
+
+  doc.text("Total Estimated Annual Savings:",20,y)
+  doc.text(fmt(lastData.total),150,y)
+  y+=15
+
+  doc.text("Estimated Platform Investment:",20,y)
+  doc.text(fmt(lastData.platformCost),150,y)
+  y+=15
+
+  doc.text("ROI Multiple:",20,y)
+  doc.text(lastData.roi.toFixed(1)+"x",150,y)
+  y+=15
+
+  doc.text("Estimated Payback Period:",20,y)
+  doc.text(Math.ceil(lastData.payback)+" months",150,y)
+  y+=25
+
+  doc.setFontSize(14)
+  doc.text("Executive Insight",20,y)
+  y+=10
+
+  doc.setFontSize(11)
+  const summaryText = document.getElementById("summaryText").textContent
+  doc.text(summaryText,20,y,{maxWidth:170})
+
+  // Footer
+  doc.setFillColor(15,23,42)
+  doc.rect(0,pageHeight-20,pageWidth,20,'F')
+
+  doc.setTextColor(255,255,255)
+  doc.setFontSize(9)
+  doc.text("© 2026 Horaxis — ProcureAI Enterprise Intelligence",20,pageHeight-8)
+
+  doc.save("ProcureAI_ROI_Report.pdf")
+}
 function emailReport(){
 const email=document.getElementById("leadEmail").value
 if(!email)return alert("Enter email")

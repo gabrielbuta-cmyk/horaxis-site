@@ -38,7 +38,12 @@
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
-    gtag('consent', 'default', { analytics_storage:'denied', ad_storage:'denied', ad_user_data:'denied', ad_personalization:'denied' });
+    gtag('consent', 'default', {
+      analytics_storage:'denied',
+      ad_storage:'denied',
+      ad_user_data:'denied',
+      ad_personalization:'denied'
+    });
     gtag('js', new Date());
     window.__gaConfigured = false;
     window.configureGA = function () {
@@ -52,87 +57,151 @@
 </head>
 
 <body>
-  <header class="nav">
-    <div class="container nav-inner">
-      <a class="brand" href="index.html"><img src="assets/img/horaxis-logo.svg" alt="ProcureAI by Horaxis"/></a>
-      <nav class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="product.html">Product</a>
-        <a href="security.html">Security</a>
-        <a href="pricing.html">Pricing</a>
-        <a href="contact.html">Contact</a>
-        <a class="btn primary small" href="contact.html#demo">Request Demo</a>
-      </nav>
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html">
+      <img src="assets/img/horaxis-logo.svg" alt="ProcureAI by Horaxis"/>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="product.html">Product</a>
+      <a href="security.html">Security</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="roi.html">ROI</a>
+      <a href="contact.html">Contact</a>
+      <a class="btn primary small" href="contact.html#demo">Request Demo</a>
+    </nav>
+  </div>
+</header>
+
+<section class="section" style="padding-top:46px;">
+  <div class="container">
+    <div class="kicker">Legal</div>
+    <h1 class="h1" style="font-size:42px;">Privacy Policy</h1>
+    <p class="lede">Last updated: 2026-03-04</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="card" style="padding:24px; line-height:1.9;">
+
+      <h2>1. Who We Are</h2>
+      <p>
+        Horaxis develops ProcureAI, an enterprise procurement intelligence platform.
+        This website (horaxis.com) describes the product and allows you to request
+        information, demos, and ROI estimates.
+      </p>
+
+      <h2>2. Data We Collect</h2>
+
+      <h3>Website Analytics (Optional)</h3>
+      <p>
+        If you accept analytics cookies, we collect limited, aggregated usage data
+        such as page visits, browser type, and general device information via Google Analytics.
+        IP addresses are anonymized where technically supported.
+      </p>
+
+      <h3>Contact & Demo Requests</h3>
+      <p>
+        When you submit a contact form or demo request, we collect the information
+        you provide, such as name, work email, company, ERP system, and message content.
+      </p>
+
+      <h3>ROI Calculator</h3>
+      <p>
+        When using the ProcureAI ROI Calculator, we may collect business-related inputs
+        including procurement spend, purchase order volumes, late delivery rates,
+        supplier counts, and cost parameters. If you request a report by email,
+        we collect your work email address for delivery.
+      </p>
+
+      <h2>3. How We Use Data</h2>
+      <ul style="padding-left:20px;">
+        <li>Respond to inquiries and demo requests</li>
+        <li>Deliver ROI reports</li>
+        <li>Improve messaging and website performance (if analytics consent is given)</li>
+        <li>Prevent abuse and secure the website</li>
+      </ul>
+
+      <h2>4. Legal Basis (EEA / UK)</h2>
+      <p>
+        We process analytics data based on your consent.
+        We process contact and ROI submissions based on legitimate interest
+        (responding to your request) or steps prior to entering into a contract.
+      </p>
+
+      <h2>5. Email & Processing Providers</h2>
+      <p>
+        Form submissions may be processed using secure infrastructure providers
+        including Cloudflare and transactional email providers
+        (e.g., MailChannels or Resend) solely for message delivery.
+        We do not sell or distribute personal data.
+      </p>
+
+      <h2>6. Data Retention</h2>
+      <p>
+        We retain contact information only as long as necessary
+        to respond to inquiries or pursue legitimate business discussions.
+      </p>
+
+      <h2>7. Your Rights</h2>
+      <p>
+        If you are located in the European Economic Area or the United Kingdom,
+        you have rights under GDPR including access, correction, deletion,
+        and restriction of processing. You may exercise these rights by contacting us.
+      </p>
+
+      <h2>8. Cookies</h2>
+      <p>
+        You may accept or reject analytics cookies via the cookie banner.
+        You can review details in our <a href="cookies.html" style="text-decoration:underline;">Cookies Policy</a>.
+      </p>
+
+      <h2>9. Contact</h2>
+      <p>
+        For privacy inquiries:
+        <a href="mailto:info@horaxis.com" style="text-decoration:underline;">info@horaxis.com</a>
+      </p>
+
     </div>
-  </header>
+  </div>
+</section>
 
-  <section class="section" style="padding-top:46px;">
-    <div class="container">
-      <div class="kicker">Legal</div>
-      <h1 class="h1" style="font-size:42px;">Privacy Policy</h1>
-      <p class="lede">Last updated: 2026-03-03</p>
-    </div>
-  </section>
+<footer class="footer">
+  <div class="container footer-grid">
+    <div>
+      <div class="badge">Enterprise supply chain intelligence</div>
+      <p class="smallprint" style="margin-top:10px;">
+        ProcureAI helps operations teams anticipate constraints,
+        protect customer commitments, and execute faster with predictive intelligence.
+      </p>
 
-  <section class="section">
-    <div class="container">
-      <div class="card" style="padding:18px;">
-        <h2 style="margin-top:0;">Who we are</h2>
-        <p>Horaxis builds ProcureAI. This website (horaxis.com) is used to describe the product and allow you to contact us.</p>
+      <div class="smallprint" style="margin-top:10px;">
+        <a href="privacy.html">Privacy</a> ·
+        <a href="cookies.html">Cookies</a>
+      </div>
 
-        <h2>What we collect</h2>
-        <p><b>Website analytics (optional)</b>: If you accept analytics cookies, we collect aggregated usage signals (e.g., page views, basic device/browser info) to improve the site.</p>
-        <p><b>Contact details (only if you send them)</b>: If you email us or submit a demo request, we receive the information you provide (name, email, company, message).</p>
-
-        <h2>How we use data</h2>
-        <ul style="color:var(--muted); line-height:1.9; margin:0; padding-left:18px;">
-          <li>To respond to inquiries and demo requests</li>
-          <li>To improve the website and messaging (analytics only if accepted)</li>
-          <li>To protect the site (security, abuse prevention)</li>
-        </ul>
-
-        <h2>Legal basis (EEA/UK)</h2>
-        <p>Analytics are processed based on <b>consent</b> (only after you accept). Contact requests are processed based on <b>legitimate interests</b> (responding to you) or <b>steps prior to a contract</b> when relevant.</p>
-
-        <h2>Your choices</h2>
-        <p>You can accept or reject analytics from the cookie banner. You can also change your choice anytime on the <a href="cookies.html" style="text-decoration:underline;">Cookies</a> page.</p>
-
-        <h2>Contact</h2>
-        <p>For privacy questions, contact: <a href="mailto:info@horaxis.com" style="text-decoration:underline;">info@horaxis.com</a></p>
+      <div class="smallprint">
+        © 2026 Horaxis. ProcureAI is a Horaxis product.
       </div>
     </div>
-  </section>
 
-  <footer class="footer">
-    <div class="container footer-grid">
-      <div>
-        <div class="badge">Enterprise supply chain intelligence</div>
-        <p class="smallprint" style="margin-top:10px;">
-          ProcureAI helps operations teams anticipate constraints, protect customer commitments, and execute faster with
-          supplier collaboration + predictive risk.
-        </p>
-
-        <div class="smallprint" style="margin-top:10px;">
-          <a href="privacy.html">Privacy</a> · <a href="cookies.html">Cookies</a>
-        </div>
-
-        <div class="smallprint">© 2026 Horaxis. ProcureAI is a Horaxis product. All rights reserved.</div>
-      </div>
-      <div>
-        <div style="font-weight:900; margin-bottom:8px;">Contact</div>
-        <div style="display:grid; gap:6px;">
-          <a href="mailto:info@horaxis.com">info@horaxis.com</a>
-          <a href="mailto:demo@horaxis.com">demo@horaxis.com</a>
-          <a href="mailto:support@horaxis.com">support@horaxis.com</a>
-        </div>
+    <div>
+      <div style="font-weight:900; margin-bottom:8px;">Contact</div>
+      <div style="display:grid; gap:6px;">
+        <a href="mailto:info@horaxis.com">info@horaxis.com</a>
+        <a href="mailto:demo@horaxis.com">demo@horaxis.com</a>
+        <a href="mailto:support@horaxis.com">support@horaxis.com</a>
       </div>
     </div>
-  </footer>
+  </div>
+</footer>
 
-  <script src="assets/js/main.js"></script>
+<script src="assets/js/main.js"></script>
 
-  <!-- Cookie Banner -->
-  <div id="cookie-banner" style="
+<!-- Cookie Banner -->
+<div id="cookie-banner" style="
 position:fixed;
 bottom:0;
 left:0;
@@ -144,37 +213,12 @@ text-align:center;
 z-index:99999;
 box-shadow:0 -6px 20px rgba(0,0,0,.4);
 ">
-    We use analytics to improve ProcureAI. See <a href="privacy.html" style="text-decoration:underline;">Privacy</a> and <a href="cookies.html" style="text-decoration:underline;">Cookies</a>.
-    <button id="cookie-accept" style="margin-left:12px;padding:6px 14px;border-radius:6px;background:#2563eb;color:white;border:none;cursor:pointer;">Accept</button>
-    <button id="cookie-reject" style="margin-left:8px;padding:6px 14px;border-radius:6px;background:rgba(255,255,255,.08);color:white;border:1px solid rgba(255,255,255,.18);cursor:pointer;">Reject</button>
-  </div>
+We use analytics to improve ProcureAI.
+See <a href="privacy.html" style="text-decoration:underline;">Privacy</a> and
+<a href="cookies.html" style="text-decoration:underline;">Cookies</a>.
+<button id="cookie-accept" style="margin-left:12px;padding:6px 14px;border-radius:6px;background:#2563eb;color:white;border:none;cursor:pointer;">Accept</button>
+<button id="cookie-reject" style="margin-left:8px;padding:6px 14px;border-radius:6px;background:rgba(255,255,255,.08);color:white;border:1px solid rgba(255,255,255,.18);cursor:pointer;">Reject</button>
+</div>
 
-  <script>
-    (function () {
-      function grantAnalytics() {
-        if (typeof gtag === 'function') gtag('consent', 'update', { analytics_storage: 'granted' });
-        if (typeof window.configureGA === 'function') window.configureGA();
-      }
-      function denyAnalytics() {
-        if (typeof gtag === 'function') gtag('consent', 'update', { analytics_storage: 'denied' });
-      }
-
-      var banner = document.getElementById('cookie-banner');
-      var acceptBtn = document.getElementById('cookie-accept');
-      var rejectBtn = document.getElementById('cookie-reject');
-      var consent = localStorage.getItem('cookieConsent');
-
-      if (consent === 'accepted') { grantAnalytics(); if (banner) banner.style.display = 'none'; }
-      else if (consent === 'rejected') { denyAnalytics(); if (banner) banner.style.display = 'none'; }
-      else { if (banner) banner.style.display = 'block'; }
-
-      if (acceptBtn) acceptBtn.addEventListener('click', function () {
-        localStorage.setItem('cookieConsent', 'accepted'); grantAnalytics(); if (banner) banner.style.display = 'none';
-      });
-      if (rejectBtn) rejectBtn.addEventListener('click', function () {
-        localStorage.setItem('cookieConsent', 'rejected'); denyAnalytics(); if (banner) banner.style.display = 'none';
-      });
-    })();
-  </script>
 </body>
 </html>
