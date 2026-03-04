@@ -1,115 +1,107 @@
-// assets/js/main.js
+/**
+ * HORAXIS ENTERPRISE MAIN ENGINE
+ * Purpose: Secure Consent Management & Industrial UI Persistence
+ */
+
 (function () {
-  // ---- Cookie consent + GA gating (GDPR-safe) ----
+  'use strict';
 
-  var KEY = "cookieConsent"; // "accepted" | "rejected" | null
-
-  function storageGet(key) {
-    try { return localStorage.getItem(key); } catch (e) { return null; }
-  }
-  function storageSet(key, val) {
-    try { localStorage.setItem(key, val); } catch (e) {}
-  }
-
-  function grantAnalytics() {
-    // Consent update for GA v4
+  const CONSENT_KEY = "horaxis_consent"; // "granted" | "denied"
+  
+  /**
+   * 1. Consent Management (GDPR/Enterprise Standard)
+   */
+  function updateAnalyticsConsent(status) {
     if (typeof window.gtag === "function") {
-      window.gtag("consent", "update", { analytics_storage: "granted" });
-    }
-    // Your pages define window.configureGA() which calls gtag('config', ...)
-    if (typeof window.configureGA === "function") {
-      window.configureGA();
-    }
-  }
-
-  function denyAnalytics() {
-    if (typeof window.gtag === "function") {
-      window.gtag("consent", "update", { analytics_storage: "denied" });
+      window.gtag("consent", "update", {
+        'analytics_storage': status === 'granted' ? 'granted' : 'denied',
+        'ad_storage': 'denied' // Enterprise sites should default-deny ad tracking
+      });
     }
   }
 
-  function ensureBannerStyles() {
-    if (document.getElementById("cookie-banner-style")) return;
-
-    var style = document.createElement("style");
-    style.id = "cookie-banner-style";
-    style.textContent =
-      "#cookie-banner{position:fixed;left:0;right:0;bottom:0;" +
-      "background:#0f172a;color:#fff;" +
-      "padding:14px 14px calc(14px + env(safe-area-inset-bottom));" +
-      "text-align:center;z-index:99999;display:none;" +
-      "box-shadow:0 -6px 20px rgba(0,0,0,.4)}" +
-      "#cookie-banner .cookie-inner{max-width:980px;margin:0 auto;line-height:1.45}" +
-      "#cookie-banner .cookie-actions{margin-top:10px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap}" +
-      "#cookie-banner button{padding:8px 14px;border-radius:8px;font-weight:700;cursor:pointer}" +
-      "#cookie-accept{background:#2563eb;color:#fff;border:none}" +
-      "#cookie-reject{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.18)}" +
-      "#cookie-banner a{color:#93c5fd;text-decoration:underline}";
-    document.head.appendChild(style);
+  function handleConsent(choice) {
+    localStorage.setItem(CONSENT_KEY, choice);
+    updateAnalyticsConsent(choice);
+    
+    const banner = document.getElementById('cookie-banner');
+    if (banner) {
+      banner.style.opacity = '0';
+      setTimeout(() => banner.remove(), 400);
+    }
   }
 
-  function ensureBannerHTML() {
-    var existing = document.getElementById("cookie-banner");
-    if (existing) return existing;
+  /**
+   * 2. Enterprise UI: Cookie Banner Injection
+   * Using Industrial Navy/Orange theme matching global CSS
+   */
+  function injectBanner() {
+    if (localStorage.getItem(CONSENT_KEY)) return;
 
-    var banner = document.createElement("div");
-    banner.id = "cookie-banner";
-    banner.innerHTML =
-      '<div class="cookie-inner">' +
-        'We use analytics to improve ProcureAI. See ' +
-        '<a href="privacy.html">Privacy</a> and <a href="cookies.html">Cookies</a>.' +
-        '<div class="cookie-actions">' +
-          '<button id="cookie-accept" type="button">Accept</button>' +
-          '<button id="cookie-reject" type="button">Reject</button>' +
-        "</div>" +
-      "</div>";
+    const banner = document.createElement('div');
+    banner.id = 'cookie-banner';
+    banner.style.cssText = `
+      position: fixed; bottom: 0; left: 0; right: 0; 
+      background: #0F172A; color: #F8FAFC; 
+      padding: 20px; text-align: center; z-index: 10000;
+      border-top: 2px solid #EA580C; transition: opacity 0.4s ease;
+      font-family: 'Inter', sans-serif; font-size: 14px;
+    `;
+
+    banner.innerHTML = `
+      <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 15px;">
+        <p style="margin: 0; opacity: 0.8;">
+          Horaxis uses essential technical cookies for security and anonymized telemetry to improve our enterprise AI models. 
+          See our <a href="privacy.html" style="color: #EA580C; text-decoration: underline;">Privacy Policy</a>.
+        </p>
+        <div style="display: flex; gap: 10px;">
+          <button id="accept-c" style="background: #EA580C; color: white; border: none; padding: 10px 24px; cursor: pointer; font-weight: 700; border-radius: 2px; text-transform: uppercase; font-size: 12px;">Accept All</button>
+          <button id="deny-c" style="background: transparent; color: #94A3B8; border: 1px solid #334155; padding: 10px 24px; cursor: pointer; font-weight: 700; border-radius: 2px; text-transform: uppercase; font-size: 12px;">Reject Optional</button>
+        </div>
+      </div>
+    `;
 
     document.body.appendChild(banner);
-    return banner;
+
+    document.getElementById('accept-c').onclick = () => handleConsent('granted');
+    document.getElementById('deny-c').onclick = () => handleConsent('denied');
   }
 
-  function initCookieBanner() {
-    ensureBannerStyles();
-    var banner = ensureBannerHTML();
-
-    var acceptBtn = document.getElementById("cookie-accept");
-    var rejectBtn = document.getElementById("cookie-reject");
-
-    var consent = storageGet(KEY);
-
-    if (consent === "accepted") {
-      grantAnalytics();
-      banner.style.display = "none";
-    } else if (consent === "rejected") {
-      denyAnalytics();
-      banner.style.display = "none";
-    } else {
-      // Unknown -> show banner, keep denied until user accepts
-      denyAnalytics();
-      banner.style.display = "block";
-    }
-
-    if (acceptBtn) {
-      acceptBtn.addEventListener("click", function () {
-        storageSet(KEY, "accepted");
-        grantAnalytics();
-        banner.style.display = "none";
+  /**
+   * 3. Industrial Utility: Smooth Anchor Scrolling
+   * Crucial for long technical 'Security' or 'Product' pages
+   */
+  function initSmoothScroll() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          window.scrollTo({
+            top: target.offsetTop - 80, // Offset for sticky nav
+            behavior: 'smooth'
+          });
+        }
       });
-    }
-
-    if (rejectBtn) {
-      rejectBtn.addEventListener("click", function () {
-        storageSet(KEY, "rejected");
-        denyAnalytics();
-        banner.style.display = "none";
-      });
-    }
+    });
   }
 
-  // Run after DOM is ready
+  /**
+   * 4. Lifecycle Initialization
+   */
+  function init() {
+    injectBanner();
+    initSmoothScroll();
+    
+    // Check for existing consent and apply to GA
+    const existing = localStorage.getItem(CONSENT_KEY);
+    if (existing) updateAnalyticsConsent(existing);
+  }
+
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initCookieBanner);
+    document.addEventListener("DOMContentLoaded", init);
   } else {
-    initCookieBanner();
+    init();
   }
+
 })();

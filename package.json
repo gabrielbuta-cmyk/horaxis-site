@@ -1,8 +1,13 @@
 {
-  "name": "horaxis-site",
-  "version": "1.0.0",
+  "name": "horaxis-enterprise-site",
+  "version": "1.1.0",
   "private": true,
+  "description": "Industrial Supply Chain Intelligence Platform",
+  "author": "Horaxis",
   "dependencies": {
     "pdf-lib": "^1.17.1"
+  },
+  "scripts": {
+    "build": "echo 'Deploying to Enterprise Production...'"
   }
 }

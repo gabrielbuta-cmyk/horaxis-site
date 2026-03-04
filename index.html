@@ -3,242 +3,51 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-
-  <title>ProcureAI by Horaxis — AI-Driven Procurement Control</title>
-  <meta name="description" content="Predict late PO risk with machine learning, trace material-to-customer impact, and execute corrective action before revenue is exposed. On-prem or VPC. SAP, Oracle, Dynamics 365."/>
-  <link rel="canonical" href="https://horaxis.com/"/>
-
-  <!-- Favicon -->
-  <link rel="icon" href="/assets/favicon/favicon.ico" sizes="any">
-  <link rel="icon" href="/assets/favicon/favicon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="/assets/favicon/apple-touch-icon.png">
-  <link rel="manifest" href="/assets/favicon/site.webmanifest">
-  <meta name="theme-color" content="#0b1020">
-
-  <!-- Social Preview -->
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="ProcureAI by Horaxis — AI-Driven Procurement Control">
-  <meta property="og:description" content="Predict late PO risk, quantify downstream impact, and act before revenue is exposed.">
-  <meta property="og:url" content="https://horaxis.com/">
-  <meta property="og:image" content="https://horaxis.com/assets/og/og-image.png">
-
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="ProcureAI by Horaxis — AI-Driven Procurement Control">
-  <meta name="twitter:description" content="AI-driven procurement control for complex supply chains.">
-  <meta name="twitter:image" content="https://horaxis.com/assets/og/og-image.png">
-
-  <!-- Fonts + CSS -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <title>Horaxis | Industrial Supply Chain Intelligence</title>
   <link rel="stylesheet" href="assets/css/styles.css"/>
-
-  <!-- Google tag (GDPR-safe, configure after consent) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-P2VVF0VXL9"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-
-    // Default: deny until user explicitly accepts
-    gtag('consent', 'default', {
-      analytics_storage: 'denied',
-      ad_storage: 'denied',
-      ad_user_data: 'denied',
-      ad_personalization: 'denied'
-    });
-
-    gtag('js', new Date());
-
-    // Configure GA only after consent
-    window.__gaConfigured = false;
-    window.configureGA = function () {
-      if (window.__gaConfigured) return;
-      window.__gaConfigured = true;
-      gtag('config', 'G-P2VVF0VXL9', { anonymize_ip: true });
-    };
-  </script>
 </head>
-
 <body>
- <header class="nav">
+
+<header class="nav">
   <div class="container nav-inner">
-    <a class="brand" href="index.html">
-      <img src="assets/img/horaxis-logo.svg" alt="Horaxis"/>
-    </a>
+    <a href="index.html" style="font-weight:900; font-size:24px; color:white; text-decoration:none;">HORAXIS<span style="color:var(--orange)">.</span></a>
     <nav class="nav-links">
-      <a href="index.html">Home</a>
       <a href="product.html">Product</a>
-      <a href="pricing.html">Pricing</a>
       <a href="security.html">Security</a>
-      <a href="roi.html">ROI</a>
-      <a href="contact.html">Contact</a>
+      <a href="roi.html">ROI Calculator</a>
+      <a href="contact.html" class="btn primary" style="padding:8px 16px; margin-left:20px;">Pilot Proposal</a>
     </nav>
   </div>
 </header>
 
-  <section class="hero">
-    <div class="container hero-grid">
-      <div>
-        <div class="kicker">ProcureAI by Horaxis • AI-Driven Procurement Intelligence</div>
-
-        <h1 class="h1">Control Supply Risk Before It Controls Revenue.</h1>
-        <p class="lede">
-          ProcureAI applies production-grade machine learning to predict late POs,
-          quantify material exposure, and trace customer impact — before it hits your numbers.
-        </p>
-
-        <div class="cta-row">
-          <a class="btn primary" href="contact.html#demo">Request a Demo</a>
-          <a class="btn" href="product.html">See the Product</a>
-	  <a class="btn" href="roi.html">Calculate ROI</a>
-          <span class="subtle">On-prem deployment • SAP, Oracle &amp; Dynamics 365 • Enterprise security</span>
-        </div>
-
-        <div class="section" style="padding:26px 0 0;">
-          <div class="kpi-row">
-            <div class="card kpi"><div class="num">Predict</div><div class="label">ML probability scoring + delay forecasting on every PO.</div></div>
-            <div class="card kpi"><div class="num">Trace</div><div class="label">Map material → finished goods → customer orders automatically.</div></div>
-            <div class="card kpi"><div class="num">Prioritize</div><div class="label">Impact score + value at risk drives risk tier and focus.</div></div>
-            <div class="card kpi"><div class="num">Execute</div><div class="label">Trigger supplier updates, expediting, allocation, alerts.</div></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card screenshot">
-        <img src="assets/screenshots/hero-supply-risk.png" alt="ProcureAI AI supply risk dashboard screenshot"/>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <h2>From risk discovery to execution — in one system</h2>
-      <p>ProcureAI connects supplier collaboration, predictive risk, and customer impact so teams can act decisively.</p>
-      <div class="grid-3">
-        <div class="card feature"><div class="pill">Supplier Collaboration</div><div class="title">Supplier links + fast updates</div><div class="desc">Generate supplier update links tied to POs, track access, and collect confirmations without spreadsheets.</div></div>
-        <div class="card feature"><div class="pill">AI Predictions</div><div class="title">Late probability + expected delay</div><div class="desc">Identify which POs are likely to slip and by how much, with confidence and retraining controls.</div></div>
-        <div class="card feature"><div class="pill">Customer Impact</div><div class="title">Know which orders break</div><div class="desc">Trace material shortages to impacted sales orders, value at risk, and recommended actions.</div></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container split">
-      <div class="card">
-        <h2 style="margin-top:0;">Built for enterprise reality</h2>
-        <p>Integrate with SAP / Dynamics / Oracle, run on-prem or in your cloud, and keep governance tight with role-based permissions and auditability.</p>
-        <div class="cta-row">
-          <a class="btn primary" href="security.html">Security &amp; Architecture</a>
-          <a class="btn" href="pricing.html">View Pricing</a>
-        </div>
-      </div>
-      <div class="card screenshot"><img src="assets/screenshots/product-constraint-map.png" alt="Constraint map screenshot"/></div>
-    </div>
-  </section>
-
-  <footer class="footer">
-  <div class="container footer-grid">
-    <div>
-      <div class="smallprint">
-        <a href="privacy.html">Privacy</a> ·
-        <a href="cookies.html">Cookies</a> ·
-        <a href="terms.html">Terms</a> ·
-        <a href="dpa.html">DPA</a>
-      </div>
-      <div class="smallprint" style="margin-top:8px;">
-        © 2026 Horaxis — ProcureAI Enterprise Platform
-      </div>
-    </div>
-    <div>
-      <div style="font-weight:700;margin-bottom:6px;">Contact</div>
-      <div class="smallprint">
-        <a href="mailto:info@horaxis.com">info@horaxis.com</a><br>
-        <a href="mailto:demo@horaxis.com">demo@horaxis.com</a>
-      </div>
+<section style="padding:120px 0 60px; text-align:center;">
+  <div class="container">
+    <h1 style="font-size:64px; font-weight:900; line-height:1.1; margin-bottom:24px;">
+      Stop Production Delays <br>
+      <span style="color:var(--orange)">Before They Reach the Line.</span>
+    </h1>
+    <p style="font-size:20px; color:var(--muted); max-width:800px; margin:0 auto 40px;">
+      The only supply chain intelligence engine designed for SAP S/4HANA on-premise deployment. 
+      Manage 500k+ POs with sub-second visibility and zero data leakage.
+    </p>
+    <div style="display:flex; gap:16px; justify-content:center;">
+      <a href="contact.html" class="btn primary">Request Pilot Proposal</a>
+      <a href="security.html" class="btn secondary">IT Readiness Guide</a>
     </div>
   </div>
-</footer>
+</section>
 
-  <script src="assets/js/main.js"></script>
-
-  <!-- Cookie Banner -->
-  <div id="cookie-banner" style="
-    position:fixed;
-    bottom:0;
-    left:0;
-    right:0;
-    background:#0f172a;
-    color:white;
-    padding:14px 14px calc(14px + env(safe-area-inset-bottom));
-    text-align:center;
-    z-index:99999;
-    box-shadow:0 -6px 20px rgba(0,0,0,.4);
-    display:none;
-  ">
-    <span style="display:inline-block; max-width:980px; line-height:1.45;">
-      We use analytics to improve ProcureAI. See
-      <a href="privacy.html" style="text-decoration:underline;">Privacy</a>
-      and
-      <a href="cookies.html" style="text-decoration:underline;">Cookies</a>.
-    </span>
-
-    <div style="margin-top:10px; display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
-      <button id="cookie-accept" style="padding:8px 14px;border-radius:8px;background:#2563eb;color:white;border:none;cursor:pointer;font-weight:700;">
-        Accept
-      </button>
-      <button id="cookie-reject" style="padding:8px 14px;border-radius:8px;background:rgba(255,255,255,.08);color:white;border:1px solid rgba(255,255,255,.18);cursor:pointer;font-weight:700;">
-        Reject
-      </button>
+<section style="padding:40px 0; background:rgba(255,255,255,0.03); border-top:1px solid var(--border);">
+  <div class="container" style="text-align:center;">
+    <p style="font-size:11px; font-weight:800; color:var(--muted); letter-spacing:2px; margin-bottom:30px;">ENTERPRISE INTEGRATION STANDARDS</p>
+    <div style="display:flex; justify-content:space-around; align-items:center; opacity:0.6;">
+      <div><strong style="display:block; font-size:18px;">SAP S/4HANA</strong><small>RFC / ODATA</small></div>
+      <div><strong style="display:block; font-size:18px;">DOCKER</strong><small>ON-PREMISE</small></div>
+      <div><strong style="display:block; font-size:18px;">ORACLE ERP</strong><small>REST API</small></div>
+      <div><strong style="display:block; font-size:18px;">AES-256</strong><small>ENCRYPTED</small></div>
     </div>
   </div>
+</section>
 
-  <script>
-    (function () {
-      function grantAnalytics() {
-        if (typeof gtag === 'function') {
-          gtag('consent', 'update', { analytics_storage: 'granted' });
-        }
-        if (typeof window.configureGA === 'function') window.configureGA();
-      }
-
-      function denyAnalytics() {
-        if (typeof gtag === 'function') {
-          gtag('consent', 'update', { analytics_storage: 'denied' });
-        }
-      }
-
-      var banner = document.getElementById('cookie-banner');
-      var acceptBtn = document.getElementById('cookie-accept');
-      var rejectBtn = document.getElementById('cookie-reject');
-
-      var consent = localStorage.getItem('cookieConsent'); // "accepted" | "rejected" | null
-
-      if (consent === 'accepted') {
-        grantAnalytics();
-        if (banner) banner.style.display = 'none';
-      } else if (consent === 'rejected') {
-        denyAnalytics();
-        if (banner) banner.style.display = 'none';
-      } else {
-        if (banner) banner.style.display = 'block';
-      }
-
-      if (acceptBtn) {
-        acceptBtn.addEventListener('click', function () {
-          localStorage.setItem('cookieConsent', 'accepted');
-          grantAnalytics();
-          if (banner) banner.style.display = 'none';
-        });
-      }
-
-      if (rejectBtn) {
-        rejectBtn.addEventListener('click', function () {
-          localStorage.setItem('cookieConsent', 'rejected');
-          denyAnalytics();
-          if (banner) banner.style.display = 'none';
-        });
-      }
-    })();
-  </script>
 </body>
 </html>

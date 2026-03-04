@@ -1,8 +1,13 @@
+# Force HTTPS and Non-WWW for Brand Consistency
 https://www.horaxis.com/* https://horaxis.com/:splat 301!
 
-/contact    /contact.html   200
-/product    /product.html   200
+# Clean URLs for Enterprise Marketing
+/pilot      /contact.html   200
 /security   /security.html  200
+/product    /product.html   200
+/roi        /roi.html       200
 /pricing    /pricing.html   200
-/privacy    /privacy.html   200
-/cookies    /cookies.html   200
+/legal      /privacy.html   200
+
+# Error Handling
+/* /404.html       404

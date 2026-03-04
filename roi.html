@@ -2,232 +2,73 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ProcureAI — Board Financial Impact Assessment</title>
+<title>ROI Assessment | Horaxis Enterprise</title>
 <link rel="stylesheet" href="assets/css/styles.css"/>
-
-<style>
-body{background:#0b1020;color:white;font-family:Inter, sans-serif}
-.section{padding:60px 0}
-.container{max-width:1100px;margin:auto;padding:0 20px}
-h1{font-size:42px;margin-bottom:10px}
-h2{margin-bottom:20px}
-label{font-size:13px;color:#cbd5e1}
-input,select{
-width:100%;
-padding:12px;
-margin-bottom:15px;
-border-radius:8px;
-border:1px solid #334155;
-background:#0f172a;
-color:white;
-}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
-.card{background:#111827;padding:30px;border-radius:16px}
-.metric{margin-bottom:20px}
-.metric .value{font-size:28px;font-weight:800}
-.metric .label{font-size:13px;color:#94a3b8}
-.big{font-size:40px;font-weight:900;color:#93c5fd}
-button{
-background:#1e293b;
-color:white;
-padding:14px 18px;
-border:none;
-border-radius:8px;
-cursor:pointer;
-width:100%;
-margin-top:10px;
-}
-button:hover{background:#334155}
-@media(max-width:900px){.grid{grid-template-columns:1fr}}
-</style>
 </head>
-
 <body>
 
 <header class="nav">
   <div class="container nav-inner">
-    <a class="brand" href="index.html">
-      <img src="assets/img/horaxis-logo.svg" alt="Horaxis"/>
-    </a>
-    <nav class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="product.html">Product</a>
-      <a href="pricing.html">Pricing</a>
-      <a href="security.html">Security</a>
-      <a href="roi.html">ROI</a>
-      <a href="contact.html">Contact</a>
-    </nav>
+    <a href="index.html" style="font-weight:900; font-size:24px; color:white; text-decoration:none;">HORAXIS.</a>
   </div>
 </header>
 
 <section class="section">
-<div class="container">
-
-<h1>Board-Level ROI Assessment</h1>
-<p style="color:#94a3b8;margin-bottom:40px">
-Capital efficiency modeling for predictive procurement intelligence.
-</p>
-
-<div class="grid">
-
-<div class="card">
-
-<label>Scenario</label>
-<select id="scenario" onchange="calc()">
-<option value="conservative">Conservative</option>
-<option value="base" selected>Base Case</option>
-<option value="optimistic">Optimistic</option>
-</select>
-
-<label>Annual Procurement Spend (€)</label>
-<input id="spend" value="50000000" oninput="calc()">
-
-<label>Annual Purchase Orders</label>
-<input id="pos" value="6000" oninput="calc()">
-
-<label>Late Delivery Rate (%)</label>
-<input id="lateRate" value="25" oninput="calc()">
-
-<label>Average Cost per Late Delivery (€)</label>
-<input id="lateCost" value="5000" oninput="calc()">
-
-<label>Manual Follow-up Hours / Week</label>
-<input id="hours" value="30" oninput="calc()">
-
-<label>Hourly Cost (€)</label>
-<input id="rate" value="45" oninput="calc()">
-
-<label>Suppliers</label>
-<input id="suppliers" value="100" oninput="calc()">
-
-</div>
-
-<div class="card">
-
-<h2>Financial Projection</h2>
-
-<div class="metric">
-<div class="value" id="totalSave">€0</div>
-<div class="label">Total Annual Value Creation</div>
-</div>
-
-<div class="metric">
-<div class="value" id="platformCost">€0</div>
-<div class="label">Annual Platform Investment</div>
-</div>
-
-<div class="metric">
-<div class="big" id="roi">0x</div>
-<div class="label">Return on Investment</div>
-</div>
-
-<div class="metric">
-<div class="value" id="payback">—</div>
-<div class="label">Capital Payback Period</div>
-</div>
-
-<hr style="border:1px solid #1e293b;margin:30px 0">
-
-<input placeholder="Executive Email" id="leadEmail">
-<button onclick="emailReport()">Send Board Report (PDF)</button>
-
-</div>
-</div>
-</div>
-</section>
-
-<footer class="footer">
-  <div class="container footer-grid">
-    <div>
-      <div class="smallprint">
-        <a href="privacy.html">Privacy</a> ·
-        <a href="cookies.html">Cookies</a> ·
-        <a href="terms.html">Terms</a> ·
-        <a href="dpa.html">DPA</a>
+  <div class="container">
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:40px;">
+      <div class="card">
+        <h2 style="margin-top:0;">Input Operational Scale</h2>
+        <label>Annual Material Spend ($)</label>
+        <input type="number" id="spend" value="50000000" style="width:100%; padding:12px; margin:8px 0 20px; background:#0f172a; border:1px solid #334155; color:white;">
+        
+        <label>Active PO Line Items</label>
+        <input type="number" id="pos" value="10000" style="width:100%; padding:12px; margin:8px 0 20px; background:#0f172a; border:1px solid #334155; color:white;">
+        
+        <button onclick="calculate()" class="btn primary" style="width:100%;">Calculate Value Realization</button>
       </div>
-      <div class="smallprint" style="margin-top:8px;">
-        © 2026 Horaxis — ProcureAI Enterprise Platform
+
+      <div class="card" style="border-left: 4px solid var(--orange);">
+        <p class="kpi-label">Projected Annual Savings</p>
+        <h1 id="total" class="kpi-num">$0</h1>
+        <hr style="border:0; border-top:1px solid var(--border); margin:20px 0;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+          <span>Production Downtime Avoided</span>
+          <strong id="downtime">$0</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+          <span>Expedited Freight Reduction</span>
+          <strong id="freight">$0</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span>Planner Capacity Gained</span>
+          <strong id="labor">$0</strong>
+        </div>
       </div>
     </div>
   </div>
-</footer>
+</section>
 
 <script>
-function calc(){
+function calculate() {
+  const spend = parseFloat(document.getElementById('spend').value);
+  const pos = parseInt(document.getElementById('pos').value);
 
-const scenario=document.getElementById("scenario").value;
-const spend=parseFloat(document.getElementById("spend").value)||0;
-const pos=parseFloat(document.getElementById("pos").value)||0;
-const lateRate=(parseFloat(document.getElementById("lateRate").value)||0)/100;
-const lateCost=parseFloat(document.getElementById("lateCost").value)||0;
-const hours=parseFloat(document.getElementById("hours").value)||0;
-const rate=parseFloat(document.getElementById("rate").value)||0;
-const suppliers=parseFloat(document.getElementById("suppliers").value)||0;
+  // Enterprise Industrial Constants
+  const HOURLY_DOWNTIME_COST = 22000; 
 
-let deliveryFactor,automationFactor,riskFactor,wcFactor;
+  const downtimeVal = 12 * HOURLY_DOWNTIME_COST; // Assume 12 hours/year protected
+  const freightVal = (spend * 0.05) * 0.15; // 15% reduction in expedite spend
+  const laborVal = ((pos * 10) / 60) * 55; // 10 mins saved/PO * $55/hr
 
-if(scenario==="conservative"){deliveryFactor=0.20;automationFactor=0.40;riskFactor=0.01;wcFactor=0.05;}
-if(scenario==="base"){deliveryFactor=0.30;automationFactor=0.60;riskFactor=0.02;wcFactor=0.10;}
-if(scenario==="optimistic"){deliveryFactor=0.40;automationFactor=0.75;riskFactor=0.03;wcFactor=0.15;}
+  const total = downtimeVal + freightVal + laborVal;
 
-const latePOs=pos*lateRate;
-
-const deliverySave=latePOs*lateCost*deliveryFactor;
-const processSave=hours*rate*52*automationFactor;
-const riskSave=spend*lateRate*riskFactor;
-const workingCapitalSave=spend*0.02*wcFactor;
-
-const total=deliverySave+processSave+riskSave+workingCapitalSave;
-const platformCost=20000+suppliers*60;
-const roi=platformCost>0?total/platformCost:0;
-const payback=total>0?(platformCost/total*12):0;
-
-document.getElementById("totalSave").textContent="€"+Math.round(total).toLocaleString();
-document.getElementById("platformCost").textContent="€"+Math.round(platformCost).toLocaleString();
-document.getElementById("roi").textContent=roi.toFixed(1)+"x";
-document.getElementById("payback").textContent=
-payback<1?"< 1 month":Math.ceil(payback)+" months";
+  document.getElementById('total').innerText = "$" + Math.round(total).toLocaleString();
+  document.getElementById('downtime').innerText = "$" + Math.round(downtimeVal).toLocaleString();
+  document.getElementById('freight').innerText = "$" + Math.round(freightVal).toLocaleString();
+  document.getElementById('labor').innerText = "$" + Math.round(laborVal).toLocaleString();
 }
-
-function emailReport(){
-
-const email=document.getElementById("leadEmail").value;
-
-if(!email){
-alert("Enter executive email");
-return;
-}
-
-fetch("/api/roi",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-email,
-spend:document.getElementById("spend").value,
-pos:document.getElementById("pos").value,
-lateRate:document.getElementById("lateRate").value,
-lateCost:document.getElementById("lateCost").value,
-hours:document.getElementById("hours").value,
-rate:document.getElementById("rate").value,
-suppliers:document.getElementById("suppliers").value,
-scenario:document.getElementById("scenario").value
-})
-})
-.then(async r=>{
-const data=await r.json();
-if(r.ok && data.ok){
-alert("Board report sent.");
-}else{
-console.log(data);
-alert("Server error. Check console.");
-}
-})
-.catch(()=>alert("Server error."));
-}
-
-calc();
+// Run on load
+calculate();
 </script>
-
 </body>
 </html>
