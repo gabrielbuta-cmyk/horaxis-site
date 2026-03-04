@@ -3,41 +3,51 @@
 <head>
   <meta charset="utf-8"/><title>ROI Assessment | Horaxis</title>
   <link rel="stylesheet" href="assets/css/styles.css"/>
+  <style>
+    .roi-container { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; align-items: start; }
+    .roi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .field-group { display: flex; flex-direction: column; gap: 8px; }
+    .field-group label { font-size: 11px; font-weight: 800; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.05em; }
+    .field-group input { padding: 12px; background: #0F172A; border: 1px solid #334155; color: white; border-radius: 4px; outline: none; }
+    .field-group input:focus { border-color: #EA580C; }
+    .result-pane { background: #1E293B; border-left: 4px solid #EA580C; padding: 40px; border-radius: 4px; }
+    @media (max-width: 768px) { .roi-container { grid-template-columns: 1fr; } }
+  </style>
 </head>
-<body>
-  <header class="nav">
-  <div class="container nav-inner" style="display:flex; align-items:center; justify-content:space-between; height:74px;">
-    <a href="index.html" style="display:flex; align-items:center; gap:12px; text-decoration:none;">
-      <div class="brand-mark"></div>
-      <div class="brand-text">HORAXIS<span>.</span></div>
-    </a>
-    <nav class="nav-links" style="display:flex; align-items:center; gap:24px;">
-      <a href="product.html" style="color:#94A3B8; font-weight:600; text-decoration:none; font-size:14px;">Product</a>
-      <a href="security.html" style="color:#94A3B8; font-weight:600; text-decoration:none; font-size:14px;">Security</a>
-      <a href="roi.html" style="color:#94A3B8; font-weight:600; text-decoration:none; font-size:14px;">ROI Calculator</a>
-      <a href="contact.html" class="btn primary" style="background:#EA580C; color:white; padding:10px 20px; border-radius:4px; font-weight:700; text-decoration:none; font-size:13px; text-transform:uppercase;">Pilot Proposal</a>
-    </nav>
-  </div>
-</header>
-<section class="section">
+<body style="background:#0F172A; color:white; margin:0; font-family:Inter, sans-serif;">
+
+<section style="padding:80px 0;">
   <div class="container">
-    <div class="card" style="display:grid; grid-template-columns: 1.2fr 0.8fr; gap:40px;">
-      <div>
-        <h2 style="margin-top:0;">Industrial Business Case</h2>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-          <div class="field"><label>Annual Material Spend ($)</label><input type="number" id="spend" value="50000000"></div>
-          <div class="field"><label>Annual PO Lines</label><input type="number" id="pos" value="10000"></div>
-          <div class="field"><label>Current Late Rate (%)</label><input type="number" id="lateRate" value="15"></div>
-          <div class="field"><label>Cost Per Line Stop ($/hr)</label><input type="number" id="lateCost" value="22000"></div>
+    <div class="roi-container">
+      <div class="card" style="padding:40px; background:#1E293B; border-radius:4px;">
+        <h2 style="margin-top:0; font-size:28px; margin-bottom:30px;">Industrial Business Case</h2>
+        <div class="roi-grid">
+          <div class="field-group">
+            <label>Annual Material Spend ($)</label>
+            <input type="number" id="spend" value="50000000">
+          </div>
+          <div class="field-group">
+            <label>Annual PO Lines</label>
+            <input type="number" id="pos" value="10000">
+          </div>
+          <div class="field-group">
+            <label>Current Late Rate (%)</label>
+            <input type="number" id="lateRate" value="17">
+          </div>
+          <div class="field-group">
+            <label>Cost Per Line Stop ($/hr)</label>
+            <input type="number" id="lateCost" value="22000">
+          </div>
         </div>
-        <button onclick="calculate()" class="btn primary" style="width:100%; margin-top:20px;">Update Economic Impact</button>
+        <button onclick="calculate()" class="btn primary" style="width:100%; margin-top:30px; background:#EA580C; border:none; padding:16px; color:white; font-weight:700; cursor:pointer; text-transform:uppercase;">Update Economic Impact</button>
       </div>
-      <div style="background:var(--bg); padding:30px; border-radius:4px; border-left:4px solid var(--orange);">
-        <p class="kpi-label">Annual Value Realized</p>
-        <h1 id="totalSave" class="kpi-num" style="font-size:48px;">$0</h1>
-        <div style="margin-top:20px; font-size:14px; color:var(--muted);">
-          <p>• Downtime Avoided: <span id="risk" style="color:white; font-weight:bold;">$0</span></p>
-          <p>• Logistics Savings: <span id="freight" style="color:white; font-weight:bold;">$0</span></p>
+
+      <div class="result-pane">
+        <span style="font-size:12px; font-weight:800; color:#94A3B8; text-transform:uppercase;">Annual Value Realized</span>
+        <h1 id="totalSave" style="font-size:56px; color:#EA580C; margin:10px 0 30px;">$0</h1>
+        <div style="border-top:1px solid #334155; padding-top:20px; display:grid; gap:15px;">
+          <div style="display:flex; justify-content:space-between; color:#94A3B8;"><span>Downtime Avoided:</span><strong id="risk" style="color:white;">$0</strong></div>
+          <div style="display:flex; justify-content:space-between; color:#94A3B8;"><span>Logistics Savings:</span><strong id="freight" style="color:white;">$0</strong></div>
         </div>
       </div>
     </div>
@@ -46,33 +56,21 @@
 
 <script>
 function calculate() {
-  const spend = parseFloat(document.getElementById('spend').value);
-  const lateRate = parseFloat(document.getElementById('lateRate').value) / 100;
-  const stopCost = parseFloat(document.getElementById('lateCost').value);
+  const spend = parseFloat(document.getElementById('spend').value) || 0;
+  const pos = parseFloat(document.getElementById('pos').value) || 0;
+  const lateRate = (parseFloat(document.getElementById('lateRate').value) || 0) / 100;
+  const stopCost = parseFloat(document.getElementById('lateCost').value) || 0;
 
-  const riskSave = (lateRate * 12) * stopCost * 0.20; // 20% risk reduction
-  const freightSave = (spend * 0.05) * 0.15; // 15% expedite reduction
-  
+  // Real-world modeled logic
+  const riskSave = (lateRate * 12) * stopCost * 0.20; 
+  const freightSave = (spend * 0.05) * 0.15; 
   const total = riskSave + freightSave;
+
   document.getElementById('totalSave').innerText = "$" + Math.round(total).toLocaleString();
   document.getElementById('risk').innerText = "$" + Math.round(riskSave).toLocaleString();
   document.getElementById('freight').innerText = "$" + Math.round(freightSave).toLocaleString();
 }
 calculate();
 </script>
-<footer style="background:#0B1020; border-top:1px solid #334155; padding:40px 0;">
-  <div class="container" style="max-width:1200px; margin:0 auto; padding:0 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;">
-    <div style="display:flex; align-items:center; gap:10px;">
-      <div class="brand-mark" style="width:24px; height:24px; border-radius:4px;"></div>
-      <span style="color:#94A3B8; font-size:12px;">© 2026 Horaxis Enterprise Solutions</span>
-    </div>
-    <div style="display:flex; gap:24px; font-size:12px; font-weight:700; text-transform:uppercase;">
-      <a href="privacy.html" style="color:#64748B; text-decoration:none;">Privacy</a>
-      <a href="terms.html" style="color:#64748B; text-decoration:none;">Terms</a>
-      <a href="cookies.html" style="color:#64748B; text-decoration:none;">Cookies</a>
-      <a href="dpa.html" style="color:#64748B; text-decoration:none;">DPA</a>
-    </div>
-  </div>
-</footer>
 </body>
 </html>

@@ -3,69 +3,70 @@
 <head>
   <meta charset="utf-8"/><title>Pilot Proposal | Horaxis</title>
   <link rel="stylesheet" href="assets/css/styles.css"/>
+  <style>
+    .contact-card { max-width: 600px; margin: 0 auto; background: #1E293B; padding: 40px; border-radius: 4px; border-top: 4px solid #EA580C; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+    .form-group label { font-size: 11px; font-weight: 800; color: #94A3B8; text-transform: uppercase; }
+    .form-group input, .form-group textarea { padding: 14px; background: #0F172A; border: 1px solid #334155; color: white; border-radius: 4px; outline: none; }
+    .form-group input:focus { border-color: #EA580C; }
+  </style>
 </head>
-<body style="background:#0F172A; margin:0; font-family:Inter, sans-serif;">
-
-<header class="nav" style="border-bottom:1px solid #334155; background:rgba(15,23,42,0.9); backdrop-filter:blur(10px);">
-  <div class="container nav-inner" style="display:flex; align-items:center; justify-content:space-between; height:74px; max-width:1200px; margin:0 auto; padding:0 24px;">
-    <a href="index.html" style="display:flex; align-items:center; gap:12px; text-decoration:none;">
-      <div class="brand-mark"></div>
-      <div class="brand-text">HORAXIS<span>.</span></div>
-    </a>
-    <nav class="nav-links">
-        <a href="product.html" style="color:#94A3B8; margin-right:20px; text-decoration:none; font-size:14px;">Product</a>
-        <a href="security.html" style="color:#94A3B8; margin-right:20px; text-decoration:none; font-size:14px;">Security</a>
-        <a href="roi.html" style="color:#94A3B8; margin-right:20px; text-decoration:none; font-size:14px;">ROI Calculator</a>
-        <a href="contact.html" class="btn primary" style="background:#EA580C; color:white; padding:10px 18px; border-radius:4px; text-decoration:none; font-weight:700;">PILOT PROPOSAL</a>
-    </nav>
-  </div>
-</header>
+<body style="background:#0F172A; color:white; margin:0; font-family:Inter, sans-serif;">
 
 <section style="padding:80px 0;">
-  <div class="container" style="max-width:650px; margin:0 auto; padding:0 24px;">
-    <div style="background:#1E293B; border-radius:4px; border-top:4px solid #EA580C; padding:40px; box-shadow:0 20px 50px rgba(0,0,0,0.3);">
-      <h1 style="color:white; font-size:32px; margin:0 0 10px;">Request Pilot Proposal</h1>
-      <p style="color:#94A3B8; margin:0 0 32px;">Enterprise Infrastructure Assessment for High-Volume ERP Systems.</p>
-
-      <form id="pilotForm" style="display:grid; gap:20px;">
-        <div style="display:grid; gap:8px;">
-            <label style="color:#94A3B8; font-size:11px; font-weight:800; text-transform:uppercase;">Full Name</label>
-            <input type="text" name="name" required style="background:#0F172A; border:1px solid #334155; padding:14px; color:white; border-radius:4px;">
-        </div>
-        <div style="display:grid; gap:8px;">
-            <label style="color:#94A3B8; font-size:11px; font-weight:800; text-transform:uppercase;">Work Email</label>
-            <input type="email" name="email" required style="background:#0F172A; border:1px solid #334155; padding:14px; color:white; border-radius:4px;">
-        </div>
-        <div style="display:grid; gap:8px;">
-            <label style="color:#94A3B8; font-size:11px; font-weight:800; text-transform:uppercase;">Company</label>
-            <input type="text" name="company" required style="background:#0F172A; border:1px solid #334155; padding:14px; color:white; border-radius:4px;">
-        </div>
-        <div style="display:grid; gap:8px;">
-            <label style="color:#94A3B8; font-size:11px; font-weight:800; text-transform:uppercase;">Primary ERP (e.g. SAP S/4HANA)</label>
-            <input type="text" name="erp" required style="background:#0F172A; border:1px solid #334155; padding:14px; color:white; border-radius:4px;">
-        </div>
-        <div style="display:grid; gap:8px;">
-            <label style="color:#94A3B8; font-size:11px; font-weight:800; text-transform:uppercase;">Requirements</label>
-            <textarea name="message" style="background:#0F172A; border:1px solid #334155; padding:14px; color:white; border-radius:4px; height:120px;"></textarea>
-        </div>
-        <button type="submit" style="background:#EA580C; color:white; border:none; padding:16px; font-weight:900; border-radius:4px; cursor:pointer; text-transform:uppercase;">Submit Request</button>
+  <div class="container">
+    <div class="contact-card">
+      <h1 style="margin-top:0; font-size:32px; margin-bottom:10px;">Request Pilot Proposal</h1>
+      <p style="color:#94A3B8; margin-bottom:30px;">Submit your enterprise environment details for a formal assessment.</p>
+      
+      <form id="pilotForm">
+        <div class="form-group"><label>Full Name</label><input type="text" name="name" required></div>
+        <div class="form-group"><label>Work Email</label><input type="email" name="email" required></div>
+        <div class="form-group"><label>Company</label><input type="text" name="company" required></div>
+        <div class="form-group"><label>Primary ERP (e.g. SAP S/4HANA)</label><input type="text" name="erp" required></div>
+        <div class="form-group"><label>Requirements</label><textarea name="message" style="height:100px;"></textarea></div>
+        
+        <button type="submit" id="submitBtn" style="width:100%; padding:16px; background:#EA580C; color:white; font-weight:900; border:none; border-radius:4px; cursor:pointer; text-transform:uppercase;">Submit Request</button>
+        <p id="responseMsg" style="text-align:center; margin-top:15px; font-size:14px;"></p>
       </form>
     </div>
   </div>
 </section>
-<footer style="background:#0B1020; border-top:1px solid #334155; padding:40px 0;">
-  <div class="container" style="max-width:1200px; margin:0 auto; padding:0 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;">
-    <div style="display:flex; align-items:center; gap:10px;">
-      <div class="brand-mark" style="width:24px; height:24px; border-radius:4px;"></div>
-      <span style="color:#94A3B8; font-size:12px;">© 2026 Horaxis Enterprise Solutions</span>
-    </div>
-    <div style="display:flex; gap:24px; font-size:12px; font-weight:700; text-transform:uppercase;">
-      <a href="privacy.html" style="color:#64748B; text-decoration:none;">Privacy</a>
-      <a href="terms.html" style="color:#64748B; text-decoration:none;">Terms</a>
-      <a href="cookies.html" style="color:#64748B; text-decoration:none;">Cookies</a>
-      <a href="dpa.html" style="color:#64748B; text-decoration:none;">DPA</a>
-    </div>
-  </div>
-</footer>
+
+<script>
+document.getElementById('pilotForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  const msg = document.getElementById('responseMsg');
+  
+  btn.innerText = "Transmitting...";
+  btn.disabled = true;
+
+  const formData = new FormData(e.target);
+  const data = Object.fromEntries(formData.entries());
+
+  try {
+    const res = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    if (res.ok) {
+      msg.style.color = "#4ADE80";
+      msg.innerText = "Success. Proposal request received.";
+      e.target.reset();
+    } else {
+      throw new Error();
+    }
+  } catch (err) {
+    msg.style.color = "#F87171";
+    msg.innerText = "Error. Please email info@horaxis.com directly.";
+  } finally {
+    btn.innerText = "Submit Request";
+    btn.disabled = false;
+  }
+});
+</script>
 </body>
 </html>
