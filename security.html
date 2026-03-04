@@ -1,212 +1,53 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-
-  <title>ProcureAI by Horaxis — Security & Architecture</title>
-  <meta name="description" content="Run ProcureAI on-prem or in your VPC. Keep data inside your environment with TLS, RBAC, auditability, and SMTP under your control."/>
-  <link rel="canonical" href="https://horaxis.com/security.html"/>
-
-  <!-- Favicon -->
-  <link rel="icon" href="/assets/favicon/favicon.ico" sizes="any">
-  <link rel="icon" href="/assets/favicon/favicon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="/assets/favicon/apple-touch-icon.png">
-  <link rel="manifest" href="/assets/favicon/site.webmanifest">
-  <meta name="theme-color" content="#0b1020">
-
-  <!-- Social Preview -->
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="ProcureAI by Horaxis — Security & Architecture">
-  <meta property="og:description" content="Private deployment, TLS, SMTP under your control, and audit-ready governance.">
-  <meta property="og:url" content="https://horaxis.com/security.html">
-  <meta property="og:image" content="https://horaxis.com/assets/og/og-image.png">
-
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="ProcureAI by Horaxis — Security & Architecture">
-  <meta name="twitter:description" content="On-prem/VPC deployment. TLS. RBAC. Auditability.">
-  <meta name="twitter:image" content="https://horaxis.com/assets/og/og-image.png">
-
-  <!-- Fonts + CSS -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/styles.css"/>
-
-  <!-- Google tag (GDPR-safe, configure after consent) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-P2VVF0VXL9"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('consent', 'default', { analytics_storage:'denied', ad_storage:'denied', ad_user_data:'denied', ad_personalization:'denied' });
-    gtag('js', new Date());
-    window.__gaConfigured = false;
-    window.configureGA = function () {
-      if (window.__gaConfigured) return;
-      window.__gaConfigured = true;
-      gtag('config', 'G-P2VVF0VXL9', { anonymize_ip: true });
-    };
-  </script>
-
-  <style>#cookie-banner{display:none;}</style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Security & Compliance — ProcureAI</title>
+<link rel="stylesheet" href="assets/css/styles.css"/>
 </head>
 
 <body>
-  <header class="nav">
-    <div class="container nav-inner">
-      <a class="brand" href="index.html"><img src="assets/img/horaxis-logo.svg" alt="ProcureAI by Horaxis"/></a>
-      <nav class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="product.html">Product</a>
-        <a href="security.html" class="active">Security</a>
-        <a href="pricing.html">Pricing</a>
-        <a href="roi.html">ROI</a>
-	<a href="contact.html">Contact</a>
-        <a class="btn primary small" href="contact.html#demo">Request Demo</a>
-      </nav>
-    </div>
-  </header>
 
-  <section class="section" style="padding-top:46px;">
-    <div class="container">
-      <div class="kicker">Security &amp; Architecture</div>
-      <h1 class="h1" style="font-size:42px;">Enterprise deployment without compromises.</h1>
-      <p class="lede">Run ProcureAI on-prem or in your cloud, integrate with your ERP, and maintain strict governance.</p>
-    </div>
-  </section>
+<section class="section">
+<div class="container">
+<div class="card" style="padding:24px; line-height:1.9;">
 
-  <section class="section"><div class="container split">
-    <div class="card">
-      <div class="pill">Deployment</div>
-      <h2 style="margin:10px 0 8px;">Runs only in your environment</h2>
-      <p>
-        ProcureAI is deployed on the customer’s servers, VPC, or private cloud — not a shared multi-tenant runtime.
-        Your data stays on your infrastructure and follows your network/egress policies.
-      </p>
-      <div class="notice">Need an air-gapped install? We can support fully offline deployments.</div>
-    </div>
-    <div class="card screenshot"><img src="assets/screenshots/security-erp.png" alt="ERP integration screenshot"/></div>
-  </div></section>
+<h1>Security & Compliance</h1>
 
-  <section class="section"><div class="container split">
-    <div class="card screenshot"><img src="assets/screenshots/settings-ssl.png" alt="TLS/SSL settings screenshot"/></div>
-    <div class="card">
-      <div class="pill">Transport Security</div>
-      <h2 style="margin:10px 0 8px;">TLS everywhere</h2>
-      <p>Support for trusted certificates and standard secure configurations. Designed for auditability and security review.</p>
-      <ul style="color:var(--muted); line-height:1.9; margin:0; padding-left:18px;">
-        <li>Certificate management options</li>
-        <li>Secure headers and hardened defaults</li>
-        <li>Role-based access controls</li>
-      </ul>
-    </div>
-  </div></section>
+<h2>Infrastructure</h2>
+<p>
+ProcureAI runs on secure cloud infrastructure
+protected by Cloudflare edge security.
+</p>
 
-  <section class="section"><div class="container split">
-    <div class="card">
-      <div class="pill">Email / Notifications</div>
-      <h2 style="margin:10px 0 8px;">SMTP under your control</h2>
-      <p>Use your provider (Office 365, Gmail SMTP, SendGrid, etc.) so outbound messaging aligns with your policies.</p>
-      <ul style="color:var(--muted); line-height:1.9; margin:0; padding-left:18px;">
-        <li>Supplier update requests</li>
-        <li>High-risk delivery alerts</li>
-        <li>Password resets &amp; system notifications</li>
-      </ul>
-    </div>
-    <div class="card screenshot"><img src="assets/screenshots/settings-smtp.png" alt="SMTP settings screenshot"/></div>
-  </div></section>
+<h2>Data Protection</h2>
+<ul>
+<li>TLS encryption in transit</li>
+<li>Role-based access controls</li>
+<li>Segregated environments</li>
+<li>Audit logging</li>
+</ul>
 
-  <section class="section"><div class="container">
-    <div class="card" style="padding:18px;">
-      <h2 style="margin-top:0;">Security review checklist</h2>
-      <table class="table">
-        <thead><tr><th>Area</th><th>What you get</th></tr></thead>
-        <tbody>
-          <tr><td>Identity &amp; Access</td><td>Role-based permissions, admin controls, least-privilege design</td></tr>
-          <tr><td>Encryption</td><td>TLS in transit, secure secrets handling, certificate management support</td></tr>
-          <tr><td>Auditability</td><td>Action tracking, timestamps, and traceability for supplier updates &amp; changes</td></tr>
-          <tr><td>Deployment</td><td>On-prem/VPC options, private networking patterns</td></tr>
-        </tbody>
-      </table>
-      <div class="cta-row" style="margin-top:14px;">
-        <a class="btn primary" href="contact.html#demo">Talk to Us</a>
-        <a class="btn" href="product.html">Back to Product</a>
-      </div>
-    </div>
-  </div></section>
+<h2>Compliance</h2>
+<p>
+Designed to support GDPR-aligned data handling.
+Enterprise deployment options available (VPC / On-prem).
+</p>
 
-  <footer class="footer">
-    <div class="container footer-grid">
-      <div>
-        <div class="badge">Enterprise supply chain intelligence</div>
-        <p class="smallprint" style="margin-top:10px;">
-          ProcureAI helps operations teams anticipate constraints, protect customer commitments, and execute faster with
-          supplier collaboration + predictive risk.
-        </p>
+<h2>Operational Security</h2>
+<p>
+Access to production systems restricted to authorized personnel only.
+</p>
 
-        <div class="smallprint" style="margin-top:10px;">
-          <a href="privacy.html">Privacy</a> · <a href="cookies.html">Cookies</a>
-        </div>
+<h2>Contact Security Team</h2>
+<p>
+security@horaxis.com
+</p>
 
-        <div class="smallprint">© 2026 Horaxis. ProcureAI is a Horaxis product. All rights reserved.</div>
-      </div>
-      <div>
-        <div style="font-weight:900; margin-bottom:8px;">Contact</div>
-        <div style="display:grid; gap:6px;">
-          <a href="mailto:info@horaxis.com">info@horaxis.com</a>
-          <a href="mailto:demo@horaxis.com">demo@horaxis.com</a>
-          <a href="mailto:support@horaxis.com">support@horaxis.com</a>
-        </div>
-      </div>
-    </div>
-  </footer>
+</div>
+</div>
+</section>
 
-  <script src="assets/js/main.js"></script>
-
-  <!-- Cookie Banner -->
-  <div id="cookie-banner" style="
-position:fixed;
-bottom:0;
-left:0;
-right:0;
-background:#0f172a;
-color:white;
-padding:14px;
-text-align:center;
-z-index:99999;
-box-shadow:0 -6px 20px rgba(0,0,0,.4);
-">
-    We use analytics to improve ProcureAI. See <a href="privacy.html" style="text-decoration:underline;">Privacy</a> and <a href="cookies.html" style="text-decoration:underline;">Cookies</a>.
-    <button id="cookie-accept" style="margin-left:12px;padding:6px 14px;border-radius:6px;background:#2563eb;color:white;border:none;cursor:pointer;">Accept</button>
-    <button id="cookie-reject" style="margin-left:8px;padding:6px 14px;border-radius:6px;background:rgba(255,255,255,.08);color:white;border:1px solid rgba(255,255,255,.18);cursor:pointer;">Reject</button>
-  </div>
-
-  <script>
-    (function () {
-      function grantAnalytics() {
-        if (typeof gtag === 'function') gtag('consent', 'update', { analytics_storage: 'granted' });
-        if (typeof window.configureGA === 'function') window.configureGA();
-      }
-      function denyAnalytics() {
-        if (typeof gtag === 'function') gtag('consent', 'update', { analytics_storage: 'denied' });
-      }
-
-      var banner = document.getElementById('cookie-banner');
-      var acceptBtn = document.getElementById('cookie-accept');
-      var rejectBtn = document.getElementById('cookie-reject');
-      var consent = localStorage.getItem('cookieConsent');
-
-      if (consent === 'accepted') { grantAnalytics(); if (banner) banner.style.display = 'none'; }
-      else if (consent === 'rejected') { denyAnalytics(); if (banner) banner.style.display = 'none'; }
-      else { if (banner) banner.style.display = 'block'; }
-
-      if (acceptBtn) acceptBtn.addEventListener('click', function () {
-        localStorage.setItem('cookieConsent', 'accepted'); grantAnalytics(); if (banner) banner.style.display = 'none';
-      });
-      if (rejectBtn) rejectBtn.addEventListener('click', function () {
-        localStorage.setItem('cookieConsent', 'rejected'); denyAnalytics(); if (banner) banner.style.display = 'none';
-      });
-    })();
-  </script>
 </body>
 </html>
