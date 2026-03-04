@@ -105,7 +105,17 @@ export const onRequest = async (context) => {
   });
 
   const pdfBytes = await pdfDoc.save();
-  const pdfBase64 = Buffer.from(pdfBytes).toString('base64');
+  function arrayBufferToBase64(buffer) {
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  const len = bytes.byteLength;
+  for (let i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+}
+
+const pdfBase64 = arrayBufferToBase64(pdfBytes);
 
   // ===============================
   // SEND EMAIL VIA RESEND
