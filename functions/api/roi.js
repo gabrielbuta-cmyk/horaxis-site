@@ -10,6 +10,7 @@ function json(data, status = 200) {
 }
 
 export const onRequest = async (context) => {
+  try {
   const { request, env } = context;
 
   if (request.method !== "POST") {
@@ -115,7 +116,7 @@ export const onRequest = async (context) => {
   return btoa(binary);
 }
 
-const pdfBase64 = arrayBufferToBase64(pdfBytes);
+const pdfBase64 = arrayBufferToBase64(pdfBytes);	
 
   // ===============================
   // SEND EMAIL VIA RESEND
@@ -167,4 +168,12 @@ const pdfBase64 = arrayBufferToBase64(pdfBytes);
   }
 
   return json({ ok: true, totalSavings });
+  } catch (err) {
+    console.error("ROI ERROR:", err);
+    return new Response(JSON.stringify({ ok:false, error: String(err) }), {
+      status: 500,
+      headers: { "content-type":"application/json" }
+    });
+  }
+};
 };
