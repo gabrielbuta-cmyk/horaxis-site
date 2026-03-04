@@ -74,7 +74,11 @@ export const onRequest = async (context) => {
   const net3Year = threeYearValue - threeYearInvestment;
 
   // ---------------- PDF GENERATION ----------------
-
+// FETCH LOGO FROM LIVE SITE
+const logoUrl = "https://horaxis.com/assets/img/horaxis-logo.png";
+const logoResponse = await fetch(logoUrl);
+const logoBytes = await logoResponse.arrayBuffer();
+const logoImage = await pdfDoc.embedPng(logoBytes);
 const pdfDoc = await PDFDocument.create();
 const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
@@ -107,7 +111,13 @@ page.drawRectangle({
   height,
   color: rgb(0.06, 0.09, 0.16),
 });
-
+const logoDims = logoImage.scale(0.4);
+page.drawImage(logoImage, {
+  x: 50,
+  y: height - 90,
+  width: logoDims.width,
+  height: logoDims.height,
+});
 page.drawText("ProcureAI", {
   x: 50,
   y: height - 100,
@@ -150,6 +160,12 @@ page.drawText("Projected Annual Value Creation", {
 
 // EXECUTIVE SUMMARY
 page = pdfDoc.addPage();
+age.drawImage(logoImage, {
+  x: 50,
+  y: height - 70,
+  width: 120,
+  height: 30,
+});
 height = page.getSize().height;
 
 page.drawText("Executive Financial Summary", {
@@ -175,6 +191,12 @@ footer(page);
 
 // VALUE BREAKDOWN
 page = pdfDoc.addPage();
+age.drawImage(logoImage, {
+  x: 50,
+  y: height - 70,
+  width: 120,
+  height: 30,
+});
 height = page.getSize().height;
 
 page.drawText("Annual Value Breakdown", {
@@ -206,6 +228,12 @@ footer(page);
 
 // 3 YEAR STRATEGIC VIEW
 page = pdfDoc.addPage();
+age.drawImage(logoImage, {
+  x: 50,
+  y: height - 70,
+  width: 120,
+  height: 30,
+});
 height = page.getSize().height;
 
 page.drawText("3-Year Strategic Capital Projection", {
