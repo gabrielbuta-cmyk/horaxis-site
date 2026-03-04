@@ -7,6 +7,17 @@ function json(data, status = 200) {
   });
 }
 
+// ✅ WORKERS SAFE BASE64 CONVERTER
+function arrayBufferToBase64(buffer) {
+  let binary = "";
+  const bytes = new Uint8Array(buffer);
+  const len = bytes.byteLength;
+  for (let i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+}
+
 export const onRequest = async (context) => {
   const { request, env } = context;
 
@@ -26,20 +37,18 @@ export const onRequest = async (context) => {
   const scenario = data.scenario || "base";
   const email = data.email;
 
-  let deliveryFactor, automationFactor, riskFactor, wcFactor;
+  if (!email) return json({ ok: false }, 400);
+
+  let deliveryFactor = 0.3;
+  let automationFactor = 0.6;
+  let riskFactor = 0.02;
+  let wcFactor = 0.10;
 
   if (scenario === "conservative") {
     deliveryFactor = 0.20;
     automationFactor = 0.40;
     riskFactor = 0.01;
     wcFactor = 0.05;
-  }
-
-  if (scenario === "base") {
-    deliveryFactor = 0.30;
-    automationFactor = 0.60;
-    riskFactor = 0.02;
-    wcFactor = 0.10;
   }
 
   if (scenario === "optimistic") {
@@ -50,7 +59,6 @@ export const onRequest = async (context) => {
   }
 
   const latePOs = pos * lateRate;
-
   const deliverySave = latePOs * lateCost * deliveryFactor;
   const processSave = hours * rate * 52 * automationFactor;
   const riskSave = spend * lateRate * riskFactor;
@@ -65,14 +73,13 @@ export const onRequest = async (context) => {
   const threeYearInvestment = platformCost * 3;
   const net3Year = threeYearValue - threeYearInvestment;
 
-  // ----------- CREATE PDF --------------
+  // ---------------- PDF GENERATION ----------------
 
   const pdfDoc = await PDFDocument.create();
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-  function addFooter(page) {
-    const { width } = page.getSize();
+  function footer(page) {
     page.drawText("CONFIDENTIAL – ProcureAI Board Financial Assessment", {
       x: 40,
       y: 30,
@@ -82,118 +89,80 @@ export const onRequest = async (context) => {
     });
   }
 
-  // COVER PAGE
   let page = pdfDoc.addPage();
-  let { width, height } = page.getSize();
+  let { height } = page.getSize();
 
-  page.drawText("ProcureAI", {
+  page.drawText("ProcureAI Board Financial Impact Report", {
     x: 50,
     y: height - 80,
-    size: 28,
+    size: 22,
     font: bold,
-  });
-
-  page.drawText("Board-Level Financial Impact Report", {
-    x: 50,
-    y: height - 120,
-    size: 18,
-    font,
   });
 
   page.drawText(`Scenario: ${scenario.toUpperCase()}`, {
     x: 50,
-    y: height - 150,
+    y: height - 120,
     size: 12,
     font,
   });
 
   page.drawText(`Projected Annual Value: €${Math.round(total).toLocaleString()}`, {
     x: 50,
-    y: height - 200,
+    y: height - 160,
     size: 16,
     font: bold,
   });
 
-  addFooter(page);
+  footer(page);
 
-  // EXECUTIVE SUMMARY PAGE
+  // PAGE 2 – EXECUTIVE SUMMARY
   page = pdfDoc.addPage();
   height = page.getSize().height;
 
   page.drawText("Executive Summary", { x: 50, y: height - 60, size: 18, font: bold });
 
-  const summaryLines = [
+  let y = height - 100;
+
+  [
     `Annual Value Creation: €${Math.round(total).toLocaleString()}`,
     `Annual Platform Investment: €${Math.round(platformCost).toLocaleString()}`,
     `ROI Multiple: ${roi.toFixed(1)}x`,
     `Capital Payback Period: ${Math.ceil(paybackMonths)} months`,
     "",
-    "ProcureAI transforms procurement from reactive cost center",
-    "into predictive margin protection and resilience engine.",
-  ];
-
-  let y = height - 100;
-  summaryLines.forEach(line => {
+    "ProcureAI enables predictive margin protection,",
+    "supplier risk visibility, and capital efficiency."
+  ].forEach(line => {
     page.drawText(line, { x: 50, y, size: 12, font });
     y -= 18;
   });
 
-  addFooter(page);
+  footer(page);
 
-  // FINANCIAL BREAKDOWN
-  page = pdfDoc.addPage();
-  height = page.getSize().height;
-
-  page.drawText("Annual Value Breakdown", { x: 50, y: height - 60, size: 18, font: bold });
-
-  const breakdown = [
-    ["Delivery Performance Gains", deliverySave],
-    ["Operational Automation", processSave],
-    ["Risk Mitigation", riskSave],
-    ["Working Capital Optimization", workingCapitalSave],
-  ];
-
-  y = height - 100;
-  breakdown.forEach(item => {
-    page.drawText(item[0], { x: 50, y, size: 12, font });
-    page.drawText(`€${Math.round(item[1]).toLocaleString()}`, {
-      x: 400,
-      y,
-      size: 12,
-      font,
-    });
-    y -= 20;
-  });
-
-  addFooter(page);
-
-  // 3 YEAR PROJECTION
+  // PAGE 3 – 3 YEAR PROJECTION
   page = pdfDoc.addPage();
   height = page.getSize().height;
 
   page.drawText("3-Year Strategic Projection", { x: 50, y: height - 60, size: 18, font: bold });
 
-  const projectionLines = [
+  y = height - 100;
+
+  [
     `Total 3-Year Value: €${Math.round(threeYearValue).toLocaleString()}`,
     `Total 3-Year Investment: €${Math.round(threeYearInvestment).toLocaleString()}`,
-    `Net Financial Contribution (3 Years): €${Math.round(net3Year).toLocaleString()}`,
-    "",
-    "ProcureAI positions procurement as a long-term margin",
-    "protection and capital efficiency lever.",
-  ];
-
-  y = height - 100;
-  projectionLines.forEach(line => {
+    `Net Contribution: €${Math.round(net3Year).toLocaleString()}`,
+  ].forEach(line => {
     page.drawText(line, { x: 50, y, size: 12, font });
     y -= 18;
   });
 
-  addFooter(page);
+  footer(page);
 
   const pdfBytes = await pdfDoc.save();
-  const pdfBase64 = Buffer.from(pdfBytes).toString("base64");
 
-  // ---------- SEND EMAIL ------------
+  // ✅ SAFE BASE64 CONVERSION
+  const pdfBase64 = arrayBufferToBase64(pdfBytes);
+
+  // ---------------- EMAIL ----------------
 
   const resendResponse = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -207,16 +176,16 @@ export const onRequest = async (context) => {
       subject: "ProcureAI Board Financial Impact Report",
       html: `
         <div style="font-family:Arial;padding:30px;background:#f8fafc">
-          <h2>ProcureAI Board-Level Financial Assessment</h2>
-          <p>Projected Annual Value: <strong>€${Math.round(total).toLocaleString()}</strong></p>
-          <p>ROI: <strong>${roi.toFixed(1)}x</strong></p>
-          <p>Payback: <strong>${Math.ceil(paybackMonths)} months</strong></p>
-          <p>The full executive PDF report is attached.</p>
+          <h2>ProcureAI Board Financial Assessment</h2>
+          <p><strong>Projected Annual Value:</strong> €${Math.round(total).toLocaleString()}</p>
+          <p><strong>ROI:</strong> ${roi.toFixed(1)}x</p>
+          <p><strong>Payback:</strong> ${Math.ceil(paybackMonths)} months</p>
+          <p>The full executive report is attached as PDF.</p>
         </div>
       `,
       attachments: [
         {
-          filename: "ProcureAI_Board_Financial_Report.pdf",
+          filename: "ProcureAI_Board_Report.pdf",
           content: pdfBase64,
           type: "application/pdf",
         },
@@ -225,6 +194,8 @@ export const onRequest = async (context) => {
   });
 
   if (!resendResponse.ok) {
+    const err = await resendResponse.text();
+    console.log(err);
     return json({ ok: false }, 500);
   }
 
