@@ -1,47 +1,43 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<title>ROI Assessment | Horaxis Enterprise</title>
-<link rel="stylesheet" href="assets/css/styles.css"/>
+  <meta charset="utf-8"/><title>ROI Assessment | Horaxis</title>
+  <link rel="stylesheet" href="assets/css/styles.css"/>
 </head>
 <body>
-
-<header class="nav">
-  <div class="container nav-inner">
-    <a href="index.html" style="font-weight:900; font-size:24px; color:white; text-decoration:none;">HORAXIS.</a>
-  </div>
-</header>
-
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="index.html" class="brand" style="display:flex; align-items:center; gap:12px; text-decoration:none;">
+        <img src="assets/img/horaxis-logo.svg" alt="Horaxis" style="height:34px;">
+        <span style="font-weight:900; font-size:22px; color:white; letter-spacing:-0.05em;">HORAXIS<span style="color:var(--orange)">.</span></span>
+      </a>
+      <nav class="nav-links">
+        <a href="product.html">Product</a>
+        <a href="security.html">Security</a>
+        <a href="roi.html">ROI Calculator</a>
+        <a href="contact.html" class="btn primary" style="padding:8px 16px; margin-left:20px;">Pilot Proposal</a>
+      </nav>
+    </div>
+  </header>
 <section class="section">
   <div class="container">
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:40px;">
-      <div class="card">
-        <h2 style="margin-top:0;">Input Operational Scale</h2>
-        <label>Annual Material Spend ($)</label>
-        <input type="number" id="spend" value="50000000" style="width:100%; padding:12px; margin:8px 0 20px; background:#0f172a; border:1px solid #334155; color:white;">
-        
-        <label>Active PO Line Items</label>
-        <input type="number" id="pos" value="10000" style="width:100%; padding:12px; margin:8px 0 20px; background:#0f172a; border:1px solid #334155; color:white;">
-        
-        <button onclick="calculate()" class="btn primary" style="width:100%;">Calculate Value Realization</button>
+    <div class="card" style="display:grid; grid-template-columns: 1.2fr 0.8fr; gap:40px;">
+      <div>
+        <h2 style="margin-top:0;">Industrial Business Case</h2>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+          <div class="field"><label>Annual Material Spend ($)</label><input type="number" id="spend" value="50000000"></div>
+          <div class="field"><label>Annual PO Lines</label><input type="number" id="pos" value="10000"></div>
+          <div class="field"><label>Current Late Rate (%)</label><input type="number" id="lateRate" value="15"></div>
+          <div class="field"><label>Cost Per Line Stop ($/hr)</label><input type="number" id="lateCost" value="22000"></div>
+        </div>
+        <button onclick="calculate()" class="btn primary" style="width:100%; margin-top:20px;">Update Economic Impact</button>
       </div>
-
-      <div class="card" style="border-left: 4px solid var(--orange);">
-        <p class="kpi-label">Projected Annual Savings</p>
-        <h1 id="total" class="kpi-num">$0</h1>
-        <hr style="border:0; border-top:1px solid var(--border); margin:20px 0;">
-        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-          <span>Production Downtime Avoided</span>
-          <strong id="downtime">$0</strong>
-        </div>
-        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-          <span>Expedited Freight Reduction</span>
-          <strong id="freight">$0</strong>
-        </div>
-        <div style="display:flex; justify-content:space-between;">
-          <span>Planner Capacity Gained</span>
-          <strong id="labor">$0</strong>
+      <div style="background:var(--bg); padding:30px; border-radius:4px; border-left:4px solid var(--orange);">
+        <p class="kpi-label">Annual Value Realized</p>
+        <h1 id="totalSave" class="kpi-num" style="font-size:48px;">$0</h1>
+        <div style="margin-top:20px; font-size:14px; color:var(--muted);">
+          <p>• Downtime Avoided: <span id="risk" style="color:white; font-weight:bold;">$0</span></p>
+          <p>• Logistics Savings: <span id="freight" style="color:white; font-weight:bold;">$0</span></p>
         </div>
       </div>
     </div>
@@ -51,24 +47,33 @@
 <script>
 function calculate() {
   const spend = parseFloat(document.getElementById('spend').value);
-  const pos = parseInt(document.getElementById('pos').value);
+  const lateRate = parseFloat(document.getElementById('lateRate').value) / 100;
+  const stopCost = parseFloat(document.getElementById('lateCost').value);
 
-  // Enterprise Industrial Constants
-  const HOURLY_DOWNTIME_COST = 22000; 
-
-  const downtimeVal = 12 * HOURLY_DOWNTIME_COST; // Assume 12 hours/year protected
-  const freightVal = (spend * 0.05) * 0.15; // 15% reduction in expedite spend
-  const laborVal = ((pos * 10) / 60) * 55; // 10 mins saved/PO * $55/hr
-
-  const total = downtimeVal + freightVal + laborVal;
-
-  document.getElementById('total').innerText = "$" + Math.round(total).toLocaleString();
-  document.getElementById('downtime').innerText = "$" + Math.round(downtimeVal).toLocaleString();
-  document.getElementById('freight').innerText = "$" + Math.round(freightVal).toLocaleString();
-  document.getElementById('labor').innerText = "$" + Math.round(laborVal).toLocaleString();
+  const riskSave = (lateRate * 12) * stopCost * 0.20; // 20% risk reduction
+  const freightSave = (spend * 0.05) * 0.15; // 15% expedite reduction
+  
+  const total = riskSave + freightSave;
+  document.getElementById('totalSave').innerText = "$" + Math.round(total).toLocaleString();
+  document.getElementById('risk').innerText = "$" + Math.round(riskSave).toLocaleString();
+  document.getElementById('freight').innerText = "$" + Math.round(freightSave).toLocaleString();
 }
-// Run on load
 calculate();
 </script>
+<footer class="footer">
+    <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <img src="assets/img/horaxis-logo.svg" alt="Horaxis" style="height:20px; opacity:0.6;">
+        <span style="font-size:12px; color:var(--muted);">© 2026 Horaxis Enterprise Solutions</span>
+      </div>
+      <div style="display:flex; gap:20px; font-size:12px; font-weight:700; text-transform:uppercase;">
+        <a href="privacy.html" style="color:var(--muted); text-decoration:none;">Privacy</a>
+        <a href="terms.html" style="color:var(--muted); text-decoration:none;">Terms</a>
+        <a href="cookies.html" style="color:var(--muted); text-decoration:none;">Cookies</a>
+        <a href="dpa.html" style="color:var(--muted); text-decoration:none;">DPA</a>
+      </div>
+    </div>
+  </footer>
+
 </body>
 </html>

@@ -1,46 +1,83 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<title>Request Pilot Proposal | Horaxis</title>
-<link rel="stylesheet" href="assets/css/styles.css"/>
+  <meta charset="utf-8"/><title>Pilot Proposal | Horaxis</title>
+  <link rel="stylesheet" href="assets/css/styles.css"/>
 </head>
 <body>
-<header class="nav">
-  <div class="container nav-inner">
-    <a href="index.html" style="font-weight:900; font-size:24px; color:white; text-decoration:none;">HORAXIS.</a>
-  </div>
-</header>
-
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="index.html" class="brand" style="display:flex; align-items:center; gap:12px; text-decoration:none;">
+        <img src="assets/img/horaxis-logo.svg" alt="Horaxis" style="height:34px;">
+        <span style="font-weight:900; font-size:22px; color:white; letter-spacing:-0.05em;">HORAXIS<span style="color:var(--orange)">.</span></span>
+      </a>
+      <nav class="nav-links">
+        <a href="product.html">Product</a>
+        <a href="security.html">Security</a>
+        <a href="roi.html">ROI Calculator</a>
+        <a href="contact.html" class="btn primary" style="padding:8px 16px; margin-left:20px;">Pilot Proposal</a>
+      </nav>
+    </div>
+  </header>
 <section class="section">
-  <div class="container" style="max-width:700px;">
+  <div class="container" style="max-width:600px;">
     <div class="card">
-      <h1 style="margin-top:0; font-size:32px;">Request a Pilot Proposal</h1>
-      <p style="color:var(--muted); margin-bottom:30px;">For Tier-1 Enterprise deployments. Our team will review your ERP architecture and provide a custom implementation roadmap within 1 business day.</p>
-      
-      <form>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-          <div>
-            <label>Name</label>
-            <input type="text" style="width:100%; padding:12px; margin-top:8px; background:#0f172a; border:1px solid #334155; color:white;">
-          </div>
-          <div>
-            <label>Work Email</label>
-            <input type="email" style="width:100%; padding:12px; margin-top:8px; background:#0f172a; border:1px solid #334155; color:white;">
-          </div>
-        </div>
-        <div style="margin-top:20px;">
-          <label>Primary ERP System (e.g., SAP S/4HANA)</label>
-          <input type="text" style="width:100%; padding:12px; margin-top:8px; background:#0f172a; border:1px solid #334155; color:white;">
-        </div>
-        <div style="margin-top:20px;">
-          <label>Message / Success Criteria</label>
-          <textarea style="width:100%; height:100px; padding:12px; margin-top:8px; background:#0f172a; border:1px solid #334155; color:white;"></textarea>
-        </div>
-        <button type="submit" class="btn primary" style="width:100%; margin-top:30px;">Submit Proposal Request</button>
+      <h1>Request Pilot Proposal</h1>
+      <form id="pilotForm">
+        <div class="field"><label>Full Name</label><input type="text" name="name" required></div>
+        <div class="field"><label>Work Email</label><input type="email" name="email" required></div>
+        <div class="field"><label>Company</label><input type="text" name="company" required></div>
+        <div class="field"><label>Primary ERP (e.g. SAP S/4HANA)</label><input type="text" name="erp" required></div>
+        <div class="field"><label>Requirements</label><textarea name="message" style="width:100%; height:100px; background:var(--bg); border:1px solid var(--border); color:white;"></textarea></div>
+        <button type="submit" class="btn primary" style="width:100%; margin-top:20px;" id="sendBtn">Submit Request</button>
+        <p id="formStatus" style="margin-top:15px; text-align:center; font-size:14px;"></p>
       </form>
     </div>
   </div>
 </section>
+
+<script>
+document.getElementById('pilotForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('sendBtn');
+  const status = document.getElementById('formStatus');
+  btn.disabled = true;
+  status.innerText = "Transmitting to Secure Vault...";
+
+  const formData = new FormData(e.target);
+  const payload = Object.fromEntries(formData.entries());
+
+  try {
+    const res = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) {
+      status.style.color = "#4ADE80";
+      status.innerText = "Proposal Request Sent. We will respond within 24 hours.";
+      e.target.reset();
+    } else { throw new Error(); }
+  } catch (err) {
+    status.style.color = "#F87171";
+    status.innerText = "Transmission failed. Please email info@horaxis.com directly.";
+  } finally { btn.disabled = false; }
+});
+</script>
+<footer class="footer">
+    <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <img src="assets/img/horaxis-logo.svg" alt="Horaxis" style="height:20px; opacity:0.6;">
+        <span style="font-size:12px; color:var(--muted);">© 2026 Horaxis Enterprise Solutions</span>
+      </div>
+      <div style="display:flex; gap:20px; font-size:12px; font-weight:700; text-transform:uppercase;">
+        <a href="privacy.html" style="color:var(--muted); text-decoration:none;">Privacy</a>
+        <a href="terms.html" style="color:var(--muted); text-decoration:none;">Terms</a>
+        <a href="cookies.html" style="color:var(--muted); text-decoration:none;">Cookies</a>
+        <a href="dpa.html" style="color:var(--muted); text-decoration:none;">DPA</a>
+      </div>
+    </div>
+  </footer>
+
 </body>
 </html>

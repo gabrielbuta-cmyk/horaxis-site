@@ -8,19 +8,20 @@
   <link rel="stylesheet" href="assets/css/styles.css"/>
 </head>
 <body>
-
-<header class="nav">
-  <div class="container nav-inner">
-    <a href="index.html" style="font-weight:900; font-size:24px; color:white; text-decoration:none;">HORAXIS<span style="color:var(--orange)">.</span></a>
-    <nav class="nav-links">
-      <a href="product.html" style="color:var(--orange)">Product</a>
-      <a href="security.html">Security</a>
-      <a href="roi.html">ROI Calculator</a>
-      <a href="contact.html" class="btn primary" style="padding:8px 16px; margin-left:20px;">Pilot Proposal</a>
-    </nav>
-  </div>
-</header>
-
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="index.html" class="brand" style="display:flex; align-items:center; gap:12px; text-decoration:none;">
+        <img src="assets/img/horaxis-logo.svg" alt="Horaxis" style="height:34px;">
+        <span style="font-weight:900; font-size:22px; color:white; letter-spacing:-0.05em;">HORAXIS<span style="color:var(--orange)">.</span></span>
+      </a>
+      <nav class="nav-links">
+        <a href="product.html">Product</a>
+        <a href="security.html">Security</a>
+        <a href="roi.html">ROI Calculator</a>
+        <a href="contact.html" class="btn primary" style="padding:8px 16px; margin-left:20px;">Pilot Proposal</a>
+      </nav>
+    </div>
+  </header>
 <section style="padding:100px 0 60px;">
   <div class="container">
     <div style="max-width:800px; margin-bottom:80px;">
@@ -92,15 +93,19 @@
 </section>
 
 <footer class="footer">
-  <div class="container" style="display:flex; justify-content:space-between; color:var(--muted); font-size:12px;">
-    <div>© 2026 Horaxis — ProcureAI Enterprise Platform</div>
-    <div>
-      <a href="privacy.html" style="color:inherit; margin-left:15px;">Privacy</a>
-      <a href="security.html" style="color:inherit; margin-left:15px;">Security</a>
-      <a href="terms.html" style="color:inherit; margin-left:15px;">Terms</a>
+    <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <img src="assets/img/horaxis-logo.svg" alt="Horaxis" style="height:20px; opacity:0.6;">
+        <span style="font-size:12px; color:var(--muted);">© 2026 Horaxis Enterprise Solutions</span>
+      </div>
+      <div style="display:flex; gap:20px; font-size:12px; font-weight:700; text-transform:uppercase;">
+        <a href="privacy.html" style="color:var(--muted); text-decoration:none;">Privacy</a>
+        <a href="terms.html" style="color:var(--muted); text-decoration:none;">Terms</a>
+        <a href="cookies.html" style="color:var(--muted); text-decoration:none;">Cookies</a>
+        <a href="dpa.html" style="color:var(--muted); text-decoration:none;">DPA</a>
+      </div>
     </div>
-  </div>
-</footer>
+  </footer>
 
 </body>
 </html>
