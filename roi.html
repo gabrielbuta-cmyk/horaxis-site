@@ -6,25 +6,20 @@
 <title>ProcureAI — Enterprise ROI Calculator</title>
 <link rel="stylesheet" href="assets/css/styles.css"/>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
 <style>
 .roi-hero{padding:60px 0 30px;text-align:center}
 .roi-hero h1{font-size:42px;margin-bottom:12px}
 .roi-hero p{color:var(--muted);font-size:18px}
 .roi-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:30px}
 .roi-card{padding:22px}
-.roi-results{background:linear-gradient(135deg,#0f172a,#1e3a8a);padding:28px;border-radius:18px}
-.roi-results h2{color:#93c5fd;margin-bottom:20px}
+.roi-results{background:linear-gradient(135deg,#0f172a,#1e3a8a);padding:28px;border-radius:18px;color:white}
 .metric{margin-bottom:18px}
 .metric .value{font-size:26px;font-weight:900}
-.metric .label{font-size:13px;color:#94a3b8}
+.metric .label{font-size:13px;color:#cbd5e1}
 .big-roi{font-size:40px;font-weight:900;color:#4ade80}
 .summary{background:rgba(255,255,255,.08);padding:18px;border-radius:12px;margin-top:20px}
-.summary h3{color:#93c5fd;margin-bottom:8px}
 .cta-box{margin-top:20px;text-align:center}
 input{width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;margin-bottom:12px}
-button{cursor:pointer}
 @media(max-width:900px){.roi-grid{grid-template-columns:1fr}}
 </style>
 </head>
@@ -32,28 +27,40 @@ button{cursor:pointer}
 <body>
 
 <header class="nav">
-  <div class="container nav-inner">
-    <a class="brand" href="index.html">
-      <img src="assets/img/horaxis-logo.svg" alt="Horaxis"/>
-    </a>
-    <nav class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="product.html">Product</a>
-      <a href="contact.html">Contact</a>
-    </nav>
-  </div>
+<div class="container nav-inner">
+<a class="brand" href="index.html">
+<img src="assets/img/horaxis-logo.svg" alt="Horaxis"/>
+</a>
+<nav class="nav-links">
+<a href="index.html">Home</a>
+<a href="product.html">Product</a>
+<a href="contact.html">Contact</a>
+</nav>
+</div>
 </header>
 
 <section class="roi-hero container">
-  <h1>ProcureAI ROI Calculator</h1>
-  <p>Quantify the financial impact of predictive procurement intelligence.</p>
+<h1>ProcureAI Executive ROI Calculator</h1>
+<p>Quantify the financial impact of predictive procurement intelligence.</p>
 </section>
 
 <section class="container section">
 <div class="roi-grid">
 
 <div class="card roi-card">
-<h2>Current Procurement Profile</h2>
+
+<h2>Your Profile</h2>
+
+<label>Name</label>
+<input id="leadName">
+
+<label>Company</label>
+<input id="leadCompany">
+
+<label>Email</label>
+<input id="leadEmail">
+
+<hr style="margin:20px 0">
 
 <label>Annual Procurement Spend (€)</label>
 <input id="spend" value="50000000" oninput="calc()">
@@ -61,19 +68,19 @@ button{cursor:pointer}
 <label>Active Purchase Orders</label>
 <input id="pos" value="500" oninput="calc()">
 
-<label>Current Late Delivery Rate (%)</label>
+<label>Late Delivery Rate (%)</label>
 <input id="lateRate" value="25" oninput="calc()">
 
 <label>Average Cost per Late Delivery (€)</label>
 <input id="lateCost" value="5000" oninput="calc()">
 
-<label>Manual Supplier Follow-up Hours / Week</label>
+<label>Manual Follow-up Hours / Week</label>
 <input id="hours" value="30" oninput="calc()">
 
-<label>Average Hourly Cost (€)</label>
+<label>Hourly Cost (€)</label>
 <input id="rate" value="45" oninput="calc()">
 
-<label>Number of Suppliers</label>
+<label>Suppliers</label>
 <input id="suppliers" value="100" oninput="calc()">
 
 </div>
@@ -84,12 +91,12 @@ button{cursor:pointer}
 
 <div class="metric">
 <div class="value" id="totalSave">€0</div>
-<div class="label">Total Estimated Annual Savings</div>
+<div class="label">Total Estimated Annual Value</div>
 </div>
 
 <div class="metric">
 <div class="value" id="platformCost">€0</div>
-<div class="label">Estimated Annual Platform Cost</div>
+<div class="label">Estimated Platform Investment</div>
 </div>
 
 <div class="metric">
@@ -102,20 +109,16 @@ button{cursor:pointer}
 <div class="label">Estimated Payback Period</div>
 </div>
 
-<div class="summary" id="summaryBox">
+<div class="summary">
 <h3>Executive Insight</h3>
 <p id="summaryText"></p>
 </div>
 
 <div class="cta-box">
-<button class="btn primary" onclick="downloadPDF()">Download ROI Report (PDF)</button>
-<br><br>
-<input placeholder="Your Email" id="leadEmail">
-<button class="btn" onclick="emailReport()">Email Me This Report</button>
+<button class="btn primary" onclick="emailReport()">Email Executive Report</button>
 </div>
 
 </div>
-
 </div>
 </section>
 
@@ -126,10 +129,13 @@ button{cursor:pointer}
 <script>
 function num(v){return parseFloat(v)||0}
 function fmt(n){return "€"+Math.round(n).toLocaleString("en")}
+function val(id){return document.getElementById(id).value}
+
 let lastData={}
 
 function calc(){
-const spend=num(spendInput())
+
+const spend=num(val("spend"))
 const pos=num(val("pos"))
 const lateRate=num(val("lateRate"))/100
 const lateCost=num(val("lateCost"))
@@ -139,6 +145,7 @@ const suppliers=num(val("suppliers"))
 
 const annualPOs=pos*12
 const latePOs=annualPOs*lateRate
+
 const lateSave=latePOs*lateCost*0.30
 const laborSave=hours*rate*52*0.60
 const riskSave=spend*lateRate*0.02
@@ -155,112 +162,44 @@ document.getElementById("roi").textContent=roi.toFixed(1)+"x"
 document.getElementById("payback").textContent=
 payback<1?"< 1 month":Math.ceil(payback)+" months"
 
-generateSummary(total,roi,payback)
+document.getElementById("summaryText").textContent=
+roi>5?
+"ProcureAI delivers transformational enterprise impact with rapid payback and significant operational leverage.":
+roi>2?
+"ProcureAI produces strong financial justification and measurable operational uplift.":
+"Even under conservative assumptions, ProcureAI improves resilience and procurement control."
 
-lastData={total,roi,payback}
-
-if(window.gtag){
-gtag("event","roi_calculated",{value:total})
-}
-}
-
-function val(id){return document.getElementById(id).value}
-function spendInput(){return document.getElementById("spend").value}
-
-function generateSummary(total,roi,payback){
-let text=""
-
-if(roi>5){
-text="ProcureAI would deliver transformational impact, generating over "+fmt(total)+" annually. Deployment would likely pay for itself within "+Math.ceil(payback)+" months."
-}else if(roi>2){
-text="ProcureAI shows strong financial justification, producing "+fmt(total)+" annual value with rapid operational ROI."
-}else{
-text="Even under conservative assumptions, ProcureAI produces measurable financial improvement and operational resilience."
+lastData={total,platformCost,roi,payback}
 }
 
-document.getElementById("summaryText").textContent=text
-}
-
-function downloadPDF(){
-  const {jsPDF}=window.jspdf
-  const doc=new jsPDF()
-
-  const pageWidth = doc.internal.pageSize.getWidth()
-  const pageHeight = doc.internal.pageSize.getHeight()
-
-  // Dark header
-  doc.setFillColor(15,23,42)
-  doc.rect(0,0,pageWidth,40,'F')
-
-  // Logo (must exist in /assets/img/logo-png.png)
-  const logoUrl = "assets/img/horaxis-logo.png"
-
-  doc.addImage(logoUrl,"PNG",20,10,40,15)
-
-  doc.setTextColor(255,255,255)
-  doc.setFontSize(18)
-  doc.text("ProcureAI Executive ROI Report",20,32)
-
-  // Watermark
-  doc.setTextColor(230,230,230)
-  doc.setFontSize(60)
-  doc.text("CONFIDENTIAL",35,160,{angle:45})
-
-  // Reset color
-  doc.setTextColor(0,0,0)
-  doc.setFontSize(12)
-
-  let y=60
-
-  doc.text("Total Estimated Annual Savings:",20,y)
-  doc.text(fmt(lastData.total),150,y)
-  y+=15
-
-  doc.text("Estimated Platform Investment:",20,y)
-  doc.text(fmt(lastData.platformCost),150,y)
-  y+=15
-
-  doc.text("ROI Multiple:",20,y)
-  doc.text(lastData.roi.toFixed(1)+"x",150,y)
-  y+=15
-
-  doc.text("Estimated Payback Period:",20,y)
-  doc.text(Math.ceil(lastData.payback)+" months",150,y)
-  y+=25
-
-  doc.setFontSize(14)
-  doc.text("Executive Insight",20,y)
-  y+=10
-
-  doc.setFontSize(11)
-  const summaryText = document.getElementById("summaryText").textContent
-  doc.text(summaryText,20,y,{maxWidth:170})
-
-  // Footer
-  doc.setFillColor(15,23,42)
-  doc.rect(0,pageHeight-20,pageWidth,20,'F')
-
-  doc.setTextColor(255,255,255)
-  doc.setFontSize(9)
-  doc.text("© 2026 Horaxis — ProcureAI Enterprise Intelligence",20,pageHeight-8)
-
-  doc.save("ProcureAI_ROI_Report.pdf")
-}
 function emailReport(){
-const email=document.getElementById("leadEmail").value
-if(!email)return alert("Enter email")
 
-fetch("/api/contact",{
+const email=val("leadEmail")
+const name=val("leadName")
+const company=val("leadCompany")
+
+if(!email){alert("Enter email");return}
+
+fetch("/api/roi",{
 method:"POST",
 headers:{"Content-Type":"application/json"},
 body:JSON.stringify({
-name:"ROI Lead",
+name,
 email,
-company:"ROI Calculator",
-erp:"N/A",
-message:"ROI Report Requested. Total savings: "+fmt(lastData.total)
+company,
+spend:val("spend"),
+lateRate:val("lateRate")
 })
-}).then(()=>alert("Report request sent"))
+})
+.then(r=>r.json())
+.then(data=>{
+if(data.ok){
+alert("Executive ROI Report sent successfully.")
+}else{
+alert("Error sending report.")
+}
+})
+.catch(()=>alert("Server error."))
 }
 
 calc()
