@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>ProcureAI — Enterprise ROI Calculator</title>
+<link rel="stylesheet" href="assets/css/styles.css"/>
+
+<style>
+.roi-hero{
+  padding:60px 0 30px;
+  text-align:center;
+}
+.roi-hero h1{
+  font-size:42px;
+  margin-bottom:12px;
+}
+.roi-hero p{
+  color:var(--muted);
+  font-size:18px;
+}
+.roi-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:30px;
+  margin-top:30px;
+}
+.roi-card{
+  padding:22px;
+}
+.roi-results{
+  background:linear-gradient(135deg,#0f172a,#1e3a8a);
+  padding:28px;
+  border-radius:18px;
+}
+.roi-results h2{
+  color:#93c5fd;
+  margin-bottom:20px;
+}
+.metric{
+  margin-bottom:18px;
+}
+.metric .value{
+  font-size:28px;
+  font-weight:900;
+}
+.metric .label{
+  font-size:13px;
+  color:#94a3b8;
+}
+.big-roi{
+  font-size:42px;
+  font-weight:900;
+  color:#4ade80;
+}
+.cta-box{
+  margin-top:20px;
+  text-align:center;
+}
+@media(max-width:900px){
+  .roi-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html">
+      <img src="assets/img/horaxis-logo.svg" alt="Horaxis"/>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="product.html">Product</a>
+      <a href="security.html">Security</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<section class="roi-hero container">
+  <h1>ProcureAI ROI Calculator</h1>
+  <p>Quantify the financial impact of predictive procurement intelligence.</p>
+</section>
+
+<section class="container section">
+  <div class="roi-grid">
+
+    <!-- INPUTS -->
+    <div class="card roi-card">
+      <h2>Current Procurement Profile</h2>
+
+      <div class="field">
+        <label>Annual Procurement Spend (€)</label>
+        <input id="spend" value="50000000" oninput="calc()">
+      </div>
+
+      <div class="field">
+        <label>Active Purchase Orders</label>
+        <input id="pos" value="500" oninput="calc()">
+      </div>
+
+      <div class="field">
+        <label>Current Late Delivery Rate (%)</label>
+        <input id="lateRate" value="25" oninput="calc()">
+      </div>
+
+      <div class="field">
+        <label>Average Cost per Late Delivery (€)</label>
+        <input id="lateCost" value="5000" oninput="calc()">
+      </div>
+
+      <div class="field">
+        <label>Manual Supplier Follow-up Hours / Week</label>
+        <input id="hours" value="30" oninput="calc()">
+      </div>
+
+      <div class="field">
+        <label>Average Hourly Cost (€)</label>
+        <input id="rate" value="45" oninput="calc()">
+      </div>
+
+      <div class="field">
+        <label>Number of Suppliers</label>
+        <input id="suppliers" value="100" oninput="calc()">
+      </div>
+
+    </div>
+
+    <!-- RESULTS -->
+    <div class="roi-results">
+
+      <h2>Projected Annual Impact</h2>
+
+      <div class="metric">
+        <div class="value" id="lateSave">€0</div>
+        <div class="label">Reduced late delivery impact (30% improvement)</div>
+      </div>
+
+      <div class="metric">
+        <div class="value" id="laborSave">€0</div>
+        <div class="label">Supplier automation efficiency gains (60%)</div>
+      </div>
+
+      <div class="metric">
+        <div class="value" id="riskSave">€0</div>
+        <div class="label">Risk-based expediting prevention</div>
+      </div>
+
+      <div class="metric">
+        <div class="value" id="inventorySave">€0</div>
+        <div class="label">Inventory carrying cost reduction</div>
+      </div>
+
+      <hr style="margin:20px 0;border:1px solid rgba(255,255,255,.1)">
+
+      <div class="metric">
+        <div class="value" id="totalSave">€0</div>
+        <div class="label">Total Estimated Annual Savings</div>
+      </div>
+
+      <div class="metric">
+        <div class="value" id="platformCost">€0</div>
+        <div class="label">Estimated Annual Platform Cost</div>
+      </div>
+
+      <div class="metric">
+        <div class="big-roi" id="roi">0x</div>
+        <div class="label">Return on Investment</div>
+      </div>
+
+      <div class="metric">
+        <div class="value" id="payback">—</div>
+        <div class="label">Estimated Payback Period</div>
+      </div>
+
+      <div class="cta-box">
+        <a class="btn primary" href="contact.html#demo">Request Executive Demo</a>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    © 2026 Horaxis. ProcureAI ROI estimates based on conservative industry benchmarks.
+  </div>
+</footer>
+
+<script>
+function num(v){return parseFloat(v)||0}
+function fmt(n){return "€"+Math.round(n).toLocaleString("en")}
+
+function calc(){
+  const spend=num(document.getElementById("spend").value)
+  const pos=num(document.getElementById("pos").value)
+  const lateRate=num(document.getElementById("lateRate").value)/100
+  const lateCost=num(document.getElementById("lateCost").value)
+  const hours=num(document.getElementById("hours").value)
+  const rate=num(document.getElementById("rate").value)
+  const suppliers=num(document.getElementById("suppliers").value)
+
+  // Annual late deliveries
+  const annualPOs=pos*12
+  const latePOs=annualPOs*lateRate
+
+  // Realistic savings logic
+  const lateSave=latePOs*lateCost*0.30
+  const laborSave=hours*rate*52*0.60
+  const riskSave=spend*lateRate*0.02
+  const inventorySave=spend*0.02*0.10
+
+  const total=lateSave+laborSave+riskSave+inventorySave
+
+  const platformCost=20000 + suppliers*60
+  const roi=platformCost>0?total/platformCost:0
+  const paybackMonths=total>0?(platformCost/total*12):0
+
+  document.getElementById("lateSave").textContent=fmt(lateSave)
+  document.getElementById("laborSave").textContent=fmt(laborSave)
+  document.getElementById("riskSave").textContent=fmt(riskSave)
+  document.getElementById("inventorySave").textContent=fmt(inventorySave)
+  document.getElementById("totalSave").textContent=fmt(total)
+  document.getElementById("platformCost").textContent=fmt(platformCost)
+  document.getElementById("roi").textContent=roi.toFixed(1)+"x"
+  document.getElementById("payback").textContent=
+    paybackMonths<1?"< 1 month":Math.ceil(paybackMonths)+" months"
+}
+calc()
+</script>
+
+</body>
+</html>
