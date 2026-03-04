@@ -3,24 +3,82 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ProcureAI — Enterprise ROI Calculator</title>
+<title>ProcureAI — Board Financial Impact Assessment</title>
 <link rel="stylesheet" href="assets/css/styles.css"/>
 
 <style>
-.roi-hero{padding:60px 0 30px;text-align:center}
-.roi-hero h1{font-size:42px;margin-bottom:12px}
-.roi-hero p{color:var(--muted);font-size:18px}
-.roi-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:30px}
-.roi-card{padding:22px}
-.roi-results{background:linear-gradient(135deg,#0f172a,#1e3a8a);padding:28px;border-radius:18px;color:white}
-.metric{margin-bottom:18px}
-.metric .value{font-size:26px;font-weight:900}
+body{background:#f8fafc}
+.roi-hero{padding:70px 0 40px;text-align:center}
+.roi-hero h1{font-size:44px;margin-bottom:12px}
+.roi-hero p{color:#475569;font-size:18px}
+
+.roi-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:30px}
+.roi-card{padding:26px;background:white;border-radius:16px}
+
+.roi-results{
+background:#0f172a;
+padding:36px;
+border-radius:18px;
+color:white;
+}
+
+.metric{margin-bottom:22px}
+.metric .value{font-size:28px;font-weight:900}
 .metric .label{font-size:13px;color:#cbd5e1}
-.big-roi{font-size:40px;font-weight:900;color:#4ade80}
-.summary{background:rgba(255,255,255,.08);padding:18px;border-radius:12px;margin-top:20px}
-.cta-box{margin-top:20px;text-align:center}
-input{width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;margin-bottom:12px}
-@media(max-width:900px){.roi-grid{grid-template-columns:1fr}}
+
+.big-roi{
+font-size:42px;
+font-weight:900;
+color:#93c5fd;
+}
+
+input,select{
+width:100%;
+padding:12px;
+border-radius:8px;
+border:1px solid #cbd5e1;
+margin-bottom:14px;
+font-size:14px;
+}
+
+.board-section{
+margin-top:80px;
+padding:60px;
+background:white;
+border-radius:18px;
+}
+
+.board-section h2{
+margin-bottom:25px;
+font-size:28px;
+}
+
+.board-section p{
+margin-bottom:18px;
+line-height:1.8;
+color:#334155;
+}
+
+.board-table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+}
+
+.board-table td{
+padding:12px 8px;
+border-bottom:1px solid #e2e8f0;
+}
+
+.cta{
+margin-top:40px;
+padding:24px;
+background:#1e293b;
+color:white;
+border-radius:14px;
+}
+
+.cta strong{color:#93c5fd}
 </style>
 </head>
 
@@ -40,33 +98,27 @@ input{width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;margin-bot
 </header>
 
 <section class="roi-hero container">
-<h1>ProcureAI Executive ROI Calculator</h1>
-<p>Quantify the financial impact of predictive procurement intelligence.</p>
+<h1>Board-Level Financial Impact Assessment</h1>
+<p>Capital allocation modeling for AI-driven procurement control.</p>
 </section>
 
-<section class="container section">
+<section class="container">
 <div class="roi-grid">
 
-<div class="card roi-card">
+<div class="roi-card">
 
-<h2>Your Profile</h2>
-
-<label>Name</label>
-<input id="leadName">
-
-<label>Company</label>
-<input id="leadCompany">
-
-<label>Email</label>
-<input id="leadEmail">
-
-<hr style="margin:20px 0">
+<label><strong>Scenario</strong></label>
+<select id="scenario" onchange="calc()">
+<option value="conservative">Conservative</option>
+<option value="base" selected>Base Case</option>
+<option value="optimistic">Optimistic</option>
+</select>
 
 <label>Annual Procurement Spend (€)</label>
 <input id="spend" value="50000000" oninput="calc()">
 
-<label>Active Purchase Orders</label>
-<input id="pos" value="500" oninput="calc()">
+<label>Annual Purchase Orders</label>
+<input id="pos" value="6000" oninput="calc()">
 
 <label>Late Delivery Rate (%)</label>
 <input id="lateRate" value="25" oninput="calc()">
@@ -87,16 +139,16 @@ input{width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;margin-bot
 
 <div class="roi-results">
 
-<h2>Projected Annual Impact</h2>
+<h2>Financial Projection</h2>
 
 <div class="metric">
 <div class="value" id="totalSave">€0</div>
-<div class="label">Total Estimated Annual Value</div>
+<div class="label">Total Annual Value Creation</div>
 </div>
 
 <div class="metric">
 <div class="value" id="platformCost">€0</div>
-<div class="label">Estimated Platform Investment</div>
+<div class="label">Annual Platform Investment</div>
 </div>
 
 <div class="metric">
@@ -106,123 +158,77 @@ input{width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;margin-bot
 
 <div class="metric">
 <div class="value" id="payback">—</div>
-<div class="label">Estimated Payback Period</div>
-</div>
-
-<div class="summary">
-<h3>Executive Insight</h3>
-<p id="summaryText"></p>
-</div>
-
-<div class="cta-box">
-<button class="btn primary" onclick="emailReport()">Email Executive Report</button>
+<div class="label">Capital Payback Period</div>
 </div>
 
 </div>
 </div>
 </section>
 
+<section class="container board-section">
+
+<h2>Capital Allocation Logic</h2>
+
+<p>This model evaluates procurement performance improvement as a capital efficiency initiative. Value creation derives from delivery cost mitigation, automation efficiency, disruption risk reduction, and working capital optimization.</p>
+
+<table class="board-table">
+<tr><td>Delivery Performance Recovery</td><td>Reduced expediting, penalties, lost margin</td></tr>
+<tr><td>Operational Efficiency</td><td>Manual intervention replaced by AI workflow automation</td></tr>
+<tr><td>Risk Mitigation</td><td>Predictive disruption avoidance before financial impact</td></tr>
+<tr><td>Working Capital</td><td>Improved inventory velocity and supply predictability</td></tr>
+</table>
+
+<div class="cta">
+<strong>Board Recommendation:</strong><br>
+ProcureAI should be evaluated as a strategic resilience and margin-protection initiative rather than a traditional software expense.
+</div>
+
+</section>
+
 <footer class="footer">
-<div class="container">© 2026 Horaxis</div>
+<div class="container">© 2026 Horaxis — ProcureAI Enterprise Platform</div>
 </footer>
 
 <script>
-function num(v){return parseFloat(v)||0}
-function fmt(n){return "€"+Math.round(n).toLocaleString("en")}
-function val(id){return document.getElementById(id).value}
-
 let lastData={}
 
 function calc(){
 
-const spend = parseFloat(document.getElementById("spend").value) || 0;
-const pos = parseFloat(document.getElementById("pos").value) || 0;
-const lateRate = (parseFloat(document.getElementById("lateRate").value) || 0) / 100;
-const lateCost = parseFloat(document.getElementById("lateCost").value) || 0;
-const hours = parseFloat(document.getElementById("hours").value) || 0;
-const rate = parseFloat(document.getElementById("rate").value) || 0;
-const suppliers = parseFloat(document.getElementById("suppliers").value) || 0;
+const scenario=document.getElementById("scenario").value;
+const spend=parseFloat(document.getElementById("spend").value)||0;
+const pos=parseFloat(document.getElementById("pos").value)||0;
+const lateRate=(parseFloat(document.getElementById("lateRate").value)||0)/100;
+const lateCost=parseFloat(document.getElementById("lateCost").value)||0;
+const hours=parseFloat(document.getElementById("hours").value)||0;
+const rate=parseFloat(document.getElementById("rate").value)||0;
+const suppliers=parseFloat(document.getElementById("suppliers").value)||0;
 
-// IMPORTANT: POs are per YEAR (as you confirmed)
-const annualPOs = pos;
+let deliveryFactor,automationFactor,riskFactor,wcFactor;
 
-const latePOs = annualPOs * lateRate;
+if(scenario==="conservative"){deliveryFactor=0.20;automationFactor=0.40;riskFactor=0.01;wcFactor=0.05;}
+if(scenario==="base"){deliveryFactor=0.30;automationFactor=0.60;riskFactor=0.02;wcFactor=0.10;}
+if(scenario==="optimistic"){deliveryFactor=0.40;automationFactor=0.75;riskFactor=0.03;wcFactor=0.15;}
 
-const deliverySave = latePOs * lateCost * 0.30;
-const processSave = hours * rate * 52 * 0.60;
-const riskSave = spend * lateRate * 0.02;
-const workingCapitalSave = spend * 0.02 * 0.10;
+const latePOs=pos*lateRate;
+const deliverySave=latePOs*lateCost*deliveryFactor;
+const processSave=hours*rate*52*automationFactor;
+const riskSave=spend*lateRate*riskFactor;
+const workingCapitalSave=spend*0.02*wcFactor;
 
-const total = deliverySave + processSave + riskSave + workingCapitalSave;
-const platformCost = 20000 + suppliers * 60;
-const roi = platformCost > 0 ? total / platformCost : 0;
-const payback = total > 0 ? (platformCost / total * 12) : 0;
+const total=deliverySave+processSave+riskSave+workingCapitalSave;
+const platformCost=20000+suppliers*60;
+const roi=platformCost>0?total/platformCost:0;
+const payback=total>0?(platformCost/total*12):0;
 
-document.getElementById("totalSave").textContent = "€" + Math.round(total).toLocaleString();
-document.getElementById("platformCost").textContent = "€" + Math.round(platformCost).toLocaleString();
-document.getElementById("roi").textContent = roi.toFixed(1) + "x";
-document.getElementById("payback").textContent =
-payback < 1 ? "< 1 month" : Math.ceil(payback) + " months";
+document.getElementById("totalSave").textContent="€"+Math.round(total).toLocaleString();
+document.getElementById("platformCost").textContent="€"+Math.round(platformCost).toLocaleString();
+document.getElementById("roi").textContent=roi.toFixed(1)+"x";
+document.getElementById("payback").textContent=payback<1?"< 1 month":Math.ceil(payback)+" months";
 
-document.getElementById("summaryText").textContent =
-roi > 5 ?
-"ProcureAI delivers transformational enterprise impact with rapid payback and strong capital efficiency." :
-roi > 2 ?
-"ProcureAI provides solid financial justification and measurable procurement control improvements." :
-"Even under conservative assumptions, ProcureAI improves resilience and procurement performance.";
-
-lastData = {
-  total,
-  roi,
-  payback,
-  delivery: deliverySave,
-  process: processSave,
-  risk: riskSave,
-  workingCapital: workingCapitalSave
-};
+lastData={total,roi,payback,scenario};
 }
 
-function emailReport(){
-
-if (!lastData || !lastData.total) {
-  alert("Please calculate ROI first.");
-  return;
-}
-
-const email = document.getElementById("leadEmail").value;
-
-if (!email) {
-  alert("Enter email.");
-  return;
-}
-
-fetch("/api/roi",{
-  method:"POST",
-  headers:{"Content-Type":"application/json"},
-  body:JSON.stringify({
-    email: email,
-    total: lastData.total,
-    roi: lastData.roi,
-    payback: lastData.payback,
-    breakdown:{
-      delivery:lastData.delivery,
-      process:lastData.process,
-      risk:lastData.risk,
-      workingCapital:lastData.workingCapital
-    }
-  })
-})
-.then(res=>res.json())
-.then(data=>{
-  if(data.ok){
-    alert("Executive ROI Report sent successfully.");
-  } else {
-    alert("Server error.");
-  }
-})
-.catch(()=>alert("Server error."));
-}
-calc()
+calc();
 </script>
 
 </body>
