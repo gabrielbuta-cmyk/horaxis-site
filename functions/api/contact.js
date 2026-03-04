@@ -14,12 +14,53 @@ function normalizeHost(host) {
   return String(host || "").replace(/^www\./, "");
 }
 
+function emailTemplate(content) {
+  return `
+  <!DOCTYPE html>
+  <html>
+  <body style="margin:0;padding:0;background:#f5f7fa;font-family:Arial,Helvetica,sans-serif;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f7fa;padding:40px 0;">
+      <tr>
+        <td align="center">
+          <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;">
+            
+            <!-- Header -->
+            <tr>
+              <td style="background:#0f172a;padding:24px;text-align:center;">
+                <img src="https://horaxis.com/assets/img/horaxis-logo.png" width="140" alt="Horaxis Logo" style="display:block;margin:0 auto;">
+              </td>
+            </tr>
+
+            <!-- Content -->
+            <tr>
+              <td style="padding:32px;color:#111827;font-size:15px;line-height:1.6;">
+                ${content}
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td style="background:#f9fafb;padding:20px;text-align:center;font-size:12px;color:#6b7280;">
+                © 2026 Horaxis • ProcureAI<br>
+                Enterprise Supply Chain Intelligence
+              </td>
+            </tr>
+
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+  </html>
+  `;
+}
+
 export const onRequest = async (context) => {
   const { request, env } = context;
   const url = new URL(request.url);
 
   if (request.method !== "POST") {
-    return json({ ok: false, error: "Method Not Allowed" }, 405);
+    return json({ ok: false }, 405);
   }
 
   const origin = request.headers.get("origin") || "";
@@ -27,7 +68,7 @@ export const onRequest = async (context) => {
     try {
       const originHost = new URL(origin).host;
       if (normalizeHost(originHost) !== normalizeHost(url.host)) {
-        return json({ ok: false, error: "Origin not allowed" }, 403);
+        return json({ ok: false }, 403);
       }
     } catch {}
   }
@@ -36,29 +77,25 @@ export const onRequest = async (context) => {
   try {
     body = await request.json();
   } catch {
-    return json({ ok: false, error: "Invalid JSON" }, 400);
+    return json({ ok: false }, 400);
   }
 
-  const name = String(body.name || "").trim();
-  const email = String(body.email || "").trim();
-  const company = String(body.company || "").trim();
-  const erp = String(body.erp || "").trim();
-  const message = String(body.message || "").trim();
+  const name = body.name?.trim();
+  const email = body.email?.trim();
+  const company = body.company?.trim();
+  const erp = body.erp?.trim();
+  const message = body.message?.trim();
 
   if (!name || !email || !company || !erp) {
-    return json({ ok: false, error: "Missing required fields" }, 400);
-  }
-
-  if (!/^\S+@\S+\.\S+$/.test(email)) {
-    return json({ ok: false, error: "Invalid email" }, 400);
+    return json({ ok: false }, 400);
   }
 
   if (!env.RESEND_API_KEY) {
-    return json({ ok: false, error: "Missing RESEND_API_KEY secret" }, 500);
+    return json({ ok: false }, 500);
   }
 
-  // 1️⃣ SEND INTERNAL EMAIL (to you)
-  const internalEmail = await fetch("https://api.resend.com/emails", {
+  // INTERNAL EMAIL
+  await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${env.RESEND_API_KEY}`,
@@ -69,26 +106,19 @@ export const onRequest = async (context) => {
       to: ["demo@horaxis.com"],
       reply_to: email,
       subject: `New Contact from ${name}`,
-      html: `
-        <h2>New Contact Form Submission</h2>
+      html: emailTemplate(`
+        <h2 style="margin-top:0;">New Contact Submission</h2>
         <p><strong>Name:</strong> ${name}</p>
         <p><strong>Email:</strong> ${email}</p>
         <p><strong>Company:</strong> ${company}</p>
         <p><strong>ERP:</strong> ${erp}</p>
-        <p><strong>Message:</strong></p>
-        <p>${message || "-"}</p>
-      `,
+        <p><strong>Message:</strong><br>${message || "-"}</p>
+      `),
     }),
   });
 
-  if (!internalEmail.ok) {
-    const errorText = await internalEmail.text();
-    console.error("Internal email error:", errorText);
-    return json({ ok: false, error: "Internal email failed" }, 500);
-  }
-
-  // 2️⃣ SEND CONFIRMATION TO USER
-  const userEmail = await fetch("https://api.resend.com/emails", {
+  // USER CONFIRMATION EMAIL
+  await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${env.RESEND_API_KEY}`,
@@ -98,27 +128,20 @@ export const onRequest = async (context) => {
       from: "Horaxis <info@horaxis.com>",
       to: [email],
       subject: "We received your request — Horaxis",
-      html: `
-        <h2>Hi ${name},</h2>
-        <p>Thanks for reaching out to Horaxis.</p>
+      html: emailTemplate(`
+        <h2 style="margin-top:0;">Hi ${name},</h2>
+        <p>Thank you for contacting Horaxis.</p>
         <p>We received your request and will respond within 1 business day.</p>
-        <hr>
+        <hr style="margin:24px 0;">
         <p><strong>Your submission:</strong></p>
         <p><strong>Company:</strong> ${company}</p>
         <p><strong>ERP:</strong> ${erp}</p>
-        <p><strong>Message:</strong></p>
-        <p>${message || "-"}</p>
+        <p><strong>Message:</strong><br>${message || "-"}</p>
         <br>
-        <p>Best regards,<br>Horaxis Team</p>
-      `,
+        <p>Best regards,<br><strong>Horaxis Team</strong></p>
+      `),
     }),
   });
-
-  if (!userEmail.ok) {
-    const errorText = await userEmail.text();
-    console.error("User confirmation error:", errorText);
-    return json({ ok: false, error: "User email failed" }, 500);
-  }
 
   return json({ ok: true });
 };
