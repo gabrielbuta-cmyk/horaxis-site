@@ -135,84 +135,92 @@ let lastData={}
 
 function calc(){
 
-const spend=num(val("spend"))
-const pos=num(val("pos"))
-const lateRate=num(val("lateRate"))/100
-const lateCost=num(val("lateCost"))
-const hours=num(val("hours"))
-const rate=num(val("rate"))
-const suppliers=num(val("suppliers"))
+const spend = parseFloat(document.getElementById("spend").value) || 0;
+const pos = parseFloat(document.getElementById("pos").value) || 0;
+const lateRate = (parseFloat(document.getElementById("lateRate").value) || 0) / 100;
+const lateCost = parseFloat(document.getElementById("lateCost").value) || 0;
+const hours = parseFloat(document.getElementById("hours").value) || 0;
+const rate = parseFloat(document.getElementById("rate").value) || 0;
+const suppliers = parseFloat(document.getElementById("suppliers").value) || 0;
 
-const annualPOs=pos*12
-const latePOs=annualPOs*lateRate
+// IMPORTANT: POs are per YEAR (as you confirmed)
+const annualPOs = pos;
 
-const lateSave=latePOs*lateCost*0.30
-const laborSave=hours*rate*52*0.60
-const riskSave=spend*lateRate*0.02
-const inventorySave=spend*0.02*0.10
+const latePOs = annualPOs * lateRate;
 
-const total=lateSave+laborSave+riskSave+inventorySave
-const platformCost=20000+suppliers*60
-const roi=total/platformCost
-const payback=(platformCost/total*12)
+const deliverySave = latePOs * lateCost * 0.30;
+const processSave = hours * rate * 52 * 0.60;
+const riskSave = spend * lateRate * 0.02;
+const workingCapitalSave = spend * 0.02 * 0.10;
 
-document.getElementById("totalSave").textContent=fmt(total)
-document.getElementById("platformCost").textContent=fmt(platformCost)
-document.getElementById("roi").textContent=roi.toFixed(1)+"x"
-document.getElementById("payback").textContent=
-payback<1?"< 1 month":Math.ceil(payback)+" months"
+const total = deliverySave + processSave + riskSave + workingCapitalSave;
+const platformCost = 20000 + suppliers * 60;
+const roi = platformCost > 0 ? total / platformCost : 0;
+const payback = total > 0 ? (platformCost / total * 12) : 0;
 
-document.getElementById("summaryText").textContent=
-roi>5?
-"ProcureAI delivers transformational enterprise impact with rapid payback and significant operational leverage.":
-roi>2?
-"ProcureAI produces strong financial justification and measurable operational uplift.":
-"Even under conservative assumptions, ProcureAI improves resilience and procurement control."
+document.getElementById("totalSave").textContent = "€" + Math.round(total).toLocaleString();
+document.getElementById("platformCost").textContent = "€" + Math.round(platformCost).toLocaleString();
+document.getElementById("roi").textContent = roi.toFixed(1) + "x";
+document.getElementById("payback").textContent =
+payback < 1 ? "< 1 month" : Math.ceil(payback) + " months";
 
-lastData={
+document.getElementById("summaryText").textContent =
+roi > 5 ?
+"ProcureAI delivers transformational enterprise impact with rapid payback and strong capital efficiency." :
+roi > 2 ?
+"ProcureAI provides solid financial justification and measurable procurement control improvements." :
+"Even under conservative assumptions, ProcureAI improves resilience and procurement performance.";
+
+lastData = {
   total,
   roi,
   payback,
-  delivery: lateSave,
-  process: laborSave,
+  delivery: deliverySave,
+  process: processSave,
   risk: riskSave,
-  workingCapital: inventorySave
+  workingCapital: workingCapitalSave
+};
 }
 
-function emailReport() {
+function emailReport(){
 
-  const email = document.getElementById("leadEmail").value;
-  if (!email) return alert("Enter email");
+if (!lastData || !lastData.total) {
+  alert("Please calculate ROI first.");
+  return;
+}
 
-  const payload = {
-    email,
-    name: "ROI Lead",
-    company: "ROI Assessment",
+const email = document.getElementById("leadEmail").value;
+
+if (!email) {
+  alert("Enter email.");
+  return;
+}
+
+fetch("/api/roi",{
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({
+    email: email,
     total: lastData.total,
     roi: lastData.roi,
     payback: lastData.payback,
-    breakdown: {
-      delivery: lastData.delivery,
-      process: lastData.process,
-      risk: lastData.risk,
-      workingCapital: lastData.workingCapital
-    }
-  };
-
-  fetch("/api/roi", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.ok) {
-      alert("Executive ROI Report sent successfully.");
-    } else {
-      alert("Error sending report.");
+    breakdown:{
+      delivery:lastData.delivery,
+      process:lastData.process,
+      risk:lastData.risk,
+      workingCapital:lastData.workingCapital
     }
   })
-  .catch(() => alert("Server error."));
+})
+.then(res=>res.json())
+.then(data=>{
+  if(data.ok){
+    alert("Executive ROI Report sent successfully.");
+  } else {
+    alert("Server error.");
+  }
+})
+.catch(()=>alert("Server error."));
 }
 calc()
 </script>
