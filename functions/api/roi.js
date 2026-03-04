@@ -1,176 +1,285 @@
-// functions/api/roi.js
-
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
-
-function json(data, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { "content-type": "application/json" }
-  });
-}
+import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 
 export const onRequest = async (context) => {
   try {
-  const { request, env } = context;
 
-  if (request.method !== "POST") {
-    return json({ ok: false }, 405);
-  }
+    const { request, env } = context;
 
-  const body = await request.json();
+    if (request.method !== "POST") {
+      return new Response("Method Not Allowed", { status: 405 });
+    }
 
-  const name = body.name || "Executive";
-  const email = body.email;
-  const company = body.company || "Your Organization";
+    const data = await request.json();
 
-  const spend = Number(body.spend || 0);
-  const lateRate = Number(body.lateRate || 0);
+    const total = Number(data.total || 0);
+    const roi = Number(data.roi || 0);
+    const payback = Number(data.payback || 0);
 
-  // === REALISTIC ENTERPRISE MODEL ===
-  const processSavings = spend * 0.015;
-  const deliverySavings = spend * (lateRate / 100) * 0.25;
-  const riskSavings = spend * 0.01;
-  const workingCapitalSavings = spend * 0.005;
+    const delivery = Number(data.breakdown?.delivery || 0);
+    const process = Number(data.breakdown?.process || 0);
+    const risk = Number(data.breakdown?.risk || 0);
+    const workingCapital = Number(data.breakdown?.workingCapital || 0);
 
-  const totalSavings =
-    processSavings +
-    deliverySavings +
-    riskSavings +
-    workingCapitalSavings;
+    // ---------- CREATE PDF ----------
 
-  const riskExposure = spend * 0.08;
+    const pdfDoc = await PDFDocument.create();
+    const page = pdfDoc.addPage([595, 842]);
 
-  // ===============================
-  // CREATE PDF
-  // ===============================
+    const { width, height } = page.getSize();
 
-  const pdfDoc = await PDFDocument.create();
-  const page = pdfDoc.addPage([595, 842]);
+    const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-  const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+    // Colors
+    const dark = rgb(0.06, 0.09, 0.16); // #0f172a
+    const blue = rgb(0.12, 0.23, 0.54); // #1e3a8a
+    const green = rgb(0.29, 0.87, 0.50); // #4ade80
+    const lightBlue = rgb(0.58, 0.77, 0.99); // #93c5fd
 
-  let y = 800;
+    // Header
+    page.drawRectangle({
+      x: 0,
+      y: height - 80,
+      width: width,
+      height: 80,
+      color: dark,
+    });
 
-  page.drawText("ProcureAI ROI Impact Report", {
-    x: 50,
-    y,
-    size: 20,
-    font: boldFont
-  });
+    page.drawText("ProcureAI Executive Financial Impact Assessment", {
+      x: 40,
+      y: height - 50,
+      size: 18,
+      font: fontBold,
+      color: rgb(1,1,1),
+    });
 
-  y -= 40;
+    page.drawText("Confidential – CFO Strategic Briefing", {
+      x: 40,
+      y: height - 68,
+      size: 11,
+      font,
+      color: lightBlue,
+    });
 
-  page.drawText(`Prepared for: ${company}`, { x: 50, y, size: 12, font });
-  y -= 20;
+    let y = height - 120;
 
-  page.drawText(`Projected Annual Impact: €${totalSavings.toLocaleString()}`, {
-    x: 50,
-    y,
-    size: 14,
-    font: boldFont,
-    color: rgb(0.15, 0.35, 0.9)
-  });
+    // Executive Summary
+    page.drawText("Executive Summary", {
+      x: 40,
+      y,
+      size: 16,
+      font: fontBold,
+      color: blue
+    });
 
-  y -= 40;
+    y -= 25;
 
-  const lines = [
-    "Executive Summary:",
-    "",
-    `Total Annual Value Creation: €${totalSavings.toLocaleString()}`,
-    "",
-    "Operational Breakdown:",
-    `Process Efficiency: €${processSavings.toLocaleString()}`,
-    `Delivery Gains: €${deliverySavings.toLocaleString()}`,
-    `Risk Avoidance: €${riskSavings.toLocaleString()}`,
-    `Working Capital: €${workingCapitalSavings.toLocaleString()}`,
-    "",
-    "AI Risk Intelligence:",
-    `Estimated Disruption Exposure: €${riskExposure.toLocaleString()}`,
-    "Predictive alerts reduce exposure by 35–60%.",
-    "",
-    "Key Features:",
-    "• Predictive supplier risk scoring",
-    "• ERP anomaly detection",
-    "• Executive dashboards",
-    "• Early disruption alerts",
-    "",
-    "Next Step:",
-    "Schedule Executive Validation Session:",
-    "https://horaxis.com/contact.html#demo"
-  ];
+    page.drawText(
+      `Projected Annual Financial Impact: €${total.toLocaleString()}`,
+      { x: 40, y, size: 15, font: fontBold, color: green }
+    );
 
-  lines.forEach(line => {
+    y -= 20;
+
+    page.drawText(
+      `ROI Multiple: ${roi.toFixed(1)}x`,
+      { x: 40, y, size: 13, font }
+    );
+
     y -= 18;
-    page.drawText(line, { x: 50, y, size: 11, font });
-  });
 
-  const pdfBytes = await pdfDoc.save();
-  function arrayBufferToBase64(buffer) {
-  let binary = '';
-  const bytes = new Uint8Array(buffer);
-  const len = bytes.byteLength;
-  for (let i = 0; i < len; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return btoa(binary);
-}
+    page.drawText(
+      `Estimated Payback Period: ${Math.ceil(payback)} months`,
+      { x: 40, y, size: 13, font }
+    );
 
-const pdfBase64 = arrayBufferToBase64(pdfBytes);	
+    y -= 35;
 
-  // ===============================
-  // SEND EMAIL VIA RESEND
-  // ===============================
+    // Breakdown
+    page.drawText("Annual Value Breakdown", {
+      x: 40,
+      y,
+      size: 14,
+      font: fontBold,
+      color: blue
+    });
 
-  const userHtml = `
-  <div style="font-family:Arial;padding:30px;background:#f4f6f8;">
-    <div style="max-width:600px;margin:auto;background:white;padding:30px;border-radius:10px;">
-      <h2>Hi ${name},</h2>
-      <p>Your ProcureAI executive ROI assessment is attached.</p>
-      <h3 style="color:#2563eb;">Projected Annual Impact: €${totalSavings.toLocaleString()}</h3>
-      <p>
-        This includes automation, delivery performance, risk reduction,
-        and working capital optimization.
-      </p>
-      <p>
-        <a href="https://horaxis.com/contact.html#demo"
-           style="background:#2563eb;color:white;padding:12px 20px;text-decoration:none;border-radius:6px;">
-           Schedule Executive Review
-        </a>
-      </p>
-      <p style="font-size:12px;color:#666;">ProcureAI — Enterprise Procurement Intelligence</p>
-    </div>
-  </div>
-  `;
+    y -= 25;
 
-  const resendResponse = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${env.RESEND_API_KEY}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      from: "ProcureAI <info@horaxis.com>",
-      to: [email],
-      subject: "Your ProcureAI Executive ROI Report",
-      html: userHtml,
-      attachments: [
-        {
-          filename: "ProcureAI_ROI_Report.pdf",
-          content: pdfBase64
-        }
-      ]
-    })
-  });
+    const rows = [
+      ["Delivery Performance Gains", delivery],
+      ["Process Automation Efficiency", process],
+      ["Risk Avoidance & Disruption Mitigation", risk],
+      ["Working Capital Optimization", workingCapital],
+    ];
 
-  if (!resendResponse.ok) {
-    return json({ ok: false, error: "Email failed" }, 500);
-  }
+    rows.forEach(([label, value]) => {
+      page.drawText(label, { x: 50, y, size: 12, font });
+      page.drawText(`€${value.toLocaleString()}`, {
+        x: 420,
+        y,
+        size: 12,
+        font: fontBold
+      });
+      y -= 18;
+    });
 
-  return json({ ok: true, totalSavings });
+    y -= 30;
+
+    // AI Section
+    page.drawText("AI Risk Intelligence Impact", {
+      x: 40,
+      y,
+      size: 14,
+      font: fontBold,
+      color: blue
+    });
+
+    y -= 20;
+
+    page.drawText(
+      "ProcureAI applies predictive AI to supplier risk signals,",
+      { x: 40, y, size: 12, font }
+    );
+
+    y -= 16;
+
+    page.drawText(
+      "shipment patterns, ERP signals and external disruption data",
+      { x: 40, y, size: 12, font }
+    );
+
+    y -= 16;
+
+    page.drawText(
+      "to reduce exposure by 35–60% before material impact occurs.",
+      { x: 40, y, size: 12, font }
+    );
+
+    y -= 30;
+
+    // Business Narrative
+    page.drawText("Strategic Value Drivers", {
+      x: 40,
+      y,
+      size: 14,
+      font: fontBold,
+      color: blue
+    });
+
+    y -= 20;
+
+    page.drawText(
+      "• Reduced late delivery penalties and expediting costs",
+      { x: 40, y, size: 12, font }
+    );
+
+    y -= 16;
+
+    page.drawText(
+      "• Improved supplier collaboration efficiency",
+      { x: 40, y, size: 12, font }
+    );
+
+    y -= 16;
+
+    page.drawText(
+      "• Enhanced working capital visibility",
+      { x: 40, y, size: 12, font }
+    );
+
+    y -= 16;
+
+    page.drawText(
+      "• AI-driven early warning for procurement disruptions",
+      { x: 40, y, size: 12, font }
+    );
+
+    y -= 40;
+
+    // CTA
+    page.drawText("Next Step:", {
+      x: 40,
+      y,
+      size: 13,
+      font: fontBold
+    });
+
+    y -= 18;
+
+    page.drawText(
+      "Schedule an Executive Strategy Session at www.horaxis.com",
+      { x: 40, y, size: 12, font }
+    );
+
+    // Footer
+    page.drawRectangle({
+      x: 0,
+      y: 0,
+      width: width,
+      height: 30,
+      color: dark,
+    });
+
+    page.drawText("© 2026 Horaxis — ProcureAI Enterprise Intelligence Platform", {
+      x: 40,
+      y: 10,
+      size: 9,
+      font,
+      color: rgb(1,1,1)
+    });
+
+    const pdfBytes = await pdfDoc.save();
+
+    // convert
+    const pdfBase64 = btoa(
+      String.fromCharCode(...new Uint8Array(pdfBytes))
+    );
+
+    // ---------- SEND EMAIL ----------
+
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${env.RESEND_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        from: "Horaxis Executive Reports <info@horaxis.com>",
+        to: [data.email],
+        subject: "Your ProcureAI Executive Financial Impact Report",
+        html: `
+        <div style="font-family:Inter,Arial,sans-serif;background:#0f172a;padding:40px;color:white;">
+          <h1 style="margin:0;color:#93c5fd;">ProcureAI Executive ROI Report</h1>
+          <p style="margin-top:20px;font-size:16px;">
+            Your customized executive financial assessment is attached.
+          </p>
+          <p style="margin-top:10px;color:#cbd5e1;">
+            Projected Annual Impact: <strong>€${total.toLocaleString()}</strong>
+          </p>
+          <p style="margin-top:30px;">
+            To review implementation scenarios or request a strategic briefing,
+            schedule a session at <a href="https://horaxis.com" style="color:#4ade80;">horaxis.com</a>
+          </p>
+        </div>
+        `,
+        attachments: [
+          {
+            filename: "ProcureAI_Executive_ROI_Report.pdf",
+            content: pdfBase64,
+            type: "application/pdf"
+          }
+        ]
+      })
+    });
+
+    return new Response(JSON.stringify({ ok: true }), {
+      headers: { "content-type": "application/json" }
+    });
+
   } catch (err) {
     console.error("ROI ERROR:", err);
-    return new Response(JSON.stringify({ ok:false, error: String(err) }), {
+    return new Response(JSON.stringify({ ok:false }), {
       status: 500,
       headers: { "content-type":"application/json" }
     });

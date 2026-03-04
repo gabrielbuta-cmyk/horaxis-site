@@ -169,39 +169,51 @@ roi>2?
 "ProcureAI produces strong financial justification and measurable operational uplift.":
 "Even under conservative assumptions, ProcureAI improves resilience and procurement control."
 
-lastData={total,platformCost,roi,payback}
+lastData={
+  total,
+  roi,
+  payback,
+  delivery: lateSave,
+  process: laborSave,
+  risk: riskSave,
+  workingCapital: inventorySave
 }
 
-function emailReport(){
+function emailReport() {
 
-const email=val("leadEmail")
-const name=val("leadName")
-const company=val("leadCompany")
+  const email = document.getElementById("leadEmail").value;
+  if (!email) return alert("Enter email");
 
-if(!email){alert("Enter email");return}
+  const payload = {
+    email,
+    name: "ROI Lead",
+    company: "ROI Assessment",
+    total: lastData.total,
+    roi: lastData.roi,
+    payback: lastData.payback,
+    breakdown: {
+      delivery: lastData.delivery,
+      process: lastData.process,
+      risk: lastData.risk,
+      workingCapital: lastData.workingCapital
+    }
+  };
 
-fetch("/api/roi",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-name,
-email,
-company,
-spend:val("spend"),
-lateRate:val("lateRate")
-})
-})
-.then(r=>r.json())
-.then(data=>{
-if(data.ok){
-alert("Executive ROI Report sent successfully.")
-}else{
-alert("Error sending report.")
+  fetch("/api/roi", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.ok) {
+      alert("Executive ROI Report sent successfully.");
+    } else {
+      alert("Error sending report.");
+    }
+  })
+  .catch(() => alert("Server error."));
 }
-})
-.catch(()=>alert("Server error."))
-}
-
 calc()
 </script>
 
