@@ -84,20 +84,22 @@ function calculate() {
     const stopCost = parseFloat(document.getElementById('lateCost').value) || 0;
     const lateRate = (parseFloat(document.getElementById('lateRate').value) || 0) / 100;
 
-    // 1. Productivity: Automating follow-ups on the thousands of POs shown in your dashboard
-    const laborSave = (spend / 100000) * 850; 
+    // 1. Production Continuity: Prevents 3 major 'Fast-Onset' shutdowns per year
+    // Calculation: StopCost * 48 hours * Risk Multiplier
+    const riskSave = (stopCost * 48) * (lateRate * 2.5); 
 
-    // 2. Risk Mitigation: Preventing major line stops (calculated as 48 hours of protection)
-    const riskSave = (stopCost * 48) * (lateRate * 1.5); 
+    // 2. Logistics Optimization: Saving 30% of the air-freight 'panic' spend
+    // European freight premiums are highly volatile due to energy costs
+    const freightSave = (spend * 0.07) * 0.30; 
 
-    // 3. Logistics: Reducing the "Panic Freight" seen in your Customer Impact screen
-    const freightSave = (spend * 0.08) * 0.35; 
+    // 3. Labor & Overhead: Automating manual follow-ups for thousands of POs
+    const laborSave = (spend / 100000) * 1200; 
 
-    const total = laborSave + riskSave + freightSave;
+    const total = riskSave + freightSave + laborSave;
 
-    document.getElementById('totalSave').innerText = "$" + Math.round(total).toLocaleString();
-    document.getElementById('risk').innerText = "$" + Math.round(riskSave).toLocaleString();
-    document.getElementById('freight').innerText = "$" + Math.round(freightSave + laborSave).toLocaleString();
+    document.getElementById('totalSave').innerText = "€" + Math.round(total).toLocaleString();
+    document.getElementById('risk').innerText = "€" + Math.round(riskSave).toLocaleString();
+    document.getElementById('freight').innerText = "€" + Math.round(freightSave + laborSave).toLocaleString();
 }calculate();
 </script>
 </body>
