@@ -89,3 +89,15 @@ body {
 .brand-text span {
   color: #EA580C;
 }
+/* BRAND LOGO */
+.brand-mark { width: 34px; height: 34px; background: #2563EB; border-radius: 8px; position: relative; display: flex; align-items: center; justify-content: center; }
+.brand-mark::before { content: ''; width: 14px; height: 14px; border: 3px solid #F8FAFC; border-radius: 50%; position: absolute; }
+.brand-mark::after { content: ''; width: 6px; height: 6px; background: #EA580C; border-radius: 50%; position: absolute; }
+.brand-text { font-weight: 900; font-size: 22px; color: #F8FAFC; letter-spacing: -0.05em; text-transform: uppercase; }
+.brand-text span { color: #EA580C; }
+
+/* GRID SYSTEM FOR ROI & CONTACT */
+.enterprise-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; text-align: left; }
+.field-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.field-group label { font-size: 11px; font-weight: 800; color: #94A3B8; text-transform: uppercase; }
+.field-group input, .field-group textarea { padding: 12px; background: #0F172A; border: 1px solid #334155; color: white; border-radius: 4px; }

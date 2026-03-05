@@ -80,17 +80,25 @@
 
 <script>
 function calculate() {
-  const spend = parseFloat(document.getElementById('spend').value) || 0;
-  const lateRate = (parseFloat(document.getElementById('lateRate').value) || 0) / 100;
-  const stopCost = parseFloat(document.getElementById('lateCost').value) || 0;
-  const riskSave = (lateRate * 12) * stopCost * 0.20; 
-  const freightSave = (spend * 0.05) * 0.15; 
-  const total = riskSave + freightSave;
-  document.getElementById('totalSave').innerText = "$" + Math.round(total).toLocaleString();
-  document.getElementById('risk').innerText = "$" + Math.round(riskSave).toLocaleString();
-  document.getElementById('freight').innerText = "$" + Math.round(freightSave).toLocaleString();
-}
-calculate();
+    const spend = parseFloat(document.getElementById('spend').value) || 0;
+    const stopCost = parseFloat(document.getElementById('lateCost').value) || 0;
+    const lateRate = (parseFloat(document.getElementById('lateRate').value) || 0) / 100;
+
+    // 1. Productivity: Automating follow-ups on the thousands of POs shown in your dashboard
+    const laborSave = (spend / 100000) * 850; 
+
+    // 2. Risk Mitigation: Preventing major line stops (calculated as 48 hours of protection)
+    const riskSave = (stopCost * 48) * (lateRate * 1.5); 
+
+    // 3. Logistics: Reducing the "Panic Freight" seen in your Customer Impact screen
+    const freightSave = (spend * 0.08) * 0.35; 
+
+    const total = laborSave + riskSave + freightSave;
+
+    document.getElementById('totalSave').innerText = "$" + Math.round(total).toLocaleString();
+    document.getElementById('risk').innerText = "$" + Math.round(riskSave).toLocaleString();
+    document.getElementById('freight').innerText = "$" + Math.round(freightSave + laborSave).toLocaleString();
+}calculate();
 </script>
 </body>
 </html>
