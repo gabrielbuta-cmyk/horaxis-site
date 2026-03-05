@@ -86,14 +86,14 @@ function calculate() {
 
     // 1. Production Continuity: Prevents 3 major 'Fast-Onset' shutdowns per year
     // Calculation: StopCost * 48 hours * Risk Multiplier
-    const riskSave = (stopCost * 48) * (lateRate * 2.5); 
+    const riskSave = (stopCost * 48) * (lateRate * 3.5); 
 
     // 2. Logistics Optimization: Saving 30% of the air-freight 'panic' spend
     // European freight premiums are highly volatile due to energy costs
-    const freightSave = (spend * 0.08) * 0.35; 
+    const freightSave = (spend * 0.09) * 0.35; 
 
     // 3. Labor & Overhead: Automating manual follow-ups for thousands of POs
-    const laborSave = (spend / 100000) * 1450; 
+    const laborSave = (spend / 100000) * 1550; 
 
     const total = riskSave + freightSave + laborSave;
 
