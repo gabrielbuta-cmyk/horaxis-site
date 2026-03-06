@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="assets/css/styles.css"/>
 </head>
 <body>
-  <header class="nav">
+<header class="nav">
   <div class="container nav-inner" style="display:flex; align-items:center; justify-content:space-between; height:74px;">
     <a href="index.html" style="display:flex; align-items:center; gap:12px; text-decoration:none;">
       <div class="brand-mark"></div>
@@ -29,7 +29,7 @@
       <span style="color:var(--orange)">Before They Reach the Line.</span>
     </h1>
     <p style="font-size:20px; color:var(--muted); max-width:800px; margin:0 auto 40px;">
-      The only supply chain intelligence engine designed for SAP S/4HANA on-premise deployment. 
+      The only supply chain intelligence engine designed for SAP S/4HANA on-premise deployment.
       Manage 500k+ POs with sub-second visibility and zero data leakage.
     </p>
     <div style="display:flex; gap:16px; justify-content:center;">
@@ -65,5 +65,16 @@
     </div>
   </div>
 </footer>
+
+<div id="cookieBanner" class="cookie-banner" style="display:none;">
+  <h4>Privacy & Security Notice</h4>
+  <p>We use essential, non-tracking cookies to manage secure sessions and MFA handshakes. Review our <a href="cookies.html" style="color:var(--orange);">Cookie Policy</a>.</p>
+  <button class="btn-accept" onclick="acceptCookies()">Accept & Close</button>
+</div>
+
+<script>
+  window.onload = function() { if (!localStorage.getItem('horaxis_consent')) document.getElementById('cookieBanner').style.display = 'block'; };
+  function acceptCookies() { localStorage.setItem('horaxis_consent', 'true'); document.getElementById('cookieBanner').style.display = 'none'; }
+</script>
 </body>
 </html>

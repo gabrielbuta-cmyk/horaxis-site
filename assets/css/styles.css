@@ -1,62 +1,81 @@
+/* 1. CORE VARIABLES & DESIGN TOKENS */
 :root {
   --bg: #0F172A;
   --panel: #1E293B;
   --border: #334155;
   --text: #F8FAFC;
   --muted: #94A3B8;
-  --orange: #EA580C; /* Industrial Action Color */
+  --orange: #EA580C; /* Signal Orange - Industrial Action Color */
+  --blue-base: #2563EB; /* Brand Deep Blue */
   --navH: 74px;
 }
 
-* { box-sizing: border-box; }
+/* 2. GLOBAL RESET */
+* { 
+  box-sizing: border-box; 
+  -webkit-font-smoothing: antialiased;
+}
+
 body {
   margin: 0;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background-color: var(--bg);
   color: var(--text);
   line-height: 1.6;
+  overflow-x: hidden;
 }
 
-.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.container { 
+  max-width: 1200px; 
+  margin: 0 auto; 
+  padding: 0 24px; 
+}
 
-/* Navigation */
+/* 3. NAVIGATION */
 .nav {
-  position: sticky; top: 0; z-index: 100;
+  position: sticky; 
+  top: 0; 
+  z-index: 1000;
   background: rgba(15, 23, 42, 0.9);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
 }
-.nav-inner { display: flex; align-items: center; justify-content: space-between; height: var(--navH); }
-.nav-links a { color: var(--muted); font-weight: 600; font-size: 14px; margin-left: 20px; text-decoration: none; }
-.nav-links a:hover { color: var(--orange); }
 
-/* Buttons */
-.btn {
-  display: inline-block; padding: 14px 28px; border-radius: 4px;
-  font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
-  cursor: pointer; text-decoration: none; border: none;
+.nav-inner { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  height: var(--navH); 
 }
-.btn.primary { background: var(--orange); color: white; }
-.btn.secondary { border: 1px solid var(--border); color: var(--text); }
 
-/* ROI Calculator Components */
-.card { background: var(--panel); border: 1px solid var(--border); padding: 32px; border-radius: 4px; }
-.kpi-num { font-size: 42px; font-weight: 900; color: var(--orange); margin: 0; }
-.kpi-label { font-size: 12px; font-weight: 800; color: var(--muted); text-transform: uppercase; }
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
 
-/* Footer */
-.footer { padding: 60px 0; border-top: 1px solid var(--border); background: #0b1020; margin-top: 80px; }
-/* Custom Coded Brand Mark */
+.nav-links a { 
+  color: var(--muted); 
+  font-weight: 600; 
+  font-size: 14px; 
+  text-decoration: none; 
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover { 
+  color: var(--orange); 
+}
+
+/* 4. BRAND ASSETS (Optimized) */
 .brand-mark {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 34px;
   height: 34px;
-  background: #2563EB; /* Deep Blue base */
+  background: var(--blue-base);
   border-radius: 8px;
   position: relative;
-  overflow: hidden;
   box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
 }
 
@@ -73,7 +92,7 @@ body {
   content: '';
   width: 6px;
   height: 6px;
-  background: #EA580C; /* Signal Orange center dot */
+  background: var(--orange);
   border-radius: 50%;
   position: absolute;
 }
@@ -87,17 +106,141 @@ body {
 }
 
 .brand-text span {
-  color: #EA580C;
+  color: var(--orange);
 }
-/* BRAND LOGO */
-.brand-mark { width: 34px; height: 34px; background: #2563EB; border-radius: 8px; position: relative; display: flex; align-items: center; justify-content: center; }
-.brand-mark::before { content: ''; width: 14px; height: 14px; border: 3px solid #F8FAFC; border-radius: 50%; position: absolute; }
-.brand-mark::after { content: ''; width: 6px; height: 6px; background: #EA580C; border-radius: 50%; position: absolute; }
-.brand-text { font-weight: 900; font-size: 22px; color: #F8FAFC; letter-spacing: -0.05em; text-transform: uppercase; }
-.brand-text span { color: #EA580C; }
 
-/* GRID SYSTEM FOR ROI & CONTACT */
-.enterprise-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; text-align: left; }
-.field-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
-.field-group label { font-size: 11px; font-weight: 800; color: #94A3B8; text-transform: uppercase; }
-.field-group input, .field-group textarea { padding: 12px; background: #0F172A; border: 1px solid #334155; color: white; border-radius: 4px; }
+/* 5. BUTTONS */
+.btn {
+  display: inline-block; 
+  padding: 14px 28px; 
+  border-radius: 4px;
+  font-weight: 700; 
+  text-transform: uppercase; 
+  letter-spacing: 0.05em;
+  cursor: pointer; 
+  text-decoration: none; 
+  border: none;
+  font-size: 13px;
+  transition: transform 0.1s ease, opacity 0.2s ease;
+}
+
+.btn:active { transform: scale(0.98); }
+
+.btn.primary { 
+  background: var(--orange); 
+  color: white; 
+}
+
+.btn.secondary { 
+  border: 1px solid var(--border); 
+  color: var(--text); 
+  background: transparent;
+}
+
+.btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--muted);
+}
+
+/* 6. COMPONENTS & CARDS */
+.card { 
+  background: var(--panel); 
+  border: 1px solid var(--border); 
+  padding: 32px; 
+  border-radius: 4px;
+  height: 100%;
+}
+
+.kpi-num { 
+  font-size: 42px; 
+  font-weight: 900; 
+  color: var(--orange); 
+  margin: 0; 
+}
+
+.kpi-label { 
+  font-size: 11px; 
+  font-weight: 800; 
+  color: var(--muted); 
+  text-transform: uppercase; 
+  letter-spacing: 1px;
+}
+
+/* 7. COOKIE CONSENT UI */
+.cookie-banner {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  max-width: 400px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--orange);
+  padding: 24px;
+  border-radius: 4px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  z-index: 10000;
+}
+
+.cookie-banner h4 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.cookie-banner p {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.cookie-banner .btn-accept {
+  width: 100%;
+  padding: 12px;
+  background: var(--orange);
+  color: white;
+  font-weight: 900;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+/* 8. FORMS & INPUTS */
+.field-group { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 8px; 
+  margin-bottom: 20px; 
+}
+
+.field-group label { 
+  font-size: 11px; 
+  font-weight: 800; 
+  color: var(--muted); 
+  text-transform: uppercase; 
+}
+
+.field-group input, 
+.field-group textarea { 
+  padding: 14px; 
+  background: var(--bg); 
+  border: 1px solid var(--border); 
+  color: white; 
+  border-radius: 4px; 
+  outline: none;
+}
+
+.field-group input:focus {
+  border-color: var(--orange);
+}
+
+/* 9. FOOTER */
+.footer { 
+  padding: 60px 0; 
+  border-top: 1px solid var(--border); 
+  background: #0b1020; 
+  margin-top: 80px; 
+}
