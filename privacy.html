@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="assets/css/styles.css"/>
 </head>
 <body>
-  <header class="nav">
+<header class="nav">
   <div class="container nav-inner" style="display:flex; align-items:center; justify-content:space-between; height:74px;">
     <a href="index.html" style="display:flex; align-items:center; gap:12px; text-decoration:none;">
       <div class="brand-mark"></div>
@@ -29,7 +29,7 @@
       <p style="color:var(--muted); font-size:14px; margin-bottom:40px;">Last Updated: March 2026</p>
 
       <h2 style="color:white; font-size:20px; margin-top:30px;">1. Data Sovereignty First</h2>
-      <p style="color:var(--muted);">For clients utilizing our <strong>On-Premise Vault</strong> deployment, Horaxis does not have access to, nor do we store, any of your ERP or production data. All processing occurs within your firewall.</p>
+      <p style="color:var(--muted);">For clients utilizing our <strong>On-Premise</strong> deployment, Horaxis does not have access to, nor do we store, any of your ERP or production data. All processing occurs within your firewall.</p>
 
       <h2 style="color:white; font-size:20px; margin-top:30px;">2. Information We Collect (Website)</h2>
       <p style="color:var(--muted);">On our marketing site, we collect minimal information required to facilitate business inquiries:</p>
@@ -40,7 +40,7 @@
       </ul>
 
       <h2 style="color:white; font-size:20px; margin-top:30px;">3. Purpose of Processing</h2>
-      <p style="color:var(--muted);">Data is processed strictly to provide the ProcureAI services, improve machine learning models (aggregated/anonymous only), and ensure the security of the platform.</p>
+      <p style="color:var(--muted);">Data is processed strictly to provide the ProcureAI services and ensure the security and reliability of the platform. For on-premise deployments, all ML model training occurs within your own infrastructure using your data exclusively.</p>
 
       <h2 style="color:white; font-size:20px; margin-top:30px;">4. Contact</h2>
       <p style="color:var(--muted);">Privacy inquiries can be directed to <a href="mailto:info@horaxis.com" style="color:var(--orange);">info@horaxis.com</a>.</p>
@@ -55,12 +55,23 @@
       <span style="color:#94A3B8; font-size:12px;">© 2026 Horaxis Enterprise Solutions</span>
     </div>
     <div style="display:flex; gap:24px; font-size:12px; font-weight:700; text-transform:uppercase;">
-      <a href="privacy.html" style="color:#64748B; text-decoration:none;">Privacy</a>
+      <a href="privacy.html" style="color:#EA580C; text-decoration:none;">Privacy</a>
       <a href="terms.html" style="color:#64748B; text-decoration:none;">Terms</a>
       <a href="cookies.html" style="color:#64748B; text-decoration:none;">Cookies</a>
-      <a href="dpa.html" style="color:#64748B; text-decoration:none;">DPA</a>
+      <a href="data-sovereignty.html" style="color:#64748B; text-decoration:none;">Data Sovereignty</a>
     </div>
   </div>
 </footer>
+
+<div id="cookieBanner" class="cookie-banner" style="display:none;">
+  <h4>Privacy & Security Notice</h4>
+  <p>We use essential cookies for secure session management. Review our <a href="cookies.html" style="color:var(--orange);">Cookie Policy</a>.</p>
+  <button class="btn-accept" onclick="acceptCookies()">Accept & Close</button>
+</div>
+
+<script>
+  window.onload = function() { if (!localStorage.getItem('horaxis_consent')) document.getElementById('cookieBanner').style.display = 'block'; };
+  function acceptCookies() { localStorage.setItem('horaxis_consent', 'true'); document.getElementById('cookieBanner').style.display = 'none'; }
+</script>
 </body>
 </html>

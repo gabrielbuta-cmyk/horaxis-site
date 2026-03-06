@@ -21,6 +21,7 @@
     </nav>
   </div>
 </header>
+
 <section style="padding:80px 0;">
   <div class="container">
     <div class="card" style="max-width:900px; margin:0 auto; line-height:1.8;">
@@ -29,10 +30,10 @@
       <p style="color:var(--muted);">To ensure our enterprise tools function reliably, we use minimal, non-tracking cookies for essential session management and security.</p>
 
       <h2 style="color:white; font-size:20px; margin-top:30px;">Essential Cookies</h2>
-      <p style="color:var(--muted);">Required for the secure operation of the ProcureAI portal and the MFA handshake. These cannot be disabled for security reasons.</p>
+      <p style="color:var(--muted);">Required for the secure operation of the ProcureAI portal and session management. These cannot be disabled for security reasons.</p>
 
       <h2 style="color:white; font-size:20px; margin-top:30px;">Analytics</h2>
-      <p style="color:var(--muted);">We use anonymized telemetry to understand technical performance and page load speeds. No personally identifiable ERP data is ever transmitted via cookies.</p>
+      <p style="color:var(--muted);">We use Google Analytics to understand site performance and visitor engagement. No personally identifiable ERP data is ever transmitted via cookies.</p>
     </div>
   </div>
 </section>
@@ -46,10 +47,28 @@
     <div style="display:flex; gap:24px; font-size:12px; font-weight:700; text-transform:uppercase;">
       <a href="privacy.html" style="color:#64748B; text-decoration:none;">Privacy</a>
       <a href="terms.html" style="color:#64748B; text-decoration:none;">Terms</a>
-      <a href="cookies.html" style="color:#64748B; text-decoration:none;">Cookies</a>
-      <a href="dpa.html" style="color:#64748B; text-decoration:none;">DPA</a>
+      <a href="cookies.html" style="color:#EA580C; text-decoration:none;">Cookies</a>
+      <a href="data-sovereignty.html" style="color:#64748B; text-decoration:none;">Data Sovereignty</a>
     </div>
   </div>
 </footer>
+
+<div id="cookieBanner" class="cookie-banner" style="display:none;">
+  <h4>Privacy & Security Notice</h4>
+  <p>We use essential cookies for secure session management. Review our <a href="cookies.html" style="color:var(--orange);">Cookie Policy</a>.</p>
+  <button class="btn-accept" onclick="acceptCookies()">Accept & Close</button>
+</div>
+
+<script>
+  window.onload = function() { 
+    if (!localStorage.getItem('horaxis_consent')) {
+      document.getElementById('cookieBanner').style.display = 'block'; 
+    }
+  };
+  function acceptCookies() { 
+    localStorage.setItem('horaxis_consent', 'true'); 
+    document.getElementById('cookieBanner').style.display = 'none'; 
+  }
+</script>
 </body>
 </html>

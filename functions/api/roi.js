@@ -28,7 +28,7 @@ export const onRequest = async (context) => {
   const pos = Number(data.pos || 0);
 
   // --- ENTERPRISE MATH (Matching Frontend) ---
-  const HOURLY_DOWNTIME_COST = 22000;
+  const HOURLY_DOWNTIME_COST = 125000;
   const downtimeSaved = 12 * HOURLY_DOWNTIME_COST;
   const freightSaved = (spend * 0.05) * 0.15;
   const laborSaved = ((pos * 10) / 60) * 55;
@@ -90,7 +90,7 @@ export const onRequest = async (context) => {
           <div style="background:white; padding:20px; border-left:4px solid #ea580c;">
             <p><strong>Annual Projected Value:</strong> $${Math.round(totalSavings).toLocaleString()}</p>
           </div>
-          <p>To discuss these findings and our SAP S/4HANA integration roadmap, please reply to this email.</p>
+          <p>To discuss these findings and our ERP integration roadmap, please reply to this email.</p>
         </div>
       `,
       attachments: [{ filename: "Horaxis_Value_Assessment.pdf", content: pdfBase64 }],

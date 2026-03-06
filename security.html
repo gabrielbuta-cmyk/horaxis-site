@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Enterprise Security & Data Sovereignty — Horaxis</title>
-  <meta name="description" content="ProcureAI Security: On-premise deployment, AES-256 encryption, and native SAP RFC/OData security protocols."/>
+  <meta name="description" content="ProcureAI Security: On-premise deployment, AES-128 encryption, and  SAP RFC/OData security protocols."/>
   <link rel="stylesheet" href="assets/css/styles.css"/>
 </head>
 <body>
@@ -26,27 +26,27 @@
 <section style="padding:100px 0 60px;">
   <div class="container">
     <div style="max-width:800px; margin-bottom:80px;">
-      <h1 style="font-size:56px; font-weight:900; line-height:1.1; margin-bottom:24px;">Your Data. <br><span style="color:var(--orange)">Your Firewall.</span></h1>
+      <h1 style="font-size:56px; font-weight:900; line-height:1.1; margin-bottom:24px;">Your Data. <br><span style="color:var(--orange)">Your Network.</span></h1>
       <p style="font-size:20px; color:var(--muted); line-height:1.6;">
-        Unlike traditional SaaS, ProcureAI is built for "Air-Gapped" or VPC environments. We provide the intelligence; you retain the data sovereignty.
+        Unlike traditional SaaS, ProcureAI deploys inside your private infrastructure. We provide the intelligence; you retain full data sovereignty.
       </p>
     </div>
 
     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:40px;">
       <div class="card">
-        <h3 style="font-size:22px; font-weight:800; margin-bottom:15px; color:white;">On-Premise Vault Deployment</h3>
+        <h3 style="font-size:22px; font-weight:800; margin-bottom:15px; color:white;">On-Premise Deployment</h3>
         <p style="font-size:15px; color:var(--muted); line-height:1.7; margin-bottom:20px;">
-          Deploy as a standalone Docker container within your private network. No production data leaves your infrastructure. This eliminates the need for complex DPAs and cross-border data transfer legalities.
+          Deploy as a containerized Docker Compose stack within your private network. No production data leaves your infrastructure. This eliminates the need for complex DPAs and cross-border data transfer legalities.
         </p>
-        <div style="font-size:12px; font-weight:800; color:var(--orange); letter-spacing:1px;">FIREWALL-READY</div>
+        <div style="font-size:12px; font-weight:800; color:var(--orange); letter-spacing:1px;">ON-PREMISE READY</div>
       </div>
 
       <div class="card">
-        <h3 style="font-size:22px; font-weight:800; margin-bottom:15px; color:white;">Native ERP Handshakes</h3>
+        <h3 style="font-size:22px; font-weight:800; margin-bottom:15px; color:white;">Native ERP Connectors</h3>
         <p style="font-size:15px; color:var(--muted); line-height:1.7; margin-bottom:20px;">
-          We utilize standard SAP RFC (Remote Function Call) and OData Secure protocols. Authentication is managed via your existing SAP Service User permissions, ensuring strict least-privilege access.
+          Pre-built connectors for SAP (RFC + OData), Oracle (Cloud + EBS), and Microsoft Dynamics 365. Authentication is managed via your existing ERP service user permissions, ensuring least-privilege access.
         </p>
-        <div style="font-size:12px; font-weight:800; color:var(--orange); letter-spacing:1px;">SAP CERTIFIED PROTOCOLS</div>
+        <div style="font-size:12px; font-weight:800; color:var(--orange); letter-spacing:1px;">SAP · ORACLE · DYNAMICS 365</div>
       </div>
     </div>
   </div>
@@ -58,15 +58,15 @@
     <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:30px;">
       <div>
         <h4 style="color:white; font-weight:700; margin-bottom:10px;">Encryption</h4>
-        <p style="font-size:14px; color:var(--muted);">AES-256 bit encryption at rest and TLS 1.3 in transit. All database secrets are managed via environment injection.</p>
+        <p style="font-size:14px; color:var(--muted);">ERP credentials encrypted with AES-128 (Fernet) at rest. TLS 1.2/1.3 for all external connections. All application secrets managed via environment variable injection.</p>
       </div>
       <div>
         <h4 style="color:white; font-weight:700; margin-bottom:10px;">Identity</h4>
-        <p style="font-size:14px; color:var(--muted);">SAML 2.0 / SSO integration ready. Native support for Multi-Factor Authentication (MFA) on all administrative accounts.</p>
+        <p style="font-size:14px; color:var(--muted);">Native Multi-Factor Authentication (MFA) with TOTP on all administrative accounts. Role-based access control with enforced MFA for admin users.</p>
       </div>
       <div>
         <h4 style="color:white; font-weight:700; margin-bottom:10px;">Auditability</h4>
-        <p style="font-size:14px; color:var(--muted);">Immutable transaction logs for every ERP write-back event. Every supplier interaction is tokenized and timestamped.</p>
+        <p style="font-size:14px; color:var(--muted);">Full audit trail for all system activity with 90-day retention. Supplier portal access secured with unique hashed tokens; all submissions timestamped and tracked.</p>
       </div>
     </div>
   </div>
@@ -75,13 +75,12 @@
 <section style="padding:100px 0; text-align:center;">
   <div class="container">
     <div class="card" style="max-width:800px; margin:0 auto; border-left: 4px solid var(--orange);">
-      <h2 style="font-size:28px; font-weight:900; margin-bottom:15px;">Compliance Readiness</h2>
+      <h2 style="font-size:28px; font-weight:900; margin-bottom:15px;">Enterprise Security Standards</h2>
       <p style="color:var(--muted); margin-bottom:30px;">
-        Our architecture aligns with GDPR, SOC2, and ISO 27001 standards. Request our <strong>IT Readiness Guide</strong> for a detailed mapping of our controls to your internal compliance framework.
+        Our architecture follows enterprise security best practices: encrypted credentials, role-based access, MFA enforcement, audit logging, and on-premise deployment for full data control. Request our IT Readiness Guide for technical details.
       </p>
       <div style="display:flex; gap:16px; justify-content:center;">
-        <a href="contact.html?type=it-guide" class="btn primary">Request IT Guide</a>
-        <a href="dpa.html" class="btn secondary">View DPA</a>
+        <a href="contact.html?type=it-guide" class="btn primary">Request IT Guide</a>        
       </div>
     </div>
   </div>
@@ -97,14 +96,14 @@
       <a href="privacy.html" style="color:#64748B; text-decoration:none;">Privacy</a>
       <a href="terms.html" style="color:#64748B; text-decoration:none;">Terms</a>
       <a href="cookies.html" style="color:#64748B; text-decoration:none;">Cookies</a>
-      <a href="dpa.html" style="color:#64748B; text-decoration:none;">DPA</a>
+      <a href="data-sovereignty.html" style="color:#64748B; text-decoration:none;">Data Sovereignty</a>
     </div>
   </div>
 </footer>
 
 <div id="cookieBanner" class="cookie-banner" style="display:none;">
   <h4>Privacy & Security Notice</h4>
-  <p>We use essential cookies for secure ERP handshakes. Review our <a href="cookies.html" style="color:var(--orange);">Cookie Policy</a>.</p>
+  <p>We use essential cookies for secure session management. Review our <a href="cookies.html" style="color:var(--orange);">Cookie Policy</a>.</p>
   <button class="btn-accept" onclick="acceptCookies()">Accept & Close</button>
 </div>
 

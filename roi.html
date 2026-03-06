@@ -47,7 +47,7 @@
         <div class="field-group"><label>Annual Spend ($)</label><input type="number" id="spend" value="50000000"></div>
         <div class="field-group"><label>Annual PO Lines</label><input type="number" id="pos" value="10000"></div>
         <div class="field-group"><label>Late Rate (%)</label><input type="number" id="lateRate" value="17"></div>
-        <div class="field-group"><label>Downtime Cost ($/hr)</label><input type="number" id="lateCost" value="22000"></div>
+        <div class="field-group"><label>Downtime Cost ($/hr)</label><input type="number" id="lateCost" value="125000"></div>
       </div>
       <button onclick="calculate()" style="width:100%; margin-top:30px; background:#EA580C; border:none; padding:16px; color:white; font-weight:900; border-radius:4px; cursor:pointer; text-transform:uppercase;">Update Economic Impact</button>
     </div>
@@ -73,10 +73,16 @@
       <a href="privacy.html" style="color:#64748B; text-decoration:none;">PRIVACY</a>
       <a href="terms.html" style="color:#64748B; text-decoration:none;">TERMS</a>
       <a href="cookies.html" style="color:#64748B; text-decoration:none;">COOKIES</a>
-      <a href="dpa.html" style="color:#64748B; text-decoration:none;">DPA</a>
+      <a href="data-sovereignty.html" style="color:#64748B; text-decoration:none;">Data Sovereignty</a>
     </div>
   </div>
 </footer>
+
+<div id="cookieBanner" class="cookie-banner" style="display:none;">
+  <h4>Privacy & Security Notice</h4>
+  <p>We use essential cookies for secure session management. Review our <a href="cookies.html" style="color:var(--orange); text-decoration:none;">Cookie Policy</a>.</p>
+  <button class="btn-accept" onclick="acceptCookies()">Accept & Close</button>
+</div>
 
 <script>
 function calculate() {
@@ -84,23 +90,28 @@ function calculate() {
     const stopCost = parseFloat(document.getElementById('lateCost').value) || 0;
     const lateRate = (parseFloat(document.getElementById('lateRate').value) || 0) / 100;
 
-    // 1. Production Continuity: Prevents 3 major 'Fast-Onset' shutdowns per year
-    // Calculation: StopCost * 48 hours * Risk Multiplier
     const riskSave = (stopCost * 48) * (lateRate * 3.5); 
-
-    // 2. Logistics Optimization: Saving 30% of the air-freight 'panic' spend
-    // European freight premiums are highly volatile due to energy costs
     const freightSave = (spend * 0.09) * 0.35; 
-
-    // 3. Labor & Overhead: Automating manual follow-ups for thousands of POs
     const laborSave = (spend / 100000) * 1550; 
-
     const total = riskSave + freightSave + laborSave;
 
-    document.getElementById('totalSave').innerText = "€" + Math.round(total).toLocaleString();
-    document.getElementById('risk').innerText = "€" + Math.round(riskSave).toLocaleString();
-    document.getElementById('freight').innerText = "€" + Math.round(freightSave + laborSave).toLocaleString();
-}calculate();
+    document.getElementById('totalSave').innerText = "$" + Math.round(total).toLocaleString();
+    document.getElementById('risk').innerText = "$" + Math.round(riskSave).toLocaleString();
+    document.getElementById('freight').innerText = "$" + Math.round(freightSave + laborSave).toLocaleString();
+}
+
+calculate();
+
+// Cookie Logic
+window.onload = function() { 
+  if (!localStorage.getItem('horaxis_consent')) {
+    document.getElementById('cookieBanner').style.display = 'block'; 
+  }
+};
+function acceptCookies() { 
+  localStorage.setItem('horaxis_consent', 'true'); 
+  document.getElementById('cookieBanner').style.display = 'none'; 
+}
 </script>
 </body>
 </html>

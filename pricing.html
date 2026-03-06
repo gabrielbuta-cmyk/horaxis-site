@@ -43,7 +43,7 @@
           <li>✓ Native SAP/Oracle Connection</li>
           <li>✓ Basic Late-Risk Detection</li>
           <li>✓ Standard Supplier Portal</li>
-          <li>✓ Cloud or VPC Deployment</li>
+          <li>✓ On-Premise Docker Deployment</li>
         </ul>
         <div style="margin-top:30px; border-top:1px solid var(--border); pt:20px;">
           <a href="contact.html" class="btn secondary" style="width:100%; text-align:center;">Request Quote</a>
@@ -59,10 +59,10 @@
         <ul style="list-style:none; padding:0; color:var(--text); font-size:14px; line-height:2.2; flex-grow:1;">
           <li>✓ <strong>Unlimited PO Lines</strong></li>
           <li>✓ Recursive BOM Impact Tracking</li>
-          <li>✓ <strong>On-Premise Standalone Install</strong></li>
+          <li>✓ <strong>On-Premise Docker Compose Deploy</strong></li>
           <li>✓ Bi-directional ERP Write-back</li>
-          <li>✓ ML-Driven Freight Optimization</li>
-          <li>✓ Priority 24/7 Support SLA</li>
+          <li>✓ ML-Driven Late Delivery Prevention</li>
+          <li>✓ Priority Business-Hours Support SLA</li>
         </ul>
         <div style="margin-top:30px;">
           <a href="contact.html" class="btn primary" style="width:100%; text-align:center;">Request Pilot</a>
@@ -76,10 +76,10 @@
         </div>
         <ul style="list-style:none; padding:0; color:var(--muted); font-size:14px; line-height:2.2; flex-grow:1;">
           <li>✓ Multi-Instance ERP Sync</li>
-          <li>✓ Custom ML Model Training</li>
-          <li>✓ Dedicated Solution Architect</li>
-          <li>✓ On-Site Deployment Support</li>
-          <li>✓ Air-Gapped High-Security Mode</li>
+          <li>✓ Automated ML Model Training</li>
+          <li>✓ Dedicated Onboarding Manager</li>
+          <li>✓ Remote Deployment Support</li>
+          <li>✓ Restricted-Network Deployment Mode</li>
         </ul>
         <div style="margin-top:30px; border-top:1px solid var(--border); pt:20px;">
           <a href="contact.html" class="btn secondary" style="width:100%; text-align:center;">Contact Sales</a>
@@ -94,7 +94,7 @@
   <div class="container" style="text-align:center;">
     <h2 style="font-size:32px; font-weight:800; margin-bottom:20px;">Transparent ROI Performance</h2>
     <p style="color:var(--muted); max-width:700px; margin:0 auto 40px;">
-      Our licensing typically pays for itself within the first 90 days by preventing a single high-value production line stoppage.
+      Explore how ProcureAI can deliver measurable value by preventing costly production line stoppages caused by late deliveries.
     </p>
     <a href="roi.html" style="color:var(--orange); font-weight:800; text-decoration:underline;">Run your custom Business Case →</a>
   </div>
@@ -110,9 +110,20 @@
       <a href="privacy.html" style="color:#64748B; text-decoration:none;">Privacy</a>
       <a href="terms.html" style="color:#64748B; text-decoration:none;">Terms</a>
       <a href="cookies.html" style="color:#64748B; text-decoration:none;">Cookies</a>
-      <a href="dpa.html" style="color:#64748B; text-decoration:none;">DPA</a>
+      <a href="data-sovereignty.html" style="color:#64748B; text-decoration:none;">Data Sovereignty</a>
     </div>
   </div>
 </footer>
+
+<div id="cookieBanner" class="cookie-banner" style="display:none;">
+  <h4>Privacy & Security Notice</h4>
+  <p>We use essential cookies for secure session management. Review our <a href="cookies.html" style="color:var(--orange);">Cookie Policy</a>.</p>
+  <button class="btn-accept" onclick="acceptCookies()">Accept & Close</button>
+</div>
+
+<script>
+  window.onload = function() { if (!localStorage.getItem('horaxis_consent')) document.getElementById('cookieBanner').style.display = 'block'; };
+  function acceptCookies() { localStorage.setItem('horaxis_consent', 'true'); document.getElementById('cookieBanner').style.display = 'none'; }
+</script>
 </body>
 </html>

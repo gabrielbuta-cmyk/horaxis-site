@@ -59,7 +59,7 @@ export const onRequest = async (context) => {
       from: "Horaxis Enterprise <info@horaxis.com>",
       to: [email],
       subject: "We received your request — Horaxis",
-      html: `<p>Hi ${name},</p><p>Thank you for requesting a Pilot Proposal. An account executive will review your ERP requirements (${erp}) and contact you within 1 business day.</p>`,
+      html: `<p>Hi ${name},</p><p>Thank you for requesting a Pilot Proposal. Our team will review your ERP requirements (${erp}) and contact you within 1 business day.</p>`,
     }),
   });
 
