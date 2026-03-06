@@ -90,6 +90,7 @@ document.getElementById('pilotForm').addEventListener('submit', async (e) => {
   btn.innerText = "Transmitting..."; btn.disabled = true;
 
   const data = Object.fromEntries(new FormData(e.target).entries());
+  if (type) data.type = type;
   try {
     const res = await fetch('/api/contact', {
       method: 'POST',
