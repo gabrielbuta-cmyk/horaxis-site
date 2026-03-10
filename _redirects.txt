@@ -5,7 +5,8 @@ https://www.horaxis.com/* https://horaxis.com/:splat 301!
 /pilot      /contact.html   200
 /security   /security.html  200
 /product    /product.html   200
-/roi        /roi.html       200
+/how-it-works /how-it-works.html 200
+/roi        /how-it-works.html 301
 /pricing    /pricing.html   200
 /legal      /privacy.html   200
 

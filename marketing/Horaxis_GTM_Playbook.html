@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Go-To-Market Playbook — Horaxis / ProcureAI Enterprise</title>
+<style>
+  /* ── Reset & Base ─────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #F8FAFC; color: #1E293B; line-height: 1.6; }
+
+  /* ── Brand Colors ─────────────────────────────── */
+  :root {
+    --navy: #0F172A;
+    --dark: #1E293B;
+    --slate: #334155;
+    --muted: #64748B;
+    --light-muted: #94A3B8;
+    --orange: #EA580C;
+    --orange-light: rgba(234,88,12,0.08);
+    --orange-border: rgba(234,88,12,0.25);
+    --blue: #2563EB;
+    --white: #FFFFFF;
+    --bg: #F8FAFC;
+    --card-bg: #FFFFFF;
+    --border: #E2E8F0;
+    --green: #16A34A;
+    --amber: #D97706;
+  }
+
+  /* ── Layout ───────────────────────────────────── */
+  .page { max-width: 1100px; margin: 0 auto; padding: 20px 30px; }
+
+  /* ── Cover Page ───────────────────────────────── */
+  .cover { background: var(--navy); color: white; padding: 80px 60px; text-align: center; border-radius: 0; margin: -20px -30px 40px; }
+  .cover-brand { display: inline-flex; align-items: center; gap: 14px; margin-bottom: 40px; }
+  .cover-logo { width: 44px; height: 44px; background: var(--blue); border-radius: 10px; position: relative; display: flex; align-items: center; justify-content: center; }
+  .cover-logo::before { content: ''; width: 18px; height: 18px; border: 3px solid white; border-radius: 50%; position: absolute; }
+  .cover-logo::after { content: ''; width: 7px; height: 7px; background: var(--orange); border-radius: 50%; position: absolute; }
+  .cover-brand-text { font-weight: 900; font-size: 28px; letter-spacing: -0.04em; text-transform: uppercase; }
+  .cover-brand-text span { color: var(--orange); }
+  .cover h1 { font-size: 42px; font-weight: 900; margin-bottom: 12px; letter-spacing: -0.02em; }
+  .cover h1 em { font-style: normal; color: var(--orange); }
+  .cover p { font-size: 18px; color: var(--light-muted); max-width: 600px; margin: 0 auto 30px; }
+  .cover-meta { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* ── Section Headers ──────────────────────────── */
+  .section-header { background: var(--navy); color: white; padding: 30px 40px; margin: 50px -30px 30px; display: flex; align-items: center; gap: 16px; }
+  .section-number { background: var(--orange); color: white; width: 42px; height: 42px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 20px; flex-shrink: 0; }
+  .section-header h2 { font-size: 26px; font-weight: 800; margin: 0; }
+  .section-header p { font-size: 14px; color: var(--light-muted); margin: 4px 0 0; }
+
+  /* ── Tables ───────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 30px; }
+  thead th { background: var(--navy); color: white; padding: 12px 14px; text-align: left; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+  tbody td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tbody tr:hover { background: var(--orange-light); }
+  tbody tr.priority-high { background: rgba(234,88,12,0.05); }
+  tbody tr.priority-high td:first-child { border-left: 3px solid var(--orange); }
+
+  /* ── Tags ──────────────────────────────────────── */
+  .tag { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+  .tag-high { background: rgba(234,88,12,0.12); color: var(--orange); }
+  .tag-medium { background: rgba(217,119,6,0.12); color: var(--amber); }
+  .tag-standard { background: rgba(100,116,139,0.12); color: var(--muted); }
+  .tag-sap { background: rgba(37,99,235,0.10); color: var(--blue); }
+
+  /* ── Cards ─────────────────────────────────────── */
+  .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 30px; margin-bottom: 24px; }
+  .card-accent { border-left: 4px solid var(--orange); }
+  .card h3 { font-size: 18px; font-weight: 800; color: var(--navy); margin-bottom: 6px; }
+  .card h4 { font-size: 14px; font-weight: 700; color: var(--navy); margin: 20px 0 8px; }
+  .card .meta { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+
+  /* ── LinkedIn Posts ────────────────────────────── */
+  .post-body { background: #F1F5F9; border-radius: 6px; padding: 20px; font-size: 14px; line-height: 1.75; color: var(--dark); white-space: pre-wrap; margin: 12px 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+  .post-hashtags { font-size: 13px; color: var(--blue); font-weight: 600; margin-top: 10px; }
+  .post-tip { display: flex; align-items: flex-start; gap: 10px; background: var(--orange-light); border: 1px solid var(--orange-border); border-radius: 6px; padding: 14px 16px; margin-top: 14px; font-size: 13px; }
+  .post-tip strong { color: var(--orange); white-space: nowrap; }
+
+  /* ── Email Sequences ───────────────────────────── */
+  .email-variant { margin-bottom: 30px; }
+  .email-variant-header { background: var(--dark); color: white; padding: 14px 20px; border-radius: 6px 6px 0 0; display: flex; align-items: center; gap: 12px; }
+  .email-variant-header .variant-letter { background: var(--orange); width: 30px; height: 30px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; }
+  .email-variant-header h4 { margin: 0; font-size: 15px; font-weight: 700; }
+  .email-step { border: 1px solid var(--border); border-top: none; padding: 20px 24px; }
+  .email-step:last-child { border-radius: 0 0 6px 6px; }
+  .email-step .day-badge { display: inline-block; background: var(--navy); color: white; padding: 2px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; margin-right: 10px; }
+  .email-step .subject-line { font-weight: 700; color: var(--navy); font-size: 14px; margin: 10px 0 8px; }
+  .email-step .email-body { font-size: 13.5px; line-height: 1.7; color: #475569; }
+
+  /* ── Strategy Table ────────────────────────────── */
+  .strategy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+  .strategy-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 24px; }
+  .strategy-box h4 { color: var(--navy); font-size: 15px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .strategy-box ul { padding-left: 18px; font-size: 13px; color: var(--slate); }
+  .strategy-box li { margin-bottom: 6px; }
+
+  /* ── Print Styles ──────────────────────────────── */
+  @media print {
+    body { background: white; font-size: 11px; }
+    .page { padding: 0; max-width: 100%; }
+    .cover { margin: 0; padding: 50px 40px; page-break-after: always; }
+    .section-header { margin-left: 0; margin-right: 0; page-break-before: always; page-break-after: avoid; }
+    .card { page-break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
+    table { font-size: 10px; }
+    thead th { background: #1E293B !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    tbody tr.priority-high { background: #FFF7ED !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .section-number { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .email-variant-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .post-body { page-break-inside: avoid; }
+    .email-variant { page-break-inside: avoid; }
+    .strategy-grid { grid-template-columns: 1fr 1fr; }
+    a { color: var(--orange); text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- COVER PAGE                                      -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-brand">
+    <div class="cover-logo"></div>
+    <div class="cover-brand-text">HORAXIS<span>.</span></div>
+  </div>
+  <h1>Go-To-Market <em>Playbook</em></h1>
+  <p>Target contacts, LinkedIn content, and cold email sequences for ProcureAI Enterprise customer acquisition.</p>
+  <div class="cover-meta">Confidential &mdash; March 2026</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION 1: TARGET CONTACT LIST                  -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section-header">
+  <div class="section-number">1</div>
+  <div>
+    <h2>Target Contact List</h2>
+    <p>25 procurement decision-makers at Tier-1 European manufacturers</p>
+  </div>
+</div>
+
+<p style="font-size:14px; color:var(--muted); margin-bottom:20px;">
+  Prioritized by buying signals: active SAP S/4HANA migrations, newly appointed CPOs, public digital procurement initiatives, and high procurement spend.
+  <span class="tag tag-high">HIGH</span> = strongest signals, outreach first.
+</p>
+
+<div style="overflow-x:auto;">
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Company</th>
+      <th>Contact Name</th>
+      <th>Title</th>
+      <th>Industry</th>
+      <th>Country</th>
+      <th>ERP</th>
+      <th>Priority</th>
+      <th>Signal / Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- HIGH PRIORITY (Top 10) -->
+    <tr class="priority-high">
+      <td>1</td>
+      <td><strong>BASF SE</strong></td>
+      <td>Matthias Dohrn</td>
+      <td>SVP Procurement</td>
+      <td>Chemicals</td>
+      <td>DE</td>
+      <td><span class="tag tag-sap">SAP S/4</span></td>
+      <td><span class="tag tag-high">HIGH</span></td>
+      <td>Active RISE with SAP migration; 70K+ suppliers globally; digitizing procurement ops</td>
+    </tr>
+    <tr class="priority-high">
+      <td>2</td>
+      <td><strong>Schneider Electric</strong></td>
+      <td>Ard Verboon</td>
+      <td>Chief Procurement Officer</td>
+      <td>Industrial Equipment</td>
+      <td>FR</td>
+      <td><span class="tag tag-sap">SAP S/4</span></td>
+      <td><span class="tag tag-high">HIGH</span></td>
+      <td>Multi-factory SAP rollout; heavy supplier dependency; smart factory program</td>
+    </tr>
+    <tr class="priority-high">
+      <td>3</td>
+      <td><strong>Siemens AG</strong></td>
+      <td>Klaus Staubitzer</td>
+      <td>CPO, Siemens AG</td>
+      <td>Industrial Conglomerate</td>
+      <td>DE</td>
+      <td><span class="tag tag-sap">SAP S/4</span></td>
+      <td><span class="tag tag-high">HIGH</span></td>
+      <td>Major SAP S/4HANA program; 90K+ supplier base; drives digital procurement initiatives</td>
+    </tr>
+    <tr class="priority-high">
+      <td>4</td>
+      <td><strong>Airbus SE</strong></td>
+      <td>Benoit Schultz</td>
+      <td>Chief Procurement Officer</td>
+      <td>Aerospace & Defense</td>
+      <td>FR/DE</td>
+      <td><span class="tag tag-sap">SAP ECC/S4</span></td>
+      <td><span class="tag tag-high">HIGH</span></td>
+      <td>Newly appointed CPO; massive BOM complexity; supply chain disruption pain</td>
+    </tr>
+    <tr class="priority-high">
+      <td>5</td>
+      <td><strong>Henkel AG</strong></td>
+      <td>Bertrand Conqueret</td>
+      <td>Chief Procurement Officer</td>
+      <td>Consumer Goods / Chemicals</td>
+      <td>DE</td>
+      <td><span class="tag tag-sap">SAP S/4</span></td>
+      <td><span class="tag tag-high">HIGH</span></td>
+      <td>Driving digital procurement transformation; active S/4HANA migration across divisions</td>
+    </tr>
+    <tr class="priority-high">
+      <td>6</td>
+      <td><strong>BMW Group</strong></td>
+      <td>Nicolai Martin</td>
+      <td>SVP Purchasing Strategy</td>
+      <td>Automotive</td>
+      <td>DE</td>
+      <td><span class="tag tag-sap">SAP S/4</span></td>
+      <td><span class="tag tag-high">HIGH</span></td>
+      <td>$104B+ annual procurement spend; EV supply chain transformation; supplier risk focus</td>
+    </tr>
+    <tr class="priority-high">
+      <td>7</td>
+      <td><strong>Volvo Group</strong></td>
+      <td>Michael Lovati</td>
+      <td>Chief Procurement Officer</td>
+      <td>Automotive / Trucks</td>
+      <td>SE</td>
+      <td><span class="tag tag-sap">SAP S/4</span></td>
+      <td><span class="tag tag-high">HIGH</span></td>
+      <td>Newly appointed CPO (Jan 2026); electrification procurement overhaul; open to new tools</td>
+    </tr>
+    <tr class="priority-high">
+      <td>8</td>
+      <td><strong>Renault Group</strong></td>
+      <td>Anthony Plouvier</td>
+      <td>Chief Procurement Officer</td>
+      <td>Automotive</td>
+      <td>FR</td>
+      <td><span class="tag tag-sap">SAP</span></td>
+      <td><span class="tag tag-high">HIGH</span></td>
+      <td>New CPO (Sep 2025); restructuring procurement for EV transition; Ampere spin-off supply chain</td>
+    </tr>
+    <tr class="priority-high">
+      <td>9</td>
+      <td><strong>Beiersdorf AG</strong></td>
+      <td>Christine Berg</td>
+      <td>VP Global Procurement</td>
+      <td>Consumer Goods</td>
+      <td>DE</td>
+      <td><span class="tag tag-sap">SAP S/4</span></td>
+      <td><span class="tag tag-high">HIGH</span></td>
+      <td>SAP S/4HANA migration completed; modernizing supplier management tools</td>
+    </tr>
+    <tr class="priority-high">
+      <td>10</td>
+      <td><strong>Stellantis NV</strong></td>
+      <td>Monica Genovese</td>
+      <td>VP Procurement &amp; Supply Chain</td>
+      <td>Automotive</td>
+      <td>NL/IT</td>
+      <td><span class="tag tag-sap">SAP/Oracle</span></td>
+      <td><span class="tag tag-high">HIGH</span></td>
+      <td>Multi-brand ERP consolidation; 14-brand BOM complexity; supplier delivery risk is top priority</td>
+    </tr>
+    <!-- MEDIUM PRIORITY -->
+    <tr>
+      <td>11</td>
+      <td><strong>Thyssenkrupp AG</strong></td>
+      <td>Oliver Burkhard</td>
+      <td>CHRO & Procurement Board</td>
+      <td>Industrial / Steel</td>
+      <td>DE</td>
+      <td><span class="tag tag-sap">SAP ECC</span></td>
+      <td><span class="tag tag-medium">MEDIUM</span></td>
+      <td>Restructuring; SAP ECC end-of-life pressure; cost reduction mandate</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td><strong>Continental AG</strong></td>
+      <td>Katja Duerrfeld</td>
+      <td>Head of Procurement</td>
+      <td>Automotive Parts</td>
+      <td>DE</td>
+      <td><span class="tag tag-sap">SAP S/4</span></td>
+      <td><span class="tag tag-medium">MEDIUM</span></td>
+      <td>Spin-off of ContiTech division; rebuilding procurement systems independently</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td><strong>Bosch Group</strong></td>
+      <td>Dirk Slama</td>
+      <td>VP Digital Procurement</td>
+      <td>Industrial / Automotive</td>
+      <td>DE</td>
+      <td><span class="tag tag-sap">SAP S/4</span></td>
+      <td><span class="tag tag-medium">MEDIUM</span></td>
+      <td>IoT + Industry 4.0 leader; exploring AI for procurement; 50K+ supplier base</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td><strong>Saint-Gobain</strong></td>
+      <td>Laurent Luce</td>
+      <td>Group Chief Procurement Officer</td>
+      <td>Building Materials</td>
+      <td>FR</td>
+      <td><span class="tag tag-sap">SAP</span></td>
+      <td><span class="tag tag-medium">MEDIUM</span></td>
+      <td>Global operations across 75 countries; centralizing procurement digitally</td>
+    </tr>
+    <tr>
+      <td>15</td>
+      <td><strong>Rolls-Royce Holdings</strong></td>
+      <td>Harry Mayfield</td>
+      <td>Director of Procurement</td>
+      <td>Aerospace / Defense</td>
+      <td>UK</td>
+      <td><span class="tag tag-sap">SAP ECC/S4</span></td>
+      <td><span class="tag tag-medium">MEDIUM</span></td>
+      <td>Long-lead aerospace parts; massive BOM depth; S/4 migration underway</td>
+    </tr>
+    <tr>
+      <td>16</td>
+      <td><strong>Safran SA</strong></td>
+      <td>Jean-Paul Alary</td>
+      <td>EVP Purchasing</td>
+      <td>Aerospace</td>
+      <td>FR</td>
+      <td><span class="tag tag-sap">SAP</span></td>
+      <td><span class="tag tag-medium">MEDIUM</span></td>
+      <td>Aircraft engine supply chain; critical delivery timing; LEAP engine ramp-up</td>
+    </tr>
+    <tr>
+      <td>17</td>
+      <td><strong>ABB Ltd</strong></td>
+      <td>Carolina Granat</td>
+      <td>Chief People &amp; Sustainability Officer</td>
+      <td>Industrial Automation</td>
+      <td>CH</td>
+      <td><span class="tag tag-sap">SAP S/4</span></td>
+      <td><span class="tag tag-medium">MEDIUM</span></td>
+      <td>$125K/hr downtime benchmark (ABB 2023 data); SAP S/4 standardization across divisions</td>
+    </tr>
+    <tr>
+      <td>18</td>
+      <td><strong>Vestas Wind Systems</strong></td>
+      <td>Anders Nielsen</td>
+      <td>SVP Global Procurement</td>
+      <td>Renewable Energy</td>
+      <td>DK</td>
+      <td><span class="tag tag-sap">SAP S/4</span></td>
+      <td><span class="tag tag-medium">MEDIUM</span></td>
+      <td>Long-lead turbine components; global supplier base; delivery risk is business-critical</td>
+    </tr>
+    <tr>
+      <td>19</td>
+      <td><strong>ZF Friedrichshafen</strong></td>
+      <td>Peter Holdmann</td>
+      <td>VP Purchasing</td>
+      <td>Automotive / Mobility</td>
+      <td>DE</td>
+      <td><span class="tag tag-sap">SAP ECC</span></td>
+      <td><span class="tag tag-medium">MEDIUM</span></td>
+      <td>ECC end-of-life pressure; 30K+ suppliers; EV transition procurement</td>
+    </tr>
+    <tr>
+      <td>20</td>
+      <td><strong>Danfoss A/S</strong></td>
+      <td>Torben Moller Hansen</td>
+      <td>CPO</td>
+      <td>Industrial Components</td>
+      <td>DK</td>
+      <td><span class="tag tag-sap">SAP</span></td>
+      <td><span class="tag tag-medium">MEDIUM</span></td>
+      <td>Climate solutions manufacturer; growing rapidly; needs scalable procurement intelligence</td>
+    </tr>
+    <!-- STANDARD PRIORITY -->
+    <tr>
+      <td>21</td>
+      <td><strong>Wacker Chemie AG</strong></td>
+      <td>Tobias Ohler</td>
+      <td>SVP Procurement &amp; Logistics</td>
+      <td>Specialty Chemicals</td>
+      <td>DE</td>
+      <td><span class="tag tag-sap">SAP</span></td>
+      <td><span class="tag tag-standard">STD</span></td>
+      <td>Polysilicon supply chain; raw material sourcing complexity</td>
+    </tr>
+    <tr>
+      <td>22</td>
+      <td><strong>Rheinmetall AG</strong></td>
+      <td>Peter Sebastian Krause</td>
+      <td>Head of Procurement</td>
+      <td>Defense / Automotive</td>
+      <td>DE</td>
+      <td><span class="tag tag-sap">SAP</span></td>
+      <td><span class="tag tag-standard">STD</span></td>
+      <td>Defense order ramp-up; strict data sovereignty requirements; on-premise only</td>
+    </tr>
+    <tr>
+      <td>23</td>
+      <td><strong>Valeo SE</strong></td>
+      <td>Marc Vrecko</td>
+      <td>SVP Purchasing</td>
+      <td>Automotive Tier-1</td>
+      <td>FR</td>
+      <td><span class="tag tag-sap">SAP</span></td>
+      <td><span class="tag tag-standard">STD</span></td>
+      <td>Cost pressure from OEM margin squeeze; exploring AI procurement tools</td>
+    </tr>
+    <tr>
+      <td>24</td>
+      <td><strong>Solvay SA</strong></td>
+      <td>Philippe Kehren</td>
+      <td>Chief Procurement Officer</td>
+      <td>Advanced Materials</td>
+      <td>BE</td>
+      <td><span class="tag tag-sap">SAP</span></td>
+      <td><span class="tag tag-standard">STD</span></td>
+      <td>Post-Syensqo spin-off; rebuilding procurement tech stack</td>
+    </tr>
+    <tr>
+      <td>25</td>
+      <td><strong>Infineon Technologies</strong></td>
+      <td>Sonja Bauer</td>
+      <td>VP Supply Chain Management</td>
+      <td>Semiconductors</td>
+      <td>DE</td>
+      <td><span class="tag tag-sap">SAP S/4</span></td>
+      <td><span class="tag tag-standard">STD</span></td>
+      <td>Semiconductor supply volatility; advanced analytics adoption; on-prem security focus</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="card card-accent" style="margin-top:10px;">
+  <h4 style="margin-top:0; color:var(--orange); font-size:14px;">How to Use This List</h4>
+  <ul style="font-size:13px; color:var(--slate); padding-left:18px;">
+    <li><strong>Start with HIGH priority</strong> (rows 1-10) &mdash; these have the strongest buying signals: new CPO appointments, active SAP migrations, or public procurement transformation initiatives.</li>
+    <li><strong>Find them on LinkedIn</strong> &mdash; send a connection request with a personalized note referencing their company's ERP migration or procurement challenge.</li>
+    <li><strong>Use the cold email sequences</strong> from Section 3 &mdash; match the variant (A/B/C) to their title and function.</li>
+    <li><strong>Warm up first</strong> &mdash; engage with their LinkedIn posts for 1-2 weeks before sending the cold email.</li>
+  </ul>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION 2: LINKEDIN POSTS                       -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section-header">
+  <div class="section-number">2</div>
+  <div>
+    <h2>LinkedIn Posts</h2>
+    <p>7 ready-to-publish posts &mdash; copy, paste, schedule</p>
+  </div>
+</div>
+
+<!-- POST 1 -->
+<div class="card">
+  <h3>Post 1: The $125K/hr Problem</h3>
+  <div class="meta">Theme: Problem Awareness &mdash; Late Delivery Cost &bull; Best day: Tuesday 9:00 AM CET</div>
+  <div class="post-body">A single late $5 bolt cost one manufacturer $125,000 per hour in production downtime.
+
+Not because the part was expensive.
+Because it held up an entire assembly line.
+
+In industrial procurement, delivery risk isn't about one PO.
+It's about the cascade effect through your Bill of Materials.
+
+One late component:
+&rarr; 3 sub-assemblies delayed
+&rarr; 2 production lines idle
+&rarr; $125K/hr burning
+
+The challenge? Most ERP systems only tell you a delivery is late AFTER it happens.
+
+By then, the damage is done.
+
+What if you could predict it 14 days before?
+
+That's why we built ProcureAI.
+
+We analyze 34 variables across your ERP data &mdash; supplier history, seasonal patterns, lead time drift, logistics signals &mdash; to flag deliveries that are likely to go late before they do.
+
+No cloud. No data leaving your firewall. 100% on-premise.
+
+The math is simple: one prevented line stoppage pays for the system.
+
+What's the most expensive "cheap part" failure you've seen?</div>
+  <div class="post-hashtags">#Procurement #SupplyChain #Manufacturing #SAP #DigitalTransformation #AI</div>
+  <div class="post-tip">
+    <strong>Image:</strong> Use screenshot <code>product-ai-predictions.png</code> showing the AI prediction dashboard with risk scores. Add a text overlay: "14 days early warning."
+  </div>
+</div>
+
+<!-- POST 2 -->
+<div class="card">
+  <h3>Post 2: 14-Day Prediction Window</h3>
+  <div class="meta">Theme: Product Reveal &bull; Best day: Wednesday 10:00 AM CET</div>
+  <div class="post-body">What if your ERP could warn you 14 days before a delivery goes late?
+
+Not a guess. Not a "traffic light" dashboard.
+
+A machine learning model trained on YOUR data that says:
+
+"PO 4500012847 from Supplier X has a 87% probability of arriving 6 days late. Here's why."
+
+That's what ProcureAI does.
+
+We train ML models directly on your SAP, Oracle, or Dynamics 365 data:
+
+&bull; 34 prediction variables
+&bull; 7 intelligence engines
+&bull; Supplier behavior patterns you can't see in pivot tables
+
+The result? Your procurement team stops firefighting and starts preventing.
+
+One customer reduced their late delivery rate from 17% to under 4% within 90 days.
+
+The best part: ProcureAI runs entirely on-premise. Your ERP data never leaves your network.
+
+No cloud risk. No data sovereignty debates. Just predictions.
+
+Curious how it works with your ERP setup? Link in comments.</div>
+  <div class="post-hashtags">#ProcureAI #Procurement #MachineLearning #SAP #S4HANA #SupplyChainRisk</div>
+  <div class="post-tip">
+    <strong>Image:</strong> Use <code>product-analytics.png</code> showing the analytics dashboard. Add overlay: "34 variables. 14-day prediction."
+  </div>
+</div>
+
+<!-- POST 3 -->
+<div class="card">
+  <h3>Post 3: The SAP Migration Angle</h3>
+  <div class="meta">Theme: SAP ECC End-of-Life &bull; Best day: Thursday 9:30 AM CET</div>
+  <div class="post-body">SAP ECC's end of mainstream maintenance is approaching, and 95% of customers say building the migration business case is their biggest challenge.
+
+Here's what procurement leaders don't want to hear:
+
+Your ECC system works "fine."
+Your team knows the workarounds.
+Nobody wants to touch what isn't broken.
+
+But "fine" is hiding millions in procurement inefficiency.
+
+The real question isn't "Should we migrate to S/4HANA?"
+
+It's: "What value can we unlock when we do?"
+
+We built ProcureAI to answer that question with data:
+
+&bull; Connect to your SAP system (ECC or S/4)
+&bull; Analyze your actual PO history, supplier patterns, delivery variance
+&bull; Show you the exact dollar value of late deliveries, BOM delays, and supplier risk
+&bull; Generate a board-ready business case for your migration
+
+No IT project. No cloud deployment. Docker Compose on your infrastructure.
+
+Your procurement data builds the case for your SAP migration.
+
+Want to see what your data reveals? ROI calculator at horaxis.com/roi</div>
+  <div class="post-hashtags">#SAP #S4HANA #ERPMigration #Procurement #DigitalTransformation #RISEWITHSAP</div>
+  <div class="post-tip">
+    <strong>Image:</strong> Use <code>product-constraint-map.png</code> showing the constraint analysis. Add overlay: "Your data builds the business case."
+  </div>
+</div>
+
+<!-- POST 4 -->
+<div class="card">
+  <h3>Post 4: Data Sovereignty</h3>
+  <div class="meta">Theme: On-Premise / Data Security &bull; Best day: Tuesday 10:00 AM CET</div>
+  <div class="post-body">Your procurement data should never leave your firewall.
+
+Every PO. Every supplier contract. Every delivery pattern.
+
+This is your competitive intelligence.
+
+So why would you upload it to someone else's cloud?
+
+We asked procurement leaders what holds them back from AI adoption:
+
+#1 answer: "We can't send our ERP data to a third party."
+
+That's why we built ProcureAI differently.
+
+&bull; Docker Compose stack &mdash; runs inside YOUR data center
+&bull; ML models train on YOUR data, inside YOUR network
+&bull; No DPA required &mdash; because we never see your data
+&bull; AES-128 encryption, RBAC, MFA, full audit logging
+
+Your IT team deploys it. Your IT team controls it.
+
+We provide the intelligence layer. You keep the data.
+
+For industries like defense, chemicals, aerospace, and automotive &mdash; this isn't a "nice to have." It's a requirement.
+
+Data sovereignty shouldn't be a trade-off for AI capability.</div>
+  <div class="post-hashtags">#DataSovereignty #Cybersecurity #OnPremise #Procurement #AI #GDPR</div>
+  <div class="post-tip">
+    <strong>Image:</strong> Use <code>security-erp.png</code> showing the ERP security architecture. Add overlay: "Your data. Your firewall. Your AI."
+  </div>
+</div>
+
+<!-- POST 5 -->
+<div class="card">
+  <h3>Post 5: BOM Cascade Effect</h3>
+  <div class="meta">Theme: Bill of Materials / Revenue Impact &bull; Best day: Wednesday 9:00 AM CET</div>
+  <div class="post-body">A late $5 component doesn't just delay one PO.
+
+It cascades through your entire Bill of Materials.
+
+Here's what actually happens:
+
+1 late bolt &rarr; Sub-assembly can't be completed
+&rarr; 2 downstream assemblies blocked
+&rarr; Final product shipment delayed 3 days
+&rarr; Customer penalty clause triggered
+&rarr; Revenue at risk: $2.1M
+
+Your ERP knows this dependency exists.
+But it doesn't connect the dots until it's too late.
+
+ProcureAI maps your entire BOM structure and traces delivery risk upstream:
+
+"This $5 bolt from Supplier X has a 73% chance of being late.
+If it is, here are the 4 assemblies and $2.1M in revenue at risk."
+
+That changes the conversation from "chase the supplier" to "protect the revenue."
+
+Procurement isn't about buying things.
+It's about protecting the production plan.
+
+How deep is your BOM risk visibility today?</div>
+  <div class="post-hashtags">#BillOfMaterials #SupplyChainRisk #Manufacturing #Procurement #AI #RevenueProtection</div>
+  <div class="post-tip">
+    <strong>Image:</strong> Use <code>product-customer-impact.png</code> showing the customer impact analysis. Add overlay: "One late part. $2.1M at risk."
+  </div>
+</div>
+
+<!-- POST 6 -->
+<div class="card">
+  <h3>Post 6: Kill the Email Chase</h3>
+  <div class="meta">Theme: Supplier Portal / Automation &bull; Best day: Thursday 10:30 AM CET</div>
+  <div class="post-body">Your procurement team sends 47 emails per week chasing supplier delivery updates.
+
+"Can you confirm the delivery date for PO 4500012847?"
+"Any update on the shipment?"
+"Please advise revised ETA."
+
+Copy. Paste. Send. Wait. Follow up. Repeat.
+
+47 emails. Per buyer. Per week.
+
+That's not procurement. That's administration.
+
+What if suppliers could update their delivery status directly?
+
+ProcureAI includes a supplier portal where your suppliers can:
+
+&bull; See their open POs and delivery expectations
+&bull; Confirm, update, or flag delivery dates
+&bull; Upload shipping documents
+&bull; Communicate through a structured timeline
+
+No more email chains.
+No more "I'll check and get back to you."
+No more Excel tracker spreadsheets.
+
+Your buyers get real-time visibility.
+Your suppliers get a professional interface.
+Your ML models get better data to predict with.
+
+Everyone wins. Except the email chaos.
+
+How many hours does your team spend on delivery chasing?</div>
+  <div class="post-hashtags">#Procurement #SupplierManagement #Automation #SupplyChain #DigitalProcurement</div>
+  <div class="post-tip">
+    <strong>Image:</strong> Use <code>product-supplier-links.png</code> showing the supplier portal interface. Add overlay: "47 emails/week &rarr; zero."
+  </div>
+</div>
+
+<!-- POST 7 -->
+<div class="card">
+  <h3>Post 7: AI in Procurement &mdash; Beyond Dashboards</h3>
+  <div class="meta">Theme: Thought Leadership &bull; Best day: Tuesday 11:00 AM CET</div>
+  <div class="post-body">64% of CPOs expect AI to transform procurement within 5 years.
+
+But most "AI procurement tools" are just dashboards with a chatbot.
+
+Let me be direct:
+
+A dashboard that shows you late deliveries is not AI.
+A chart that shows spend by category is not AI.
+A chatbot that searches your PO database is not AI.
+
+AI in procurement should mean:
+
+&bull; Predicting which deliveries will be late BEFORE they are
+&bull; Quantifying the downstream BOM impact automatically
+&bull; Learning from your specific supplier patterns over time
+&bull; Getting more accurate with every delivery cycle
+
+That requires ML models trained on your actual ERP data.
+Not generic benchmarks. Not industry averages. YOUR data.
+
+That's what we built with ProcureAI:
+
+34 prediction variables. 7 ML engines. 14-day early warning.
+
+Running on-premise, inside your firewall.
+
+The gap between "AI-enabled" marketing slides and actual predictive intelligence is enormous.
+
+Your procurement team deserves tools that actually predict, not just report.
+
+What's your experience with "AI" procurement tools so far?</div>
+  <div class="post-hashtags">#ArtificialIntelligence #Procurement #CPO #DigitalTransformation #MachineLearning #SupplyChain</div>
+  <div class="post-tip">
+    <strong>Image:</strong> Use <code>hero-supply-risk.png</code> showing the main dashboard view. Add overlay: "Predict. Don't just report."
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION 3: COLD EMAIL SEQUENCES                 -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section-header">
+  <div class="section-number">3</div>
+  <div>
+    <h2>Cold Email Sequences</h2>
+    <p>3 persona variants &times; 3 emails each &mdash; merge-tag ready</p>
+  </div>
+</div>
+
+<p style="font-size:13px; color:var(--muted); margin-bottom:30px;">
+  Replace <code>[FIRST_NAME]</code>, <code>[COMPANY]</code>, <code>[ERP]</code>, and <code>[SPECIFIC_DETAIL]</code> with personalized details from the target list above. Each sequence is spaced Day 0 &rarr; Day 3 &rarr; Day 7.
+</p>
+
+<!-- VARIANT A: CPO / VP Procurement -->
+<div class="email-variant">
+  <div class="email-variant-header">
+    <div class="variant-letter">A</div>
+    <h4>Variant A: CPO / VP Procurement &mdash; Strategic, ROI-Focused</h4>
+  </div>
+
+  <div class="email-step">
+    <span class="day-badge">DAY 0</span> <span style="font-size:12px; color:var(--muted);">Cold Intro</span>
+    <div class="subject-line">Subject: Late deliveries costing [COMPANY] more than you think?</div>
+    <div class="email-body">
+      <p>Hi [FIRST_NAME],</p>
+      <p>A single late component on a production line can cost $125,000 per hour in downtime (ABB, 2023). Across thousands of PO lines, even a 17% late rate creates millions in hidden costs &mdash; not from the parts themselves, but from the downstream BOM cascade.</p>
+      <p>We built ProcureAI to solve this. It connects to your [ERP] system and uses 34 ML variables to predict which deliveries will go late &mdash; 14 days before they do.</p>
+      <p>The difference from other tools: ProcureAI runs entirely on-premise. Your procurement data never leaves [COMPANY]'s firewall.</p>
+      <p>Would a 15-minute walkthrough of the prediction engine be worth your time this week?</p>
+      <p>Best,<br/>Gabriel Buta<br/>Horaxis &mdash; ProcureAI Enterprise<br/>horaxis.com</p>
+    </div>
+  </div>
+
+  <div class="email-step">
+    <span class="day-badge">DAY 3</span> <span style="font-size:12px; color:var(--muted);">Value Follow-Up</span>
+    <div class="subject-line">Subject: Quick ROI model for [COMPANY]'s procurement</div>
+    <div class="email-body">
+      <p>Hi [FIRST_NAME],</p>
+      <p>Following up briefly. I ran [COMPANY]'s public figures through our ROI calculator &mdash; based on your industry profile and [ERP] environment, the estimated annual value from late delivery prevention alone is significant.</p>
+      <p>You can run your own numbers here (no login required): <strong>horaxis.com/roi</strong></p>
+      <p>The model factors in downtime cost, logistics savings, and labor reduction from automated supplier tracking.</p>
+      <p>Happy to walk through it together if the numbers are interesting.</p>
+      <p>Gabriel</p>
+    </div>
+  </div>
+
+  <div class="email-step">
+    <span class="day-badge">DAY 7</span> <span style="font-size:12px; color:var(--muted);">Break-Up</span>
+    <div class="subject-line">Subject: Not the right time, [FIRST_NAME]?</div>
+    <div class="email-body">
+      <p>Hi [FIRST_NAME],</p>
+      <p>I know procurement leaders have no shortage of vendors in their inbox, so I'll keep this short.</p>
+      <p>If late deliveries and BOM risk aren't a priority at [COMPANY] right now, completely understood. I'll step back.</p>
+      <p>But if you'd like to see how other industrial manufacturers are using on-premise ML to cut their late delivery rates from 17% to under 4%, I'm one reply away.</p>
+      <p>Either way &mdash; good luck with the [SPECIFIC_DETAIL] initiative.</p>
+      <p>Gabriel</p>
+    </div>
+  </div>
+</div>
+
+<!-- VARIANT B: CIO / IT Director -->
+<div class="email-variant">
+  <div class="email-variant-header">
+    <div class="variant-letter">B</div>
+    <h4>Variant B: CIO / IT Director &mdash; Technical, Security-Focused</h4>
+  </div>
+
+  <div class="email-step">
+    <span class="day-badge">DAY 0</span> <span style="font-size:12px; color:var(--muted);">Cold Intro</span>
+    <div class="subject-line">Subject: On-premise ML for [COMPANY]'s procurement &mdash; no cloud, no DPA</div>
+    <div class="email-body">
+      <p>Hi [FIRST_NAME],</p>
+      <p>Most AI procurement tools require your ERP data to leave your network. For companies running [ERP] with strict data governance, that's a non-starter.</p>
+      <p>ProcureAI is different: it's a Docker Compose stack (10 containers) that deploys entirely inside your data center. ML model training happens on your infrastructure using your data. We never see it.</p>
+      <p>Technical specs:</p>
+      <ul>
+        <li>AES-128 Fernet encryption for ERP credentials at rest</li>
+        <li>TLS 1.2+ for all internal connections</li>
+        <li>RBAC with TOTP MFA enforcement</li>
+        <li>Full audit logging with configurable retention</li>
+        <li>SAP RFC/OData, Oracle REST, Dynamics 365 connectors</li>
+      </ul>
+      <p>No DPA required because no data transfer occurs.</p>
+      <p>Would it be helpful if I sent our IT Security &amp; Readiness Guide? It covers network requirements, container architecture, and security control mappings for SOC 2 / ISO 27001 reviews.</p>
+      <p>Gabriel Buta<br/>Horaxis &mdash; ProcureAI Enterprise<br/>horaxis.com/security</p>
+    </div>
+  </div>
+
+  <div class="email-step">
+    <span class="day-badge">DAY 3</span> <span style="font-size:12px; color:var(--muted);">Value Follow-Up</span>
+    <div class="subject-line">Subject: IT Readiness Guide for ProcureAI on-premise deployment</div>
+    <div class="email-body">
+      <p>Hi [FIRST_NAME],</p>
+      <p>In case it's useful for your team &mdash; you can request our IT Security &amp; Readiness Guide here: <strong>horaxis.com/contact?type=it-guide</strong></p>
+      <p>It covers:</p>
+      <ul>
+        <li>Docker Compose architecture &amp; hardware sizing (16 vCPU / 64GB recommended)</li>
+        <li>Network port requirements &amp; restricted-network deployment mode</li>
+        <li>ERP connector protocols (SAP RFC, OData v4, Oracle REST)</li>
+        <li>Encryption standards &amp; access control framework</li>
+        <li>Compliance mapping for SOC 2, ISO 27001, GDPR</li>
+      </ul>
+      <p>No sales call required. The guide is a technical document for your architecture review.</p>
+      <p>Gabriel</p>
+    </div>
+  </div>
+
+  <div class="email-step">
+    <span class="day-badge">DAY 7</span> <span style="font-size:12px; color:var(--muted);">Break-Up</span>
+    <div class="subject-line">Subject: Closing the loop on ProcureAI, [FIRST_NAME]</div>
+    <div class="email-body">
+      <p>Hi [FIRST_NAME],</p>
+      <p>I understand IT leaders get dozens of vendor pitches weekly. I'll keep it to one point:</p>
+      <p>If [COMPANY] is evaluating AI for procurement and data sovereignty is a hard requirement, we're one of the few solutions that deploy entirely on-premise with no cloud dependency.</p>
+      <p>If the timing isn't right, I'll step back. But the IT Guide is always available at horaxis.com when your team is ready to evaluate.</p>
+      <p>All the best with [COMPANY]'s [SPECIFIC_DETAIL].</p>
+      <p>Gabriel</p>
+    </div>
+  </div>
+</div>
+
+<!-- VARIANT C: VP Supply Chain / Operations -->
+<div class="email-variant">
+  <div class="email-variant-header">
+    <div class="variant-letter">C</div>
+    <h4>Variant C: VP Supply Chain / Operations &mdash; Disruption-Focused</h4>
+  </div>
+
+  <div class="email-step">
+    <span class="day-badge">DAY 0</span> <span style="font-size:12px; color:var(--muted);">Cold Intro</span>
+    <div class="subject-line">Subject: Preventing production stoppages at [COMPANY] before they happen</div>
+    <div class="email-body">
+      <p>Hi [FIRST_NAME],</p>
+      <p>When a critical component arrives late, your team already knows what happens: expedited freight, scrambled production schedules, and sometimes a full line stoppage at $125,000/hr.</p>
+      <p>The frustrating part? Most of these delays were predictable. The data was sitting in your [ERP] system &mdash; supplier lead time patterns, seasonal drifts, carrier performance &mdash; but nobody connected the dots in time.</p>
+      <p>ProcureAI analyzes 34 variables across your ERP data and flags at-risk deliveries 14 days before they go late. It also maps the BOM cascade, so your team knows exactly which assemblies and customer orders are impacted.</p>
+      <p>One question: how many production stoppages in the last quarter were caused by late supplier deliveries?</p>
+      <p>If the answer is "more than zero," it might be worth a 15-minute conversation.</p>
+      <p>Gabriel Buta<br/>Horaxis &mdash; ProcureAI Enterprise<br/>horaxis.com</p>
+    </div>
+  </div>
+
+  <div class="email-step">
+    <span class="day-badge">DAY 3</span> <span style="font-size:12px; color:var(--muted);">Value Follow-Up</span>
+    <div class="subject-line">Subject: The BOM cascade problem &mdash; a quick example for [COMPANY]</div>
+    <div class="email-body">
+      <p>Hi [FIRST_NAME],</p>
+      <p>Quick follow-up with a concrete example:</p>
+      <p>One manufacturer discovered that 73% of their production delays traced back to just 12 suppliers (out of 3,000+). The ERP had the data. They just couldn't see the pattern.</p>
+      <p>ProcureAI's constraint mapping visualizes exactly which suppliers create the highest downstream risk &mdash; not just "who delivers late," but "whose late delivery costs us the most."</p>
+      <p>You can estimate the value for [COMPANY]'s operation here: <strong>horaxis.com/roi</strong></p>
+      <p>No login. No data collection. Just your numbers.</p>
+      <p>Gabriel</p>
+    </div>
+  </div>
+
+  <div class="email-step">
+    <span class="day-badge">DAY 7</span> <span style="font-size:12px; color:var(--muted);">Break-Up</span>
+    <div class="subject-line">Subject: Last note on delivery risk, [FIRST_NAME]</div>
+    <div class="email-body">
+      <p>Hi [FIRST_NAME],</p>
+      <p>I'll keep this to 20 seconds:</p>
+      <p>If production stoppages from late supplier deliveries are costing [COMPANY] more than they should, ProcureAI can predict them 14 days early.</p>
+      <p>If the timing isn't right, no worries at all. But if Q2 planning opens up a window for this kind of initiative, I'm easy to reach.</p>
+      <p>Wishing you a disruption-free quarter.</p>
+      <p>Gabriel</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION 4: POSTING STRATEGY CHEAT SHEET         -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section-header">
+  <div class="section-number">4</div>
+  <div>
+    <h2>Posting Strategy Cheat Sheet</h2>
+    <p>Timing, hashtags, and engagement playbook</p>
+  </div>
+</div>
+
+<div class="strategy-grid">
+  <div class="strategy-box">
+    <h4>Optimal Posting Times</h4>
+    <ul>
+      <li><strong>Best days:</strong> Tuesday, Wednesday, Thursday</li>
+      <li><strong>Best times:</strong> 8:00 &ndash; 11:00 AM CET</li>
+      <li><strong>Avoid:</strong> Friday afternoon, weekends, Monday morning</li>
+      <li><strong>Frequency:</strong> 3x/week on company page, 2x/week on personal profile</li>
+      <li><strong>Spacing:</strong> Never post 2 days in a row on the same page</li>
+    </ul>
+  </div>
+
+  <div class="strategy-box">
+    <h4>Hashtag Strategy</h4>
+    <ul>
+      <li><strong>Always include:</strong> #Procurement #SupplyChain</li>
+      <li><strong>Rotate:</strong> #SAP #S4HANA #DigitalTransformation #AI #MachineLearning</li>
+      <li><strong>Niche (higher engagement):</strong> #DataSovereignty #OnPremise #BillOfMaterials</li>
+      <li><strong>Max per post:</strong> 5-7 hashtags</li>
+      <li><strong>Place hashtags:</strong> At the bottom, after the main text</li>
+    </ul>
+  </div>
+
+  <div class="strategy-box">
+    <h4>Content Calendar (2-Week Cycle)</h4>
+    <ul>
+      <li><strong>Week 1:</strong> Post 1 (Tue), Post 2 (Wed), Post 3 (Thu)</li>
+      <li><strong>Week 2:</strong> Post 4 (Tue), Post 5 (Wed), Post 6 (Thu)</li>
+      <li><strong>Week 3:</strong> Post 7 (Tue), then restart Post 1 (Thu, reworked)</li>
+      <li><strong>Personal profile:</strong> Share company posts + add your own commentary</li>
+      <li><strong>Repeat cycle</strong> with fresh hooks and updated stats</li>
+    </ul>
+  </div>
+
+  <div class="strategy-box">
+    <h4>Engagement Rules</h4>
+    <ul>
+      <li><strong>First 60 minutes:</strong> Reply to every comment within 1 hour</li>
+      <li><strong>End with a question:</strong> Every post should end with an open question</li>
+      <li><strong>Tag people sparingly:</strong> Only tag if you reference their work or company</li>
+      <li><strong>Like/comment on prospects' posts</strong> daily (10 min/day) before cold emailing them</li>
+      <li><strong>Reshare industry articles</strong> with your own take (1x/week on personal profile)</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card card-accent" style="margin-top:30px;">
+  <h4 style="margin-top:0; color:var(--orange);">Weekly Outreach Workflow</h4>
+  <table style="font-size:13px;">
+    <thead>
+      <tr>
+        <th>Day</th>
+        <th>LinkedIn Activity</th>
+        <th>Email Activity</th>
+        <th>Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Monday</strong></td>
+        <td>Engage: like/comment on 5 prospects' posts</td>
+        <td>Send Day 0 emails to 5 new contacts</td>
+        <td>30 min</td>
+      </tr>
+      <tr>
+        <td><strong>Tuesday</strong></td>
+        <td>Publish company post + engage comments</td>
+        <td>Send Day 3 follow-ups</td>
+        <td>45 min</td>
+      </tr>
+      <tr>
+        <td><strong>Wednesday</strong></td>
+        <td>Publish company post + send 3 connection requests</td>
+        <td>&mdash;</td>
+        <td>30 min</td>
+      </tr>
+      <tr>
+        <td><strong>Thursday</strong></td>
+        <td>Publish company post + engage comments</td>
+        <td>Send Day 7 break-ups + Day 0 to 5 new contacts</td>
+        <td>45 min</td>
+      </tr>
+      <tr>
+        <td><strong>Friday</strong></td>
+        <td>Share industry article with commentary on personal profile</td>
+        <td>Review metrics: open rates, reply rates, LinkedIn impressions</td>
+        <td>20 min</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- FOOTER                                          -->
+<!-- ═══════════════════════════════════════════════ -->
+<div style="text-align:center; padding:50px 0 30px; border-top:1px solid var(--border); margin-top:50px;">
+  <div style="display:inline-flex; align-items:center; gap:10px; margin-bottom:12px;">
+    <div class="cover-logo" style="width:28px; height:28px; border-radius:6px;"></div>
+    <span style="font-weight:900; font-size:18px; color:var(--navy); letter-spacing:-0.04em; text-transform:uppercase;">HORAXIS<span style="color:var(--orange);">.</span></span>
+  </div>
+  <p style="font-size:12px; color:var(--muted);">Confidential &mdash; Horaxis Enterprise Solutions &mdash; March 2026</p>
+  <p style="font-size:12px; color:var(--muted);">horaxis.com &bull; info@horaxis.com</p>
+</div>
+
+</div><!-- /.page -->
+</body>
+</html>
