@@ -249,7 +249,7 @@ body {
 
 .feature-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.6fr 1fr;
   gap: 60px;
   align-items: center;
 }
@@ -313,10 +313,34 @@ body {
   border: 1px solid var(--border);
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  max-width: 420px;
+}
+
+.feature-img::after {
+  content: "Click to enlarge";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0,0,0,0.7);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+  padding: 6px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.feature-img:hover::after {
+  opacity: 1;
 }
 
 .feature-img:hover {
-  transform: scale(1.02);
+  transform: scale(1.03);
   box-shadow: 0 10px 40px rgba(0,0,0,0.4);
 }
 
