@@ -82,11 +82,11 @@ export const onRequest = async (context) => {
     body: JSON.stringify({
       from: "Horaxis Intelligence <info@horaxis.com>",
       to: [email],
-      subject: "Executive Report: ProcureAI Value Assessment",
+      subject: "Executive Report: Horaxis Enterprise Value Assessment",
       html: `
         <div style="font-family:sans-serif; padding:40px; background:#f8fafc; color:#0f172a;">
           <h2 style="color:#0f172a;">Executive Value Realization</h2>
-          <p>The attached report outlines the projected financial impact of deploying ProcureAI within your supply chain infrastructure.</p>
+          <p>The attached report outlines the projected financial impact of deploying Horaxis Enterprise within your supply chain infrastructure.</p>
           <div style="background:white; padding:20px; border-left:4px solid #ea580c;">
             <p><strong>Annual Projected Value:</strong> $${Math.round(totalSavings).toLocaleString()}</p>
           </div>

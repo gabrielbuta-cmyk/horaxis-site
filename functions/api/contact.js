@@ -69,7 +69,7 @@ async function generateITGuide() {
   let y = 660;
   const bw = 530;
 
-  y = drawWrapped(p, "ProcureAI Enterprise is delivered as a Docker Compose stack that runs entirely within your private network. No ERP or production data leaves your infrastructure.", 40, y, bw, 11, reg, gray);
+  y = drawWrapped(p, "Horaxis Enterprise is delivered as a Docker Compose stack that runs entirely within your private network. No ERP or production data leaves your infrastructure.", 40, y, bw, 11, reg, gray);
   y -= 12;
 
   const archRows = [
@@ -116,7 +116,7 @@ async function generateITGuide() {
   p = newPage("2. ERP Integration & Connectors");
   y = 660;
 
-  y = drawWrapped(p, "ProcureAI connects bi-directionally to your ERP via standard protocols. Authentication is managed through your existing ERP service users with least-privilege permissions.", 40, y, bw, 11, reg, gray);
+  y = drawWrapped(p, "Horaxis Enterprise connects bi-directionally to your ERP via standard protocols. Authentication is managed through your existing ERP service users with least-privilege permissions.", 40, y, bw, 11, reg, gray);
   y -= 16;
 
   const erpSections = [
@@ -268,7 +268,7 @@ async function generateITGuide() {
   const extNet = [
     "HTTPS 443 outbound to: Meteosource, AISStream, Alpha Vantage, GDELT, NOAA APIs",
     "These APIs provide weather, shipping, energy, geopolitical, and forex risk signals",
-    "ProcureAI operates in restricted-network mode without these (using internal features only)",
+    "Horaxis Enterprise operates in restricted-network mode without these (using internal features only)",
   ];
   for (const item of extNet) {
     y = drawWrapped(p, "\u2022  " + item, 50, y, bw - 10, 10, reg, gray);
@@ -363,12 +363,12 @@ export const onRequest = async (context) => {
       body: JSON.stringify({
         from: "Horaxis Enterprise <info@horaxis.com>",
         to: [email],
-        subject: "ProcureAI IT Readiness Guide — Horaxis",
+        subject: "Horaxis Enterprise IT Readiness Guide — Horaxis",
         html: `
           <div style="font-family:sans-serif; padding:40px; background:#f8fafc; color:#0f172a;">
             <h2 style="color:#0f172a;">IT Readiness Guide</h2>
             <p>Hi ${name},</p>
-            <p>Thank you for your interest in ProcureAI. Attached is our IT Readiness Guide covering deployment architecture, ERP connector specifications, security controls, and network requirements.</p>
+            <p>Thank you for your interest in Horaxis Enterprise. Attached is our IT Readiness Guide covering deployment architecture, ERP connector specifications, security controls, and network requirements.</p>
             <div style="background:white; padding:20px; border-left:4px solid #ea580c; margin:20px 0;">
               <p style="margin:0;"><strong>Covers:</strong> Docker Compose stack, SAP/Oracle/Dynamics 365 connectors, AES-128 encryption, MFA, RBAC, ML pipeline (34 variables), and hardware sizing.</p>
             </div>
