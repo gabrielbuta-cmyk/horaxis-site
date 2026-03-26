@@ -53,9 +53,11 @@ ProcureAI monitors purchase orders, predicts delivery delays using machine learn
 - Reverse proxy: Nginx with SSL
 
 ## Pricing
-- Starter: €490/month (up to 5,000 POs, 1 ERP connection)
-- Professional: €1,490/month (up to 50,000 POs, 2 ERP connections, AI predictions)
-- Enterprise: Custom pricing (unlimited POs, all ERP connectors, dedicated support)
+- Trial: Free for 30 days (3 users, 50 suppliers, 500 POs)
+- Business: $599/month (7 users, 500 suppliers, 25,000 POs)
+- Professional: $1,499/month (20 users, 2,500 suppliers, 250,000 POs)
+- Enterprise: $3,999/month (unlimited users, unlimited suppliers, unlimited POs)
+- Annual billing available with discount
 - Free pilot available: https://horaxis.com/contact.html
 
 ## Competitors and Alternatives
