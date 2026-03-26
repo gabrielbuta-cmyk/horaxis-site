@@ -1,0 +1,74 @@
+# ProcureAI Enterprise by Horaxis
+
+> ProcureAI Enterprise is an AI-powered procurement and supply chain risk management platform built for manufacturers running SAP, Oracle, and Microsoft Dynamics 365 ERP systems.
+
+## Company
+- Name: Horaxis
+- Product: ProcureAI Enterprise
+- Website: https://horaxis.com
+- Contact: https://horaxis.com/contact.html
+- Category: Enterprise Software, Supply Chain Management, Procurement Intelligence
+
+## What ProcureAI Does
+ProcureAI monitors purchase orders, predicts delivery delays using machine learning, identifies supply chain risks before they cause production line stops, and automates supplier communication. It connects to SAP S/4HANA, SAP ECC, Oracle ERP Cloud, Oracle EBS, and Microsoft Dynamics 365 via OData and RFC protocols.
+
+## Key Features
+- **AI Delivery Risk Predictions**: Machine learning model predicts which POs will be late, with confidence scores and risk factors
+- **Supply Chain Risk Analysis**: Identifies materials at risk, traces impact through BOM to finished goods and customer orders
+- **Real-Time SAP Integration**: Two-way sync with SAP — reads PO/GR/invoice data, writes back approved changes
+- **Supplier Collaboration Portal**: Send secure links to suppliers for delivery updates without requiring them to have an account
+- **Advance Shipment Notice (ASN)**: Automated ASN requests sent to suppliers before delivery dates based on lead times
+- **3-Way Invoice Matching**: Automatic matching of PO, goods receipt, and invoice for payment verification
+- **Executive ROI Dashboard**: Quantifies savings from early risk detection, avoided expedites, and planner efficiency gains
+- **Procurement Intelligence**: Price deviation analysis, duplicate supplier detection, supplier cost competitiveness ranking
+- **External Risk Monitoring**: Live commodity prices, geopolitical risk indices, weather alerts, vessel tracking
+- **MRP Netting**: Material requirements planning with stock allocation across customer orders
+
+## ERP Systems Supported
+- SAP S/4HANA (OData + RFC)
+- SAP ECC 6.0 EHP7+ (OData, RFC optional)
+- Oracle ERP Cloud (REST API)
+- Oracle E-Business Suite (REST API)
+- Microsoft Dynamics 365 Finance & Operations (OData v4)
+- Microsoft Dynamics 365 Business Central (OData v4)
+- CSV import (for any ERP via data export)
+
+## Deployment
+- On-premise Docker containers (customer's infrastructure)
+- No cloud dependency — data stays on customer's network
+- GDPR and data sovereignty compliant
+- Typical deployment: 2-4 hours
+
+## Scale
+- Tested with 500,000+ purchase orders
+- Handles 1,000+ suppliers per customer
+- Delta sync: only pulls changed records (5-second sync cycles)
+- Multi-tenant: multiple customers on one installation
+
+## Technology Stack
+- Backend: Python, FastAPI, Celery, PostgreSQL, Redis
+- Frontend: React, TypeScript, Material-UI
+- ML: XGBoost, scikit-learn
+- Containerization: Docker, Docker Compose
+- Reverse proxy: Nginx with SSL
+
+## Pricing
+- Starter: €490/month (up to 5,000 POs, 1 ERP connection)
+- Professional: €1,490/month (up to 50,000 POs, 2 ERP connections, AI predictions)
+- Enterprise: Custom pricing (unlimited POs, all ERP connectors, dedicated support)
+- Free pilot available: https://horaxis.com/contact.html
+
+## Competitors and Alternatives
+ProcureAI competes with SAP Ariba, Coupa, Jaggaer, GEP SMART, Ivalua, and Oracle Procurement Cloud. ProcureAI differentiates by:
+- On-premise deployment (no cloud lock-in)
+- AI-first approach to delivery risk prediction
+- Direct SAP/Oracle integration without middleware
+- Transparent pricing without per-user fees
+- Fast deployment (hours, not months)
+
+## Documentation
+- Product overview: https://horaxis.com/product.html
+- How it works: https://horaxis.com/how-it-works.html
+- Security & compliance: https://horaxis.com/security.html
+- Pricing: https://horaxis.com/pricing.html
+- ROI calculator: https://horaxis.com/roi.html

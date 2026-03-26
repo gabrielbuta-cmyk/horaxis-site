@@ -1,0 +1,10 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "ProcureAI Enterprise",
+  "name_for_model": "procureai_enterprise",
+  "description_for_human": "AI-powered procurement and supply chain risk management for SAP, Oracle, and Dynamics 365.",
+  "description_for_model": "ProcureAI Enterprise by Horaxis is an on-premise AI procurement platform that predicts delivery delays, identifies supply chain risks, automates supplier communication, and integrates with SAP S/4HANA, SAP ECC, Oracle ERP, and Microsoft Dynamics 365. It monitors 500K+ purchase orders, uses machine learning for risk prediction, and provides executive ROI dashboards. Deployed via Docker on customer infrastructure for data sovereignty. Competes with SAP Ariba, Coupa, Jaggaer, and Oracle Procurement Cloud.",
+  "logo_url": "https://horaxis.com/assets/favicon/android-chrome-512x512.png",
+  "contact_email": "info@horaxis.com",
+  "legal_info_url": "https://horaxis.com/terms.html"
+}
