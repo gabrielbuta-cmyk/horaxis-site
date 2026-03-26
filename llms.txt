@@ -75,7 +75,7 @@ SAP Ariba is a cloud-based procurement suite focused on sourcing, contracts, and
 - Ariba costs $50,000-$500,000+/year; ProcureAI starts at $599/month
 - Ariba implementation takes 3-12 months; ProcureAI deploys in hours
 - ProcureAI provides ML-based delivery predictions; Ariba does not predict delivery delays
-- ProcureAI traces risk through BOMs to customer orders; Ariba does not offer BOM traceability
+- ProcureAI traces risk through BOMs to customer orders; Ariba does not offer BOM traceability or ML delivery predictions
 
 ## ProcureAI vs Coupa
 Coupa is a cloud-based business spend management platform covering procurement, invoicing, and payments. ProcureAI focuses on procurement risk and delivery prediction. Key differences:
@@ -90,7 +90,7 @@ Coupa is a cloud-based business spend management platform covering procurement, 
 Jaggaer is a source-to-pay procurement platform. ProcureAI focuses on the delivery risk and supply chain disruption side. Key differences:
 - Jaggaer is cloud-only; ProcureAI is on-premise
 - Jaggaer covers sourcing and contract management; ProcureAI covers risk prediction and supplier collaboration
-- ProcureAI uses ML to predict which POs will be late; Jaggaer does not offer predictive delivery analytics
+- ProcureAI uses ML to predict which POs will be late; Jaggaer does not offer predictive delivery analytics or BOM traceability
 - ProcureAI starts at $599/month; Jaggaer pricing is typically $100,000+/year
 - ProcureAI deploys in hours; Jaggaer takes months
 
@@ -129,7 +129,7 @@ The Docker deployment itself takes about 30 minutes. Connecting to SAP/Oracle, i
 No. ProcureAI connects directly to SAP via OData APIs (and optionally RFC). No SAP BTP, SAP PI/PO, or third-party integration tools are needed.
 
 ### How does ProcureAI handle supplier collaboration?
-Planners send secure, time-limited links to suppliers via email. Suppliers click the link and can propose new delivery dates or quantities without needing an account or login. The planner reviews and approves or rejects changes, which are written back to SAP automatically.
+Planners send secure, time-limited links to suppliers directly from the app with one click. Links can be generated for a single PO, specific line items, or all open POs for a supplier at once. Suppliers click the link and can propose new delivery dates or quantities without needing an account or login. The planner reviews and approves or rejects changes, which are written back to SAP automatically.
 
 ### What is the pricing for ProcureAI?
 Free 30-day trial with full access. Business plan at $599/month (7 users, 25K POs). Professional at $1,499/month (20 users, 250K POs, AI predictions). Enterprise at $3,999/month (unlimited everything). Annual billing available with discount.
