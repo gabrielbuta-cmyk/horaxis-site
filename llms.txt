@@ -160,4 +160,3 @@ No. ProcureAI complements existing procurement tools by adding delivery risk pre
 - How it works: https://horaxis.com/how-it-works.html
 - Security & compliance: https://horaxis.com/security.html
 - Pricing: https://horaxis.com/pricing.html
-- ROI calculator: https://horaxis.com/roi.html
