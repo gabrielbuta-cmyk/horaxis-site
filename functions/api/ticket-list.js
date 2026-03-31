@@ -23,8 +23,9 @@ export const onRequest = async (context) => {
 
   const body = await request.json();
 
-  // Verify admin password
-  if (!env.ADMIN_PASSWORD || body.password !== env.ADMIN_PASSWORD) {
+  // Verify admin password (accept both field names)
+  const pwd = body.password || body.admin_password;
+  if (!env.ADMIN_PASSWORD || pwd !== env.ADMIN_PASSWORD) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
