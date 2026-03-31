@@ -354,7 +354,31 @@
           data = { error: `Server returned ${res.status}` };
         }
 
-        if (res.ok && data.status === 'sent') {
+        // Worker returns signed payload — browser delivers it to customer
+        if (res.ok && data.status === 'signed' && data.payload && data.callback_url) {
+          statusEl.textContent = 'Delivering to customer...';
+          try {
+            const cbRes = await fetch(data.callback_url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data.payload),
+            });
+            if (!cbRes.ok) {
+              const cbErr = await cbRes.text().catch(() => '');
+              statusEl.textContent = 'Failed to deliver: ' + cbErr;
+              statusEl.style.color = '#ef4444';
+              btn.disabled = false;
+              return;
+            }
+          } catch (cbE) {
+            statusEl.textContent = 'Could not reach customer server: ' + cbE.message;
+            statusEl.style.color = '#ef4444';
+            btn.disabled = false;
+            return;
+          }
+        }
+
+        if (res.ok && (data.status === 'sent' || data.status === 'signed')) {
           statusEl.textContent = 'Response sent successfully.';
           statusEl.style.color = '#86efac';
           textarea.value = '';

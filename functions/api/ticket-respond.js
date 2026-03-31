@@ -83,28 +83,10 @@ export const onRequest = async (context) => {
     timestamp,
   };
 
-  // Send POST to callback_url
-  try {
-    const callbackResponse = await fetch(callback_url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+  // Return signed payload — the admin page browser will deliver it directly
+  // (Cloudflare Workers can't reliably call Cloudflare Tunnel URLs)
 
-    if (!callbackResponse.ok) {
-      const errText = await callbackResponse.text().catch(() => "Unknown error");
-      console.error("Callback failed:", callbackResponse.status, errText);
-      return json({
-        error: "Failed to deliver response to customer instance",
-        status_code: callbackResponse.status,
-      }, 502);
-    }
-  } catch (fetchErr) {
-    console.error("Callback request error:", fetchErr);
-    return json({ error: "Could not reach customer instance" }, 502);
-  }
-
-  // Update ticket status in KV if available
+  // Update ticket status in KV
   if (env.TICKETS) {
     try {
       const ticketRaw = await env.TICKETS.get(`ticket:${ticket_id}`);
@@ -120,5 +102,5 @@ export const onRequest = async (context) => {
     }
   }
 
-  return json({ status: "sent" });
+  return json({ status: "signed", payload, callback_url });
 };
