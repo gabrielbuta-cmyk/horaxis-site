@@ -153,8 +153,12 @@
     let pendingScreenshot = null;
     let isLoading = false;
 
-    // Patterns that indicate the bot is escalating / creating a ticket
+    // Patterns that indicate the bot could not resolve the issue
     const ESCALATION_PATTERNS = [
+      /unable to resolve/i,
+      /create a support ticket/i,
+      /using the button below/i,
+      /horaxis team can investigate/i,
       /i['']ve documented this/i,
       /i['']m escalating/i,
       /escalating this/i,
@@ -176,26 +180,48 @@
       return null;
     }
 
-    function openSupportTickets() {
+    async function createTicketFromAxis() {
       const appUrl = getAppUrl();
+      const btn = document.querySelector('.btn-ticket');
+      if (btn) { btn.disabled = true; btn.textContent = 'Creating ticket...'; }
+
+      // Build conversation summary as ticket description
+      const convo = messages.map(m => `${m.role === 'user' ? 'Customer' : 'Axis'}: ${m.content || '[screenshot]'}`).join('\n');
+      const subject = 'Axis Support Escalation';
+      const description = 'Conversation with Axis support bot:\n\n' + convo;
+
       if (appUrl) {
-        window.open(appUrl + '/support-tickets', '_blank');
+        try {
+          const res = await fetch(appUrl.replace(/\/+$/, '') + '/api/support/tickets', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token,
+            },
+            body: JSON.stringify({
+              subject: subject,
+              description: description,
+              category: 'bug',
+              priority: 'high',
+            }),
+          });
+          if (res.ok) {
+            addMessage('bot', 'Support ticket created successfully. You can track it in your Horaxis app under Support Tickets.');
+          } else {
+            const err = await res.json().catch(() => ({}));
+            addMessage('bot', 'Could not create ticket automatically: ' + (err.detail || 'Unknown error') + '. Please create one manually in your Horaxis app under Support Tickets.');
+          }
+        } catch (e) {
+          addMessage('bot', 'Could not reach your Horaxis app to create a ticket. Please go to Support Tickets in your app and create one manually.');
+        }
       } else {
-        // No app_url in token — show inline guidance
-        const container = document.getElementById('chat-messages');
-        const notice = document.createElement('div');
-        notice.className = 'message bot';
-        notice.innerHTML = `
-          <div class="avatar">A</div>
-          <div class="bubble"><div class="ticket-fallback">Please go to your <strong>Horaxis app &rarr; Support Tickets</strong> to create a ticket for tracking.</div></div>
-        `;
-        container.appendChild(notice);
-        container.scrollTop = container.scrollHeight;
+        addMessage('bot', 'Please go to your Horaxis app > Support Tickets to create a ticket for tracking.');
       }
+      if (btn) { btn.disabled = true; btn.textContent = 'Ticket Created'; }
     }
 
     function buildTicketButton() {
-      return `<div><button class="btn-ticket" onclick="openSupportTickets()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>Open Support Tickets</button></div>`;
+      return `<div><button class="btn-ticket" onclick="createTicketFromAxis()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>Create Support Ticket</button></div>`;
     }
 
     // Get token from URL
