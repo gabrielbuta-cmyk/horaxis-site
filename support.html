@@ -192,7 +192,7 @@
 
       if (appUrl) {
         try {
-          const res = await fetch(appUrl.replace(/\/+$/, '') + '/api/support/tickets', {
+          const res = await fetch(appUrl.replace(/\/+$/, '') + '/api/support/tickets/from-axis', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
