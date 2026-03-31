@@ -35,7 +35,7 @@ export const onRequest = async (context) => {
   let tickets = [];
   if (env.TICKETS) {
     try {
-      const indexJson = await env.TICKETS.get("ticket_index");
+      const indexJson = await env.TICKETS.get("ticket:index");
       if (indexJson) {
         const ticketIds = JSON.parse(indexJson);
         for (const id of ticketIds) {
