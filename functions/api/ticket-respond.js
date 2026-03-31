@@ -53,7 +53,7 @@ export const onRequest = async (context) => {
     return json({ error: "Invalid JSON body" }, 400);
   }
 
-  const { ticket_id, message, callback_url, admin_password } = body;
+  const { ticket_id, message, callback_url, admin_password, new_status } = body;
 
   // Validate required fields
   if (!ticket_id || !message || !callback_url || !admin_password) {
@@ -82,6 +82,7 @@ export const onRequest = async (context) => {
     signature,
     timestamp: String(timestamp),
   };
+  if (new_status) payload.new_status = new_status;
 
   // Return signed payload — the admin page browser will deliver it directly
   // (Cloudflare Workers can't reliably call Cloudflare Tunnel URLs)
@@ -92,7 +93,7 @@ export const onRequest = async (context) => {
       const ticketRaw = await env.TICKETS.get(`ticket:${ticket_id}`);
       if (ticketRaw) {
         const ticket = JSON.parse(ticketRaw);
-        ticket.status = "responded";
+        ticket.status = new_status || "responded";
         ticket.responded_at = new Date().toISOString();
         ticket.last_response = message;
         await env.TICKETS.put(`ticket:${ticket_id}`, JSON.stringify(ticket));
