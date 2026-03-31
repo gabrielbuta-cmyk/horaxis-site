@@ -120,7 +120,7 @@
     <div class="chat-container">
       <div class="chat-messages" id="chat-messages">
         <div class="welcome" id="welcome">
-          <div class="bot-icon"><svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="axisGrad" x1="0" y1="0" x2="80" y2="80"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#ea580c"/></linearGradient></defs><circle cx="40" cy="40" r="38" fill="url(#axisGrad)"/><text x="40" y="52" text-anchor="middle" font-family="Arial" font-weight="900" font-size="36" fill="white">A</text><path d="M62 25 C68 30 68 50 62 55" stroke="white" stroke-width="2" fill="none" opacity="0.5" stroke-linecap="round"/><path d="M67 20 C76 28 76 52 67 60" stroke="white" stroke-width="2" fill="none" opacity="0.3" stroke-linecap="round"/><path d="M18 25 C12 30 12 50 18 55" stroke="white" stroke-width="2" fill="none" opacity="0.5" stroke-linecap="round"/><path d="M13 20 C4 28 4 52 13 60" stroke="white" stroke-width="2" fill="none" opacity="0.3" stroke-linecap="round"/></svg></div>
+          <div class="bot-icon"><svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="axisGrad" x1="0" y1="40" x2="80" y2="40"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#ea580c"/></linearGradient></defs><circle cx="40" cy="40" r="38" fill="url(#axisGrad)"/><text x="40" y="52" text-anchor="middle" font-family="Arial" font-weight="900" font-size="36" fill="white">A</text><path d="M62 25 C68 30 68 50 62 55" stroke="white" stroke-width="2" fill="none" opacity="0.5" stroke-linecap="round"/><path d="M67 20 C76 28 76 52 67 60" stroke="white" stroke-width="2" fill="none" opacity="0.3" stroke-linecap="round"/><path d="M18 25 C12 30 12 50 18 55" stroke="white" stroke-width="2" fill="none" opacity="0.5" stroke-linecap="round"/><path d="M13 20 C4 28 4 52 13 60" stroke="white" stroke-width="2" fill="none" opacity="0.3" stroke-linecap="round"/></svg></div>
           <h2>Hi! I'm Axis.</h2>
           <p>Your Horaxis Enterprise support assistant. Describe your issue or upload a screenshot and I'll help you troubleshoot.</p>
           <div class="suggestions">
@@ -348,7 +348,7 @@
       const div = document.createElement('div');
       div.className = `message ${role === 'user' ? 'user' : 'bot'}`;
 
-      const axisSvg = '<svg viewBox="0 0 80 80" fill="none"><defs><linearGradient id="ag" x1="0" y1="0" x2="80" y2="80"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#ea580c"/></linearGradient></defs><circle cx="40" cy="40" r="38" fill="url(#ag)"/><text x="40" y="52" text-anchor="middle" font-family="Arial" font-weight="900" font-size="36" fill="white">A</text><path d="M62 25 C68 30 68 50 62 55" stroke="white" stroke-width="2" fill="none" opacity="0.5"/><path d="M18 25 C12 30 12 50 18 55" stroke="white" stroke-width="2" fill="none" opacity="0.5"/></svg>';
+      const axisSvg = '<svg viewBox="0 0 80 80" fill="none"><defs><linearGradient id="ag" x1="0" y1="40" x2="80" y2="40"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#ea580c"/></linearGradient></defs><circle cx="40" cy="40" r="38" fill="url(#ag)"/><text x="40" y="52" text-anchor="middle" font-family="Arial" font-weight="900" font-size="36" fill="white">A</text><path d="M62 25 C68 30 68 50 62 55" stroke="white" stroke-width="2" fill="none" opacity="0.5"/><path d="M18 25 C12 30 12 50 18 55" stroke="white" stroke-width="2" fill="none" opacity="0.5"/></svg>';
       const avatarText = role === 'user' ? 'U' : axisSvg;
       let bubbleContent = escapeHtml(content);
 
@@ -385,7 +385,7 @@
       div.className = 'message bot';
       div.id = 'typing-indicator';
       div.innerHTML = `
-        <div class="avatar"><svg viewBox="0 0 80 80" fill="none"><defs><linearGradient id="ag2" x1="0" y1="0" x2="80" y2="80"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#ea580c"/></linearGradient></defs><circle cx="40" cy="40" r="38" fill="url(#ag2)"/><text x="40" y="52" text-anchor="middle" font-family="Arial" font-weight="900" font-size="36" fill="white">A</text><path d="M62 25 C68 30 68 50 62 55" stroke="white" stroke-width="2" fill="none" opacity="0.5"/><path d="M18 25 C12 30 12 50 18 55" stroke="white" stroke-width="2" fill="none" opacity="0.5"/></svg></div>
+        <div class="avatar"><svg viewBox="0 0 80 80" fill="none"><defs><linearGradient id="ag2" x1="0" y1="40" x2="80" y2="40"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#ea580c"/></linearGradient></defs><circle cx="40" cy="40" r="38" fill="url(#ag2)"/><text x="40" y="52" text-anchor="middle" font-family="Arial" font-weight="900" font-size="36" fill="white">A</text><path d="M62 25 C68 30 68 50 62 55" stroke="white" stroke-width="2" fill="none" opacity="0.5"/><path d="M18 25 C12 30 12 50 18 55" stroke="white" stroke-width="2" fill="none" opacity="0.5"/></svg></div>
         <div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>
       `;
       container.appendChild(div);
