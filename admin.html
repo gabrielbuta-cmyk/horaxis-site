@@ -235,6 +235,7 @@
             <span class="ticket-priority ${t.priority || 'normal'}">${t.priority || 'normal'}</span>
           </div>
           <div class="ticket-subject">${escapeHtml(t.subject || 'No subject')}</div>
+          <div style="font-size:11px;color:#ea580c;margin-bottom:2px;">${escapeHtml(t.company || '')}</div>
           <div class="ticket-meta">
             <span>${t.category || 'general'}</span>
             <span>v${t.version || '?'}</span>
@@ -264,6 +265,7 @@
         <div class="ticket-detail-header">
           <h2>${escapeHtml(ticket.subject || 'No subject')}</h2>
           <div class="detail-meta">
+            <span><strong>Company:</strong> ${escapeHtml(ticket.company || 'Unknown')}</span>
             <span><strong>ID:</strong> ${escapeHtml(ticket.ticket_id)}</span>
             <span><strong>Priority:</strong> ${ticket.priority || 'normal'}</span>
             <span><strong>Category:</strong> ${ticket.category || 'general'}</span>

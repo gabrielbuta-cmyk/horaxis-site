@@ -60,7 +60,7 @@ export const onRequest = async (context) => {
     return json({ error: "Invalid JSON body" }, 400);
   }
 
-  const { ticket_id, subject, description, priority, category, version, callback_url, signature, timestamp } = body;
+  const { ticket_id, subject, description, company, priority, category, version, callback_url, signature, timestamp } = body;
 
   // Validate required fields
   if (!ticket_id || !subject || !signature || !timestamp) {
@@ -90,6 +90,7 @@ export const onRequest = async (context) => {
     ticket_id,
     subject,
     description: description || "",
+    company: company || "Unknown",
     priority: priority || "normal",
     category: category || "general",
     version: version || "unknown",
@@ -150,6 +151,7 @@ export const onRequest = async (context) => {
                 <div style="padding:30px;">
                   <h2 style="margin-top:0; color:#0f172a;">New Support Ticket</h2>
                   <hr style="border:0; border-top:1px solid #e2e8f0; margin:20px 0;">
+                  <p><strong>Company:</strong> ${company || "Unknown"}</p>
                   <p><strong>Ticket ID:</strong> ${ticket_id}</p>
                   <p><strong>Subject:</strong> ${subject}</p>
                   <p><strong>Priority:</strong> <span style="color:${priority === "critical" ? "#dc2626" : priority === "high" ? "#ea580c" : "#64748b"}">${priorityLabel}</span></p>
