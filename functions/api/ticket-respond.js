@@ -80,7 +80,7 @@ export const onRequest = async (context) => {
     ticket_id,
     message,
     signature,
-    timestamp,
+    timestamp: String(timestamp),
   };
 
   // Return signed payload — the admin page browser will deliver it directly
