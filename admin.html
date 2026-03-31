@@ -347,7 +347,12 @@
           }),
         });
 
-        const data = await res.json();
+        let data;
+        try {
+          data = await res.json();
+        } catch (jsonErr) {
+          data = { error: `Server returned ${res.status}` };
+        }
 
         if (res.ok && data.status === 'sent') {
           statusEl.textContent = 'Response sent successfully.';
@@ -372,8 +377,9 @@
           statusEl.style.color = '#ef4444';
         }
       } catch (e) {
-        statusEl.textContent = 'Network error. Could not reach API.';
+        statusEl.textContent = 'Error: ' + (e.message || 'Could not reach API.');
         statusEl.style.color = '#ef4444';
+        console.error('Send response error:', e);
       }
 
       btn.disabled = false;
