@@ -108,6 +108,15 @@
     .response-area .btn-send:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
     .response-area .send-status { font-size: 13px; color: #64748b; }
 
+    /* Close/Resolve buttons */
+    .ticket-action-buttons { display: flex; gap: 8px; margin-top: 10px; }
+    .btn-close-ticket { background: #475569; color: #e2e8f0; border: none; padding: 8px 18px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+    .btn-close-ticket:hover { background: #64748b; }
+    .btn-close-ticket:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
+    .btn-resolve-ticket { background: #16a34a; color: #fff; border: none; padding: 8px 18px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+    .btn-resolve-ticket:hover { background: #15803d; }
+    .btn-resolve-ticket:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
+
     /* Empty state */
     .empty-state { text-align: center; padding: 60px 20px; color: #64748b; }
     .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
@@ -357,6 +366,12 @@
             <span><strong>Status:</strong> <span class="status-badge ${ticket.status || 'open'}">${formatStatus(ticket.status || 'open')}</span></span>
             <span>${relativeTime(ticket.received_at || ticket.timestamp)}</span>
           </div>
+          ${!['closed', 'resolved'].includes(ticket.status) ? `
+          <div class="ticket-action-buttons">
+            <button class="btn-close-ticket" onclick="closeTicket('${escapeAttr(ticket.ticket_id)}', '${escapeAttr(ticket.callback_url || '')}')">Close Ticket</button>
+            <button class="btn-resolve-ticket" onclick="resolveTicket('${escapeAttr(ticket.ticket_id)}', '${escapeAttr(ticket.callback_url || '')}')">Resolve Ticket</button>
+          </div>
+          ` : ''}
         </div>
 
         <div class="ticket-detail-body">
@@ -530,6 +545,78 @@
       }
 
       btn.disabled = false;
+    }
+
+    // ── Close / Resolve ticket ──
+    async function changeTicketStatus(ticketId, callbackUrl, newStatus) {
+      const statusLabel = newStatus === 'closed' ? 'Closed' : 'Resolved';
+      const message = `Ticket ${statusLabel.toLowerCase()} by Horaxis Support.`;
+
+      // Disable buttons while processing
+      document.querySelectorAll('.btn-close-ticket, .btn-resolve-ticket').forEach(b => { b.disabled = true; });
+
+      try {
+        // Send the status-change message via the existing respond endpoint
+        const res = await fetch(`${API_BASE}/ticket-respond`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ticket_id: ticketId,
+            message: message,
+            callback_url: callbackUrl || '',
+            admin_password: adminPassword,
+            new_status: newStatus,
+          }),
+        });
+
+        let data;
+        try { data = await res.json(); } catch (e) { data = {}; }
+
+        // If the worker returns a signed payload, deliver it
+        if (res.ok && data.status === 'signed' && data.payload && data.callback_url) {
+          try {
+            await fetch(data.callback_url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data.payload),
+            });
+          } catch (e) { /* delivery failure is non-blocking */ }
+        }
+      } catch (e) {
+        console.error('Status change API error:', e);
+      }
+
+      // Update local ticket state regardless of API outcome
+      const ticket = tickets.find(t => t.ticket_id === ticketId);
+      if (ticket) {
+        ticket.status = newStatus;
+        if (!Array.isArray(ticket.comments)) ticket.comments = [];
+        ticket.comments.push({
+          author: 'Horaxis Support',
+          message: message,
+          timestamp: new Date().toISOString(),
+        });
+
+        // Re-render list and detail, then switch to closed tab
+        renderTicketList();
+        renderTicketDetail(ticket);
+
+        // After a short delay, switch to the Closed tab so the user sees the ticket there
+        setTimeout(() => {
+          switchTab('closed');
+          selectedTicketId = ticketId;
+          renderTicketList();
+          renderTicketDetail(ticket);
+        }, 800);
+      }
+    }
+
+    function closeTicket(ticketId, callbackUrl) {
+      changeTicketStatus(ticketId, callbackUrl, 'closed');
+    }
+
+    function resolveTicket(ticketId, callbackUrl) {
+      changeTicketStatus(ticketId, callbackUrl, 'resolved');
     }
 
     // ── Helpers ──
