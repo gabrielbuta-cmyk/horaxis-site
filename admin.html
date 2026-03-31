@@ -246,10 +246,16 @@
       }
     }
 
-    // ── Auto-refresh ──
+    // ── Auto-refresh (pauses while typing) ──
+    function isUserTyping() {
+      const textarea = document.getElementById('response-text');
+      return textarea && textarea === document.activeElement && textarea.value.trim().length > 0;
+    }
+
     function startAutoRefresh() {
       stopAutoRefresh();
       autoRefreshTimer = setInterval(() => {
+        if (isUserTyping()) return; // don't refresh while typing
         refreshTickets();
         updateRefreshIndicator();
       }, 30000);
@@ -301,8 +307,8 @@
 
       renderTicketList();
 
-      // Re-render detail if a ticket is selected (to pick up updates)
-      if (selectedTicketId) {
+      // Re-render detail if a ticket is selected — but NOT if user is typing
+      if (selectedTicketId && !isUserTyping()) {
         const ticket = tickets.find((t) => t.ticket_id === selectedTicketId);
         if (ticket) renderTicketDetail(ticket);
       }
