@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Support Admin — Horaxis</title>
+  <meta name="robots" content="noindex, nofollow"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* Header */
+    .admin-header { background: #1e293b; border-bottom: 1px solid #334155; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
+    .admin-header .logo { display: flex; align-items: center; gap: 12px; }
+    .admin-header .logo span { font-size: 14px; color: #94a3b8; }
+    .admin-header .logo strong { font-size: 16px; color: #f1f5f9; }
+    .admin-header .actions { display: flex; gap: 12px; align-items: center; }
+    .admin-header .actions button { background: #334155; border: 1px solid #475569; color: #e2e8f0; padding: 8px 16px; border-radius: 6px; font-size: 13px; cursor: pointer; transition: background 0.2s; }
+    .admin-header .actions button:hover { background: #475569; }
+
+    /* Auth screen */
+    .auth-screen { flex: 1; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
+    .auth-screen h2 { color: #f1f5f9; font-size: 20px; }
+    .auth-screen p { color: #94a3b8; font-size: 14px; }
+    .auth-screen input { background: #1e293b; border: 1px solid #334155; color: #e2e8f0; padding: 12px 16px; border-radius: 8px; font-size: 14px; width: 300px; outline: none; transition: border-color 0.2s; }
+    .auth-screen input:focus { border-color: #ea580c; }
+    .auth-screen .btn { background: #ea580c; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; cursor: pointer; transition: background 0.2s; }
+    .auth-screen .btn:hover { background: #dc2626; }
+    .auth-screen .error { color: #ef4444; font-size: 13px; display: none; }
+
+    /* Main layout */
+    .admin-main { flex: 1; display: flex; max-width: 1200px; width: 100%; margin: 0 auto; }
+
+    /* Ticket list */
+    .ticket-list { width: 380px; border-right: 1px solid #1e293b; overflow-y: auto; height: calc(100vh - 57px); }
+    .ticket-list-header { padding: 16px; border-bottom: 1px solid #1e293b; display: flex; align-items: center; justify-content: space-between; }
+    .ticket-list-header h3 { font-size: 14px; color: #94a3b8; font-weight: 600; }
+    .ticket-list-header .count { background: #334155; color: #94a3b8; font-size: 12px; padding: 2px 8px; border-radius: 10px; }
+
+    .ticket-item { padding: 14px 16px; border-bottom: 1px solid #1e293b; cursor: pointer; transition: background 0.2s; }
+    .ticket-item:hover { background: #1e293b; }
+    .ticket-item.active { background: #1e293b; border-left: 3px solid #ea580c; }
+    .ticket-item .ticket-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+    .ticket-item .ticket-id { font-size: 12px; color: #64748b; font-family: monospace; }
+    .ticket-item .ticket-priority { font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
+    .ticket-item .ticket-priority.critical { background: #450a0a; color: #fca5a5; }
+    .ticket-item .ticket-priority.high { background: #431407; color: #fdba74; }
+    .ticket-item .ticket-priority.normal { background: #1e293b; color: #94a3b8; }
+    .ticket-item .ticket-priority.low { background: #0f172a; color: #64748b; }
+    .ticket-item .ticket-subject { font-size: 14px; color: #e2e8f0; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ticket-item .ticket-meta { font-size: 12px; color: #64748b; margin-top: 4px; display: flex; gap: 12px; }
+    .ticket-item .ticket-status { font-size: 11px; padding: 1px 6px; border-radius: 3px; }
+    .ticket-item .ticket-status.open { background: #14532d; color: #86efac; }
+    .ticket-item .ticket-status.responded { background: #1e3a5f; color: #93c5fd; }
+
+    /* Ticket detail */
+    .ticket-detail { flex: 1; display: flex; flex-direction: column; height: calc(100vh - 57px); }
+    .ticket-detail-empty { flex: 1; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px; color: #64748b; }
+    .ticket-detail-empty .icon { font-size: 40px; }
+
+    .ticket-detail-header { padding: 20px 24px; border-bottom: 1px solid #1e293b; }
+    .ticket-detail-header h2 { font-size: 18px; color: #f1f5f9; margin-bottom: 8px; }
+    .ticket-detail-header .detail-meta { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: #64748b; }
+    .ticket-detail-header .detail-meta span { display: flex; align-items: center; gap: 4px; }
+
+    .ticket-detail-body { flex: 1; overflow-y: auto; padding: 24px; }
+    .detail-section { margin-bottom: 20px; }
+    .detail-section label { font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 6px; }
+    .detail-section .value { font-size: 14px; color: #e2e8f0; background: #1e293b; padding: 12px; border-radius: 8px; border: 1px solid #334155; }
+
+    .response-history { margin-bottom: 20px; }
+    .response-history h4 { font-size: 13px; color: #94a3b8; margin-bottom: 12px; }
+    .response-entry { background: #1e293b; border: 1px solid #334155; border-left: 3px solid #2563eb; border-radius: 8px; padding: 12px; margin-bottom: 8px; }
+    .response-entry .response-time { font-size: 11px; color: #64748b; margin-bottom: 4px; }
+    .response-entry .response-text { font-size: 14px; color: #e2e8f0; white-space: pre-wrap; }
+
+    /* Response area */
+    .response-area { padding: 16px 24px; border-top: 1px solid #1e293b; background: #1e293b; }
+    .response-area textarea { width: 100%; background: #0f172a; border: 1px solid #334155; color: #e2e8f0; padding: 12px; border-radius: 8px; font-size: 14px; font-family: inherit; resize: vertical; min-height: 80px; outline: none; transition: border-color 0.2s; }
+    .response-area textarea:focus { border-color: #ea580c; }
+    .response-area .response-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+    .response-area .btn-send { background: #ea580c; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+    .response-area .btn-send:hover { background: #dc2626; }
+    .response-area .btn-send:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
+    .response-area .send-status { font-size: 13px; color: #64748b; }
+
+    /* Empty state */
+    .empty-state { text-align: center; padding: 60px 20px; color: #64748b; }
+    .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .admin-main { flex-direction: column; }
+      .ticket-list { width: 100%; height: auto; max-height: 40vh; border-right: none; border-bottom: 1px solid #1e293b; }
+      .ticket-detail { height: auto; min-height: 60vh; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Auth screen -->
+  <div id="auth-screen" class="auth-screen">
+    <h2>Support Admin</h2>
+    <p>Enter admin password to continue</p>
+    <input type="password" id="auth-password" placeholder="Admin password" onkeydown="if(event.key==='Enter')authenticate()"/>
+    <button class="btn" onclick="authenticate()">Sign In</button>
+    <div class="error" id="auth-error">Invalid password</div>
+  </div>
+
+  <!-- Admin UI -->
+  <div id="admin-app" style="display:none; flex:1; display:flex; flex-direction:column;">
+    <div class="admin-header">
+      <div class="logo">
+        <strong>Horaxis</strong>
+        <span>Support Admin</span>
+      </div>
+      <div class="actions">
+        <button onclick="refreshTickets()">Refresh</button>
+        <button onclick="logout()">Logout</button>
+      </div>
+    </div>
+
+    <div class="admin-main">
+      <div class="ticket-list">
+        <div class="ticket-list-header">
+          <h3>Tickets</h3>
+          <span class="count" id="ticket-count">0</span>
+        </div>
+        <div id="ticket-list-items">
+          <div class="empty-state">
+            <div class="icon">&#128233;</div>
+            <p>No tickets yet</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ticket-detail" id="ticket-detail">
+        <div class="ticket-detail-empty">
+          <div class="icon">&#128196;</div>
+          <p>Select a ticket to view details</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = '/api';
+    let adminPassword = null;
+    let tickets = [];
+    let selectedTicketId = null;
+
+    // ── Authentication ──
+    function authenticate() {
+      const input = document.getElementById('auth-password');
+      const password = input.value.trim();
+      if (!password) return;
+
+      // Store password in sessionStorage (used for API calls)
+      adminPassword = password;
+      sessionStorage.setItem('admin_password', password);
+
+      document.getElementById('auth-screen').style.display = 'none';
+      const app = document.getElementById('admin-app');
+      app.style.display = 'flex';
+
+      refreshTickets();
+    }
+
+    function logout() {
+      adminPassword = null;
+      sessionStorage.removeItem('admin_password');
+      document.getElementById('admin-app').style.display = 'none';
+      document.getElementById('auth-screen').style.display = 'flex';
+      document.getElementById('auth-password').value = '';
+    }
+
+    function init() {
+      const saved = sessionStorage.getItem('admin_password');
+      if (saved) {
+        adminPassword = saved;
+        document.getElementById('auth-screen').style.display = 'none';
+        const app = document.getElementById('admin-app');
+        app.style.display = 'flex';
+        refreshTickets();
+      }
+    }
+
+    // ── Ticket list ──
+    async function refreshTickets() {
+      // Try fetching from KV-backed API endpoint
+      try {
+        const res = await fetch(`${API_BASE}/ticket-list`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ admin_password: adminPassword }),
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          tickets = data.tickets || [];
+        } else {
+          // API not available, use local storage fallback
+          const stored = localStorage.getItem('admin_tickets');
+          tickets = stored ? JSON.parse(stored) : [];
+        }
+      } catch (e) {
+        // Offline or no API — use local storage
+        const stored = localStorage.getItem('admin_tickets');
+        tickets = stored ? JSON.parse(stored) : [];
+      }
+
+      renderTicketList();
+    }
+
+    function renderTicketList() {
+      const container = document.getElementById('ticket-list-items');
+      const countEl = document.getElementById('ticket-count');
+      countEl.textContent = tickets.length;
+
+      if (tickets.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="icon">&#128233;</div>
+            <p>No tickets yet</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = tickets.map((t) => `
+        <div class="ticket-item ${t.ticket_id === selectedTicketId ? 'active' : ''}" onclick="selectTicket('${t.ticket_id}')">
+          <div class="ticket-row">
+            <span class="ticket-id">${escapeHtml(t.ticket_id)}</span>
+            <span class="ticket-priority ${t.priority || 'normal'}">${t.priority || 'normal'}</span>
+          </div>
+          <div class="ticket-subject">${escapeHtml(t.subject || 'No subject')}</div>
+          <div class="ticket-meta">
+            <span>${t.category || 'general'}</span>
+            <span>v${t.version || '?'}</span>
+            <span class="ticket-status ${t.status || 'open'}">${t.status || 'open'}</span>
+            <span>${formatTime(t.received_at || t.timestamp)}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ── Ticket detail ──
+    function selectTicket(ticketId) {
+      selectedTicketId = ticketId;
+      const ticket = tickets.find((t) => t.ticket_id === ticketId);
+      if (!ticket) return;
+
+      renderTicketList();
+      renderTicketDetail(ticket);
+    }
+
+    function renderTicketDetail(ticket) {
+      const detail = document.getElementById('ticket-detail');
+
+      const hasCallback = ticket.callback_url && ticket.callback_url.length > 0;
+
+      detail.innerHTML = `
+        <div class="ticket-detail-header">
+          <h2>${escapeHtml(ticket.subject || 'No subject')}</h2>
+          <div class="detail-meta">
+            <span><strong>ID:</strong> ${escapeHtml(ticket.ticket_id)}</span>
+            <span><strong>Priority:</strong> ${ticket.priority || 'normal'}</span>
+            <span><strong>Category:</strong> ${ticket.category || 'general'}</span>
+            <span><strong>Version:</strong> ${ticket.version || 'unknown'}</span>
+            <span><strong>Status:</strong> ${ticket.status || 'open'}</span>
+          </div>
+        </div>
+
+        <div class="ticket-detail-body">
+          <div class="detail-section">
+            <label>Received</label>
+            <div class="value">${ticket.received_at || new Date(ticket.timestamp * 1000).toISOString()}</div>
+          </div>
+
+          ${ticket.callback_url ? `
+          <div class="detail-section">
+            <label>Callback URL</label>
+            <div class="value" style="font-family:monospace; font-size:12px; word-break:break-all;">${escapeHtml(ticket.callback_url)}</div>
+          </div>
+          ` : ''}
+
+          ${ticket.last_response ? `
+          <div class="response-history">
+            <h4>Last Response</h4>
+            <div class="response-entry">
+              <div class="response-time">${ticket.responded_at || ''}</div>
+              <div class="response-text">${escapeHtml(ticket.last_response)}</div>
+            </div>
+          </div>
+          ` : ''}
+        </div>
+
+        ${hasCallback ? `
+        <div class="response-area">
+          <textarea id="response-text" placeholder="Type your response to the customer..."></textarea>
+          <div class="response-actions">
+            <span class="send-status" id="send-status"></span>
+            <button class="btn-send" id="btn-send-response" onclick="sendResponse('${escapeAttr(ticket.ticket_id)}', '${escapeAttr(ticket.callback_url)}')">Send Response</button>
+          </div>
+        </div>
+        ` : `
+        <div class="response-area">
+          <p style="color:#64748b; font-size:13px; padding:8px 0;">No callback URL — cannot send response to this ticket.</p>
+        </div>
+        `}
+      `;
+    }
+
+    // ── Send response ──
+    async function sendResponse(ticketId, callbackUrl) {
+      const textarea = document.getElementById('response-text');
+      const statusEl = document.getElementById('send-status');
+      const btn = document.getElementById('btn-send-response');
+      const message = textarea.value.trim();
+
+      if (!message) {
+        statusEl.textContent = 'Please enter a response message.';
+        statusEl.style.color = '#ef4444';
+        return;
+      }
+
+      btn.disabled = true;
+      statusEl.textContent = 'Sending...';
+      statusEl.style.color = '#94a3b8';
+
+      try {
+        const res = await fetch(`${API_BASE}/ticket-respond`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ticket_id: ticketId,
+            message,
+            callback_url: callbackUrl,
+            admin_password: adminPassword,
+          }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.status === 'sent') {
+          statusEl.textContent = 'Response sent successfully.';
+          statusEl.style.color = '#86efac';
+          textarea.value = '';
+
+          // Update local ticket state
+          const ticket = tickets.find((t) => t.ticket_id === ticketId);
+          if (ticket) {
+            ticket.status = 'responded';
+            ticket.responded_at = new Date().toISOString();
+            ticket.last_response = message;
+          }
+
+          // Re-render after short delay
+          setTimeout(() => {
+            renderTicketList();
+            if (ticket) renderTicketDetail(ticket);
+          }, 1500);
+        } else {
+          statusEl.textContent = data.error || 'Failed to send response.';
+          statusEl.style.color = '#ef4444';
+        }
+      } catch (e) {
+        statusEl.textContent = 'Network error. Could not reach API.';
+        statusEl.style.color = '#ef4444';
+      }
+
+      btn.disabled = false;
+    }
+
+    // ── Helpers ──
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function escapeAttr(text) {
+      return (text || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    }
+
+    function formatTime(value) {
+      if (!value) return '';
+      try {
+        const date = typeof value === 'number' ? new Date(value * 1000) : new Date(value);
+        const now = new Date();
+        const diff = now - date;
+
+        if (diff < 60000) return 'just now';
+        if (diff < 3600000) return Math.floor(diff / 60000) + 'm ago';
+        if (diff < 86400000) return Math.floor(diff / 3600000) + 'h ago';
+        return date.toLocaleDateString();
+      } catch (e) {
+        return String(value);
+      }
+    }
+
+    // Init
+    init();
+  </script>
+</body>
+</html>
