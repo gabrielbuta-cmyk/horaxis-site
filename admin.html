@@ -115,6 +115,22 @@
     .btn-close-ticket:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
     .btn-resolve-ticket { background: #16a34a; color: #fff; border: none; padding: 8px 18px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
     .btn-resolve-ticket:hover { background: #15803d; }
+
+    /* Delete confirmation modal */
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; animation: fadeIn 0.2s ease; }
+    .modal-box { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 32px; width: 420px; max-width: 90vw; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+    .modal-box h3 { color: #f1f5f9; font-size: 18px; margin-bottom: 8px; }
+    .modal-box p { color: #94a3b8; font-size: 14px; line-height: 1.5; margin-bottom: 16px; }
+    .modal-box .warning { color: #ef4444; font-size: 13px; margin-bottom: 16px; }
+    .modal-box input { width: 100%; background: #0f172a; border: 1px solid #334155; color: #e2e8f0; padding: 10px 14px; border-radius: 6px; font-size: 14px; outline: none; margin-bottom: 16px; }
+    .modal-box input:focus { border-color: #dc2626; }
+    .modal-box .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+    .modal-box .btn-cancel { background: #334155; color: #e2e8f0; border: none; padding: 10px 20px; border-radius: 6px; font-size: 14px; cursor: pointer; }
+    .modal-box .btn-cancel:hover { background: #475569; }
+    .modal-box .btn-delete-confirm { background: #dc2626; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; opacity: 0.4; pointer-events: none; }
+    .modal-box .btn-delete-confirm.enabled { opacity: 1; pointer-events: auto; cursor: pointer; }
+    .modal-box .btn-delete-confirm.enabled:hover { background: #b91c1c; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     .btn-resolve-ticket:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
 
     /* Empty state */
@@ -620,8 +636,44 @@
       changeTicketStatus(ticketId, callbackUrl, 'resolved');
     }
 
-    async function deleteTicket(ticketId) {
-      if (!confirm('Delete this ticket permanently?')) return;
+    function deleteTicket(ticketId) {
+      const ticket = tickets.find(t => t.ticket_id === ticketId);
+      const subj = ticket ? ticket.subject : ticketId;
+
+      const overlay = document.createElement('div');
+      overlay.className = 'modal-overlay';
+      overlay.innerHTML = `
+        <div class="modal-box">
+          <h3>Delete Ticket</h3>
+          <p>This will permanently delete the ticket <strong>"${escapeHtml(subj)}"</strong> from the admin panel. This action cannot be undone.</p>
+          <p class="warning">To confirm, type <strong>DELETE</strong> below:</p>
+          <input type="text" id="delete-confirm-input" placeholder="Type DELETE to confirm" autocomplete="off" spellcheck="false" />
+          <div class="modal-actions">
+            <button class="btn-cancel" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+            <button class="btn-delete-confirm" id="btn-delete-confirm" onclick="confirmDelete('${escapeAttr(ticketId)}')">Delete Ticket</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+
+      const input = document.getElementById('delete-confirm-input');
+      const btn = document.getElementById('btn-delete-confirm');
+      input.focus();
+      input.addEventListener('input', () => {
+        btn.classList.toggle('enabled', input.value.trim() === 'DELETE');
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') overlay.remove();
+        if (e.key === 'Enter' && input.value.trim() === 'DELETE') confirmDelete(ticketId);
+      });
+      overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+    }
+
+    async function confirmDelete(ticketId) {
+      const overlay = document.querySelector('.modal-overlay');
+      const btn = document.getElementById('btn-delete-confirm');
+      if (btn) { btn.textContent = 'Deleting...'; btn.classList.remove('enabled'); }
+
       try {
         const res = await fetch(`${API_BASE}/ticket-delete`, {
           method: 'POST',
@@ -635,8 +687,9 @@
           document.getElementById('ticket-detail').innerHTML = '<div class="ticket-detail-empty"><div class="icon">&#128196;</div><p>Select a ticket to view details</p></div>';
         }
       } catch (e) {
-        alert('Failed to delete ticket');
+        console.error('Delete failed:', e);
       }
+      if (overlay) overlay.remove();
     }
 
     // ── Helpers ──
