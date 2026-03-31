@@ -361,7 +361,7 @@
       // If this is a bot message that indicates escalation, append the ticket button
       let ticketHtml = '';
       const lowerContent = (content || '').toLowerCase();
-      if (role === 'assistant' && (isEscalationMessage(content) || lowerContent.includes('unable to resolve') || lowerContent.includes('support ticket') || lowerContent.includes('horaxis team'))) {
+      if (role !== 'user' && (isEscalationMessage(content) || lowerContent.includes('unable to resolve') || lowerContent.includes('support ticket') || lowerContent.includes('horaxis team'))) {
         ticketHtml = buildTicketButton();
       }
 
