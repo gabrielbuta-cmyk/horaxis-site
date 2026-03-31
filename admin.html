@@ -274,6 +274,10 @@
 
         <div class="ticket-detail-body">
           <div class="detail-section">
+            <label>Description</label>
+            <div class="value" style="white-space:pre-wrap;background:#0f172a;padding:12px;border-radius:8px;margin-bottom:12px;">${escapeHtml(ticket.description || 'No description provided')}</div>
+          </div>
+          <div class="detail-section">
             <label>Received</label>
             <div class="value">${ticket.received_at || new Date(ticket.timestamp * 1000).toISOString()}</div>
           </div>
