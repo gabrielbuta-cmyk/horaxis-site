@@ -17,6 +17,7 @@
     .admin-header .actions { display: flex; gap: 12px; align-items: center; }
     .admin-header .actions button { background: #334155; border: 1px solid #475569; color: #e2e8f0; padding: 8px 16px; border-radius: 6px; font-size: 13px; cursor: pointer; transition: background 0.2s; }
     .admin-header .actions button:hover { background: #475569; }
+    .admin-header .refresh-indicator { font-size: 11px; color: #64748b; }
 
     /* Auth screen */
     .auth-screen { flex: 1; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
@@ -29,29 +30,43 @@
     .auth-screen .error { color: #ef4444; font-size: 13px; display: none; }
 
     /* Main layout */
-    .admin-main { flex: 1; display: flex; max-width: 1200px; width: 100%; margin: 0 auto; }
+    .admin-main { flex: 1; display: flex; max-width: 1400px; width: 100%; margin: 0 auto; }
 
     /* Ticket list */
-    .ticket-list { width: 380px; border-right: 1px solid #1e293b; overflow-y: auto; height: calc(100vh - 57px); }
-    .ticket-list-header { padding: 16px; border-bottom: 1px solid #1e293b; display: flex; align-items: center; justify-content: space-between; }
+    .ticket-list { width: 300px; min-width: 300px; border-right: 1px solid #1e293b; overflow-y: auto; height: calc(100vh - 57px); display: flex; flex-direction: column; }
+    .ticket-list-header { padding: 16px; border-bottom: 1px solid #1e293b; }
+    .ticket-list-header .header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
     .ticket-list-header h3 { font-size: 14px; color: #94a3b8; font-weight: 600; }
     .ticket-list-header .count { background: #334155; color: #94a3b8; font-size: 12px; padding: 2px 8px; border-radius: 10px; }
 
-    .ticket-item { padding: 14px 16px; border-bottom: 1px solid #1e293b; cursor: pointer; transition: background 0.2s; }
+    /* Tabs */
+    .ticket-tabs { display: flex; gap: 0; }
+    .ticket-tabs button { flex: 1; background: transparent; border: 1px solid #334155; color: #64748b; padding: 7px 12px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .ticket-tabs button:first-child { border-radius: 6px 0 0 6px; }
+    .ticket-tabs button:last-child { border-radius: 0 6px 6px 0; }
+    .ticket-tabs button.active { background: #ea580c; border-color: #ea580c; color: #fff; }
+
+    .ticket-item { padding: 12px 16px; border-bottom: 1px solid #1e293b; cursor: pointer; transition: background 0.2s; }
     .ticket-item:hover { background: #1e293b; }
     .ticket-item.active { background: #1e293b; border-left: 3px solid #ea580c; }
     .ticket-item .ticket-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
-    .ticket-item .ticket-id { font-size: 12px; color: #64748b; font-family: monospace; }
-    .ticket-item .ticket-priority { font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
+    .ticket-item .ticket-id { font-size: 11px; color: #64748b; font-family: monospace; }
+    .ticket-item .ticket-priority { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
     .ticket-item .ticket-priority.critical { background: #450a0a; color: #fca5a5; }
     .ticket-item .ticket-priority.high { background: #431407; color: #fdba74; }
     .ticket-item .ticket-priority.normal { background: #1e293b; color: #94a3b8; }
     .ticket-item .ticket-priority.low { background: #0f172a; color: #64748b; }
-    .ticket-item .ticket-subject { font-size: 14px; color: #e2e8f0; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .ticket-item .ticket-meta { font-size: 12px; color: #64748b; margin-top: 4px; display: flex; gap: 12px; }
-    .ticket-item .ticket-status { font-size: 11px; padding: 1px 6px; border-radius: 3px; }
-    .ticket-item .ticket-status.open { background: #14532d; color: #86efac; }
-    .ticket-item .ticket-status.responded { background: #1e3a5f; color: #93c5fd; }
+    .ticket-item .ticket-subject { font-size: 13px; color: #e2e8f0; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ticket-item .ticket-company { font-size: 11px; color: #ea580c; margin: 2px 0; }
+    .ticket-item .ticket-meta { font-size: 11px; color: #64748b; margin-top: 4px; display: flex; gap: 8px; align-items: center; }
+
+    /* Status badges */
+    .status-badge { font-size: 10px; padding: 2px 8px; border-radius: 3px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+    .status-badge.open { background: #1e3a5f; color: #60a5fa; }
+    .status-badge.in_progress { background: #431407; color: #fdba74; }
+    .status-badge.responded { background: #14532d; color: #86efac; }
+    .status-badge.closed { background: #1e293b; color: #64748b; }
+    .status-badge.resolved { background: #1e293b; color: #64748b; }
 
     /* Ticket detail */
     .ticket-detail { flex: 1; display: flex; flex-direction: column; height: calc(100vh - 57px); }
@@ -66,13 +81,22 @@
     .ticket-detail-body { flex: 1; overflow-y: auto; padding: 24px; }
     .detail-section { margin-bottom: 20px; }
     .detail-section label { font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 6px; }
-    .detail-section .value { font-size: 14px; color: #e2e8f0; background: #1e293b; padding: 12px; border-radius: 8px; border: 1px solid #334155; }
+    .detail-section .value { font-size: 14px; color: #e2e8f0; background: #1e293b; padding: 12px; border-radius: 8px; border: 1px solid #334155; white-space: pre-wrap; line-height: 1.5; }
 
-    .response-history { margin-bottom: 20px; }
-    .response-history h4 { font-size: 13px; color: #94a3b8; margin-bottom: 12px; }
-    .response-entry { background: #1e293b; border: 1px solid #334155; border-left: 3px solid #2563eb; border-radius: 8px; padding: 12px; margin-bottom: 8px; }
-    .response-entry .response-time { font-size: 11px; color: #64748b; margin-bottom: 4px; }
-    .response-entry .response-text { font-size: 14px; color: #e2e8f0; white-space: pre-wrap; }
+    /* Conversation history */
+    .conversation-history { margin-bottom: 20px; }
+    .conversation-history h4 { font-size: 13px; color: #94a3b8; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .conversation-empty { font-size: 13px; color: #475569; padding: 16px 0; }
+
+    .comment-entry { border-radius: 8px; padding: 12px; margin-bottom: 8px; border: 1px solid #334155; }
+    .comment-entry.customer { background: #1e293b; border-left: 3px solid #3b82f6; }
+    .comment-entry.support { background: #1a2332; border-left: 3px solid #ea580c; }
+    .comment-entry .comment-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .comment-entry .comment-author { font-size: 12px; font-weight: 600; }
+    .comment-entry.customer .comment-author { color: #60a5fa; }
+    .comment-entry.support .comment-author { color: #fb923c; }
+    .comment-entry .comment-time { font-size: 11px; color: #64748b; }
+    .comment-entry .comment-text { font-size: 14px; color: #e2e8f0; white-space: pre-wrap; line-height: 1.5; }
 
     /* Response area */
     .response-area { padding: 16px 24px; border-top: 1px solid #1e293b; background: #1e293b; }
@@ -92,7 +116,7 @@
     /* Responsive */
     @media (max-width: 768px) {
       .admin-main { flex-direction: column; }
-      .ticket-list { width: 100%; height: auto; max-height: 40vh; border-right: none; border-bottom: 1px solid #1e293b; }
+      .ticket-list { width: 100%; min-width: 100%; height: auto; max-height: 40vh; border-right: none; border-bottom: 1px solid #1e293b; }
       .ticket-detail { height: auto; min-height: 60vh; }
     }
   </style>
@@ -116,6 +140,7 @@
         <span>Support Admin</span>
       </div>
       <div class="actions">
+        <span class="refresh-indicator" id="refresh-indicator"></span>
         <button onclick="refreshTickets()">Refresh</button>
         <button onclick="logout()">Logout</button>
       </div>
@@ -124,10 +149,16 @@
     <div class="admin-main">
       <div class="ticket-list">
         <div class="ticket-list-header">
-          <h3>Tickets</h3>
-          <span class="count" id="ticket-count">0</span>
+          <div class="header-row">
+            <h3>Tickets</h3>
+            <span class="count" id="ticket-count">0</span>
+          </div>
+          <div class="ticket-tabs">
+            <button class="active" id="tab-open" onclick="switchTab('open')">Open</button>
+            <button id="tab-closed" onclick="switchTab('closed')">Closed</button>
+          </div>
         </div>
-        <div id="ticket-list-items">
+        <div id="ticket-list-items" style="flex:1; overflow-y:auto;">
           <div class="empty-state">
             <div class="icon">&#128233;</div>
             <p>No tickets yet</p>
@@ -149,6 +180,8 @@
     let adminPassword = null;
     let tickets = [];
     let selectedTicketId = null;
+    let activeTab = 'open'; // 'open' or 'closed'
+    let autoRefreshTimer = null;
 
     // ── Authentication ──
     function authenticate() {
@@ -156,7 +189,6 @@
       const password = input.value.trim();
       if (!password) return;
 
-      // Store password in sessionStorage (used for API calls)
       adminPassword = password;
       sessionStorage.setItem('admin_password', password);
 
@@ -165,11 +197,13 @@
       app.style.display = 'flex';
 
       refreshTickets();
+      startAutoRefresh();
     }
 
     function logout() {
       adminPassword = null;
       sessionStorage.removeItem('admin_password');
+      stopAutoRefresh();
       document.getElementById('admin-app').style.display = 'none';
       document.getElementById('auth-screen').style.display = 'flex';
       document.getElementById('auth-password').value = '';
@@ -183,12 +217,44 @@
         const app = document.getElementById('admin-app');
         app.style.display = 'flex';
         refreshTickets();
+        startAutoRefresh();
       }
+    }
+
+    // ── Auto-refresh ──
+    function startAutoRefresh() {
+      stopAutoRefresh();
+      autoRefreshTimer = setInterval(() => {
+        refreshTickets();
+        updateRefreshIndicator();
+      }, 30000);
+    }
+
+    function stopAutoRefresh() {
+      if (autoRefreshTimer) {
+        clearInterval(autoRefreshTimer);
+        autoRefreshTimer = null;
+      }
+    }
+
+    function updateRefreshIndicator() {
+      const el = document.getElementById('refresh-indicator');
+      if (el) {
+        el.textContent = 'Updated ' + new Date().toLocaleTimeString();
+        setTimeout(() => { if (el) el.textContent = ''; }, 5000);
+      }
+    }
+
+    // ── Tabs ──
+    function switchTab(tab) {
+      activeTab = tab;
+      document.getElementById('tab-open').classList.toggle('active', tab === 'open');
+      document.getElementById('tab-closed').classList.toggle('active', tab === 'closed');
+      renderTicketList();
     }
 
     // ── Ticket list ──
     async function refreshTickets() {
-      // Try fetching from KV-backed API endpoint
       try {
         const res = await fetch(`${API_BASE}/ticket-list`, {
           method: 'POST',
@@ -200,47 +266,63 @@
           const data = await res.json();
           tickets = data.tickets || [];
         } else {
-          // API not available, use local storage fallback
           const stored = localStorage.getItem('admin_tickets');
           tickets = stored ? JSON.parse(stored) : [];
         }
       } catch (e) {
-        // Offline or no API — use local storage
         const stored = localStorage.getItem('admin_tickets');
         tickets = stored ? JSON.parse(stored) : [];
       }
 
       renderTicketList();
+
+      // Re-render detail if a ticket is selected (to pick up updates)
+      if (selectedTicketId) {
+        const ticket = tickets.find((t) => t.ticket_id === selectedTicketId);
+        if (ticket) renderTicketDetail(ticket);
+      }
+    }
+
+    function getFilteredTickets() {
+      const openStatuses = ['open', 'in_progress', 'responded'];
+      const closedStatuses = ['closed', 'resolved'];
+
+      if (activeTab === 'open') {
+        return tickets.filter((t) => openStatuses.includes(t.status || 'open'));
+      } else {
+        return tickets.filter((t) => closedStatuses.includes(t.status));
+      }
     }
 
     function renderTicketList() {
       const container = document.getElementById('ticket-list-items');
       const countEl = document.getElementById('ticket-count');
-      countEl.textContent = tickets.length;
+      const filtered = getFilteredTickets();
+      countEl.textContent = filtered.length;
 
-      if (tickets.length === 0) {
+      if (filtered.length === 0) {
         container.innerHTML = `
           <div class="empty-state">
             <div class="icon">&#128233;</div>
-            <p>No tickets yet</p>
+            <p>No ${activeTab === 'open' ? 'open' : 'closed'} tickets</p>
           </div>
         `;
         return;
       }
 
-      container.innerHTML = tickets.map((t) => `
+      container.innerHTML = filtered.map((t) => `
         <div class="ticket-item ${t.ticket_id === selectedTicketId ? 'active' : ''}" onclick="selectTicket('${t.ticket_id}')">
           <div class="ticket-row">
             <span class="ticket-id">${escapeHtml(t.ticket_id)}</span>
             <span class="ticket-priority ${t.priority || 'normal'}">${t.priority || 'normal'}</span>
           </div>
           <div class="ticket-subject">${escapeHtml(t.subject || 'No subject')}</div>
-          <div style="font-size:11px;color:#ea580c;margin-bottom:2px;">${escapeHtml(t.company || '')}</div>
+          <div class="ticket-company">${escapeHtml(t.company || '')}</div>
           <div class="ticket-meta">
             <span>${t.category || 'general'}</span>
             <span>v${t.version || '?'}</span>
-            <span class="ticket-status ${t.status || 'open'}">${t.status || 'open'}</span>
-            <span>${formatTime(t.received_at || t.timestamp)}</span>
+            <span class="status-badge ${t.status || 'open'}">${formatStatus(t.status || 'open')}</span>
+            <span>${relativeTime(t.received_at || t.timestamp)}</span>
           </div>
         </div>
       `).join('');
@@ -258,8 +340,10 @@
 
     function renderTicketDetail(ticket) {
       const detail = document.getElementById('ticket-detail');
-
       const hasCallback = ticket.callback_url && ticket.callback_url.length > 0;
+
+      // Build conversation history from comments array + last_response fallback
+      const comments = buildConversation(ticket);
 
       detail.innerHTML = `
         <div class="ticket-detail-header">
@@ -270,36 +354,32 @@
             <span><strong>Priority:</strong> ${ticket.priority || 'normal'}</span>
             <span><strong>Category:</strong> ${ticket.category || 'general'}</span>
             <span><strong>Version:</strong> ${ticket.version || 'unknown'}</span>
-            <span><strong>Status:</strong> ${ticket.status || 'open'}</span>
+            <span><strong>Status:</strong> <span class="status-badge ${ticket.status || 'open'}">${formatStatus(ticket.status || 'open')}</span></span>
+            <span>${relativeTime(ticket.received_at || ticket.timestamp)}</span>
           </div>
         </div>
 
         <div class="ticket-detail-body">
           <div class="detail-section">
             <label>Description</label>
-            <div class="value" style="white-space:pre-wrap;background:#0f172a;padding:12px;border-radius:8px;margin-bottom:12px;">${escapeHtml(ticket.description || 'No description provided')}</div>
-          </div>
-          <div class="detail-section">
-            <label>Received</label>
-            <div class="value">${ticket.received_at || new Date(ticket.timestamp * 1000).toISOString()}</div>
+            <div class="value">${escapeHtml(ticket.description || 'No description provided')}</div>
           </div>
 
-          ${ticket.callback_url ? `
-          <div class="detail-section">
-            <label>Callback URL</label>
-            <div class="value" style="font-family:monospace; font-size:12px; word-break:break-all;">${escapeHtml(ticket.callback_url)}</div>
+          <div class="conversation-history">
+            <h4>Conversation</h4>
+            ${comments.length === 0
+              ? '<div class="conversation-empty">No messages yet.</div>'
+              : comments.map((c) => `
+                <div class="comment-entry ${c.type}">
+                  <div class="comment-header">
+                    <span class="comment-author">${c.type === 'customer' ? 'Customer' : 'Horaxis Support'}</span>
+                    <span class="comment-time">${relativeTime(c.timestamp)}</span>
+                  </div>
+                  <div class="comment-text">${escapeHtml(c.message)}</div>
+                </div>
+              `).join('')
+            }
           </div>
-          ` : ''}
-
-          ${ticket.last_response ? `
-          <div class="response-history">
-            <h4>Last Response</h4>
-            <div class="response-entry">
-              <div class="response-time">${ticket.responded_at || ''}</div>
-              <div class="response-text">${escapeHtml(ticket.last_response)}</div>
-            </div>
-          </div>
-          ` : ''}
         </div>
 
         ${hasCallback ? `
@@ -316,6 +396,41 @@
         </div>
         `}
       `;
+    }
+
+    function buildConversation(ticket) {
+      const comments = [];
+
+      // Add entries from the comments array
+      if (Array.isArray(ticket.comments)) {
+        for (const c of ticket.comments) {
+          comments.push({
+            type: (c.author || '').toLowerCase().includes('support') ? 'support' : 'customer',
+            message: c.message || c.text || '',
+            timestamp: c.timestamp || '',
+            sortTime: new Date(c.timestamp || 0).getTime(),
+          });
+        }
+      }
+
+      // If there's a last_response but no matching support comment, add it
+      if (ticket.last_response) {
+        const alreadyInComments = comments.some(
+          (c) => c.type === 'support' && c.message === ticket.last_response
+        );
+        if (!alreadyInComments) {
+          comments.push({
+            type: 'support',
+            message: ticket.last_response,
+            timestamp: ticket.responded_at || '',
+            sortTime: new Date(ticket.responded_at || 0).getTime(),
+          });
+        }
+      }
+
+      // Sort chronologically
+      comments.sort((a, b) => a.sortTime - b.sortTime);
+      return comments;
     }
 
     // ── Send response ──
@@ -389,6 +504,14 @@
             ticket.status = 'responded';
             ticket.responded_at = new Date().toISOString();
             ticket.last_response = message;
+
+            // Also add to local comments array for immediate UI update
+            if (!Array.isArray(ticket.comments)) ticket.comments = [];
+            ticket.comments.push({
+              author: 'Horaxis Support',
+              message: message,
+              timestamp: new Date().toISOString(),
+            });
           }
 
           // Re-render after short delay
@@ -420,16 +543,38 @@
       return (text || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
     }
 
-    function formatTime(value) {
+    function formatStatus(status) {
+      const labels = {
+        open: 'Open',
+        in_progress: 'In Progress',
+        responded: 'Responded',
+        closed: 'Closed',
+        resolved: 'Resolved',
+      };
+      return labels[status] || status;
+    }
+
+    function relativeTime(value) {
       if (!value) return '';
       try {
         const date = typeof value === 'number' ? new Date(value * 1000) : new Date(value);
         const now = new Date();
         const diff = now - date;
 
+        if (diff < 0) return 'just now';
         if (diff < 60000) return 'just now';
-        if (diff < 3600000) return Math.floor(diff / 60000) + 'm ago';
-        if (diff < 86400000) return Math.floor(diff / 3600000) + 'h ago';
+        if (diff < 3600000) {
+          const m = Math.floor(diff / 60000);
+          return m === 1 ? '1 minute ago' : m + ' minutes ago';
+        }
+        if (diff < 86400000) {
+          const h = Math.floor(diff / 3600000);
+          return h === 1 ? '1 hour ago' : h + ' hours ago';
+        }
+        if (diff < 604800000) {
+          const d = Math.floor(diff / 86400000);
+          return d === 1 ? '1 day ago' : d + ' days ago';
+        }
         return date.toLocaleDateString();
       } catch (e) {
         return String(value);

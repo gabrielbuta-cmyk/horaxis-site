@@ -78,6 +78,12 @@
     .welcome .suggestions button { background: #1e293b; border: 1px solid #334155; color: #e2e8f0; padding: 8px 16px; border-radius: 20px; font-size: 13px; cursor: pointer; transition: all 0.2s; }
     .welcome .suggestions button:hover { border-color: #ea580c; background: #2d1810; }
 
+    /* Escalation ticket button */
+    .btn-ticket { display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; padding: 8px 18px; background: linear-gradient(135deg, #ea580c, #f97316); color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity 0.2s, transform 0.15s; }
+    .btn-ticket:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-ticket svg { flex-shrink: 0; }
+    .ticket-fallback { margin-top: 10px; padding: 10px 14px; background: #1e293b; border: 1px solid #334155; border-radius: 8px; font-size: 13px; color: #94a3b8; line-height: 1.5; }
+
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
 
@@ -142,9 +148,55 @@
   <script>
     const API_URL = '/api/support-chat';
     let token = null;
+    let tokenPayload = null;
     let messages = [];
     let pendingScreenshot = null;
     let isLoading = false;
+
+    // Patterns that indicate the bot is escalating / creating a ticket
+    const ESCALATION_PATTERNS = [
+      /i['']ve documented this/i,
+      /i['']m escalating/i,
+      /escalating this/i,
+      /has been escalated/i,
+      /creating a(?:\s+support)? ticket/i,
+      /opened a ticket/i,
+      /ticket has been created/i,
+      /HRX-\d+/i,
+    ];
+
+    function isEscalationMessage(text) {
+      return ESCALATION_PATTERNS.some(re => re.test(text));
+    }
+
+    function getAppUrl() {
+      if (tokenPayload && tokenPayload.app_url) {
+        return tokenPayload.app_url.replace(/\/+$/, '');
+      }
+      return null;
+    }
+
+    function openSupportTickets() {
+      const appUrl = getAppUrl();
+      if (appUrl) {
+        window.open(appUrl + '/support-tickets', '_blank');
+      } else {
+        // No app_url in token — show inline guidance
+        const container = document.getElementById('chat-messages');
+        const notice = document.createElement('div');
+        notice.className = 'message bot';
+        notice.innerHTML = `
+          <div class="avatar">A</div>
+          <div class="bubble"><div class="ticket-fallback">Please go to your <strong>Horaxis app &rarr; Support Tickets</strong> to create a ticket for tracking.</div></div>
+        `;
+        container.appendChild(notice);
+        container.scrollTop = container.scrollHeight;
+      }
+    }
+
+    function buildTicketButton() {
+      return `<div><button class="btn-ticket" onclick="openSupportTickets()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>Open Support Tickets</button></div>`;
+    }
 
     // Get token from URL
     function init() {
@@ -159,6 +211,7 @@
       // Decode JWT payload to show session info
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
+        tokenPayload = payload;
         document.getElementById('session-info').textContent =
           `${payload.company || ''} | v${payload.version || '?'} | ${payload.email || ''}`;
 
@@ -279,9 +332,15 @@
         screenshotHtml = `<img src="${screenshotDataUrl}" class="screenshot-preview" onclick="window.open(this.src)"/>`;
       }
 
+      // If this is a bot message that indicates escalation, append the ticket button
+      let ticketHtml = '';
+      if (role === 'assistant' && isEscalationMessage(content)) {
+        ticketHtml = buildTicketButton();
+      }
+
       div.innerHTML = `
         <div class="avatar">${avatarText}</div>
-        <div class="bubble">${bubbleContent}${screenshotHtml}</div>
+        <div class="bubble">${bubbleContent}${screenshotHtml}${ticketHtml}</div>
       `;
 
       container.appendChild(div);
