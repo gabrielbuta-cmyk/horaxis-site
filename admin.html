@@ -366,12 +366,13 @@
             <span><strong>Status:</strong> <span class="status-badge ${ticket.status || 'open'}">${formatStatus(ticket.status || 'open')}</span></span>
             <span>${relativeTime(ticket.received_at || ticket.timestamp)}</span>
           </div>
-          ${!['closed', 'resolved'].includes(ticket.status) ? `
           <div class="ticket-action-buttons">
+            ${!['closed', 'resolved'].includes(ticket.status) ? `
             <button class="btn-close-ticket" onclick="closeTicket('${escapeAttr(ticket.ticket_id)}', '${escapeAttr(ticket.callback_url || '')}')">Close Ticket</button>
             <button class="btn-resolve-ticket" onclick="resolveTicket('${escapeAttr(ticket.ticket_id)}', '${escapeAttr(ticket.callback_url || '')}')">Resolve Ticket</button>
+            ` : ''}
+            <button class="btn-close-ticket" style="background:#dc2626;" onclick="deleteTicket('${escapeAttr(ticket.ticket_id)}')">Delete</button>
           </div>
-          ` : ''}
         </div>
 
         <div class="ticket-detail-body">
@@ -617,6 +618,25 @@
 
     function resolveTicket(ticketId, callbackUrl) {
       changeTicketStatus(ticketId, callbackUrl, 'resolved');
+    }
+
+    async function deleteTicket(ticketId) {
+      if (!confirm('Delete this ticket permanently?')) return;
+      try {
+        const res = await fetch(`${API_BASE}/ticket-delete`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ticket_id: ticketId, admin_password: adminPassword }),
+        });
+        if (res.ok) {
+          tickets = tickets.filter(t => t.ticket_id !== ticketId);
+          selectedTicketId = null;
+          renderTicketList();
+          document.getElementById('ticket-detail').innerHTML = '<div class="ticket-detail-empty"><div class="icon">&#128196;</div><p>Select a ticket to view details</p></div>';
+        }
+      } catch (e) {
+        alert('Failed to delete ticket');
+      }
     }
 
     // ── Helpers ──
