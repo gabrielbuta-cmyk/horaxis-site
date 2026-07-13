@@ -209,20 +209,51 @@
     let autoRefreshTimer = null;
 
     // ── Authentication ──
-    function authenticate() {
+    // Verifies the password by making a real API call before showing the app.
+    // Wrong password shows an error and keeps you on the login screen.
+    async function authenticate() {
       const input = document.getElementById('auth-password');
+      const errEl = document.getElementById('auth-error');
       const password = input.value.trim();
       if (!password) return;
 
-      adminPassword = password;
-      sessionStorage.setItem('admin_password', password);
+      errEl.style.display = 'none';
+      input.disabled = true;
 
-      document.getElementById('auth-screen').style.display = 'none';
-      const app = document.getElementById('admin-app');
-      app.style.display = 'flex';
-
-      refreshTickets();
-      startAutoRefresh();
+      try {
+        const res = await fetch(`${API_BASE}/ticket-list`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ admin_password: password }),
+        });
+        if (res.status === 401) {
+          errEl.textContent = 'Wrong password';
+          errEl.style.display = 'block';
+          input.disabled = false;
+          input.focus();
+          input.select();
+          return;
+        }
+        if (!res.ok) {
+          errEl.textContent = 'Server error (' + res.status + ') — try again';
+          errEl.style.display = 'block';
+          input.disabled = false;
+          return;
+        }
+        // Password is valid — cache the tickets we just fetched
+        const data = await res.json();
+        tickets = data.tickets || [];
+        adminPassword = password;
+        sessionStorage.setItem('admin_password', password);
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('admin-app').style.display = 'flex';
+        renderTicketList();
+        startAutoRefresh();
+      } catch (e) {
+        errEl.textContent = 'Network error — check your connection';
+        errEl.style.display = 'block';
+        input.disabled = false;
+      }
     }
 
     function logout() {
@@ -232,17 +263,33 @@
       document.getElementById('admin-app').style.display = 'none';
       document.getElementById('auth-screen').style.display = 'flex';
       document.getElementById('auth-password').value = '';
+      document.getElementById('auth-password').disabled = false;
     }
 
-    function init() {
+    // Silently re-verify a saved password on page reload; drop to auth screen
+    // if it no longer works (e.g. rotated in Cloudflare env vars).
+    async function init() {
       const saved = sessionStorage.getItem('admin_password');
-      if (saved) {
+      if (!saved) return;
+      try {
+        const res = await fetch(`${API_BASE}/ticket-list`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ admin_password: saved }),
+        });
+        if (!res.ok) {
+          sessionStorage.removeItem('admin_password');
+          return;   // stay on login screen
+        }
+        const data = await res.json();
+        tickets = data.tickets || [];
         adminPassword = saved;
         document.getElementById('auth-screen').style.display = 'none';
-        const app = document.getElementById('admin-app');
-        app.style.display = 'flex';
-        refreshTickets();
+        document.getElementById('admin-app').style.display = 'flex';
+        renderTicketList();
         startAutoRefresh();
+      } catch (e) {
+        // Network issue on load — stay on login screen
       }
     }
 
@@ -285,6 +332,9 @@
     }
 
     // ── Ticket list ──
+    // On 401 → log out (password rotated / session invalidated).
+    // On network/server error → keep the last-known ticket list on screen
+    // rather than wiping it or silently falling back to stale localStorage.
     async function refreshTickets() {
       try {
         const res = await fetch(`${API_BASE}/ticket-list`, {
@@ -293,16 +343,17 @@
           body: JSON.stringify({ admin_password: adminPassword }),
         });
 
+        if (res.status === 401) {
+          logout();
+          return;
+        }
         if (res.ok) {
           const data = await res.json();
           tickets = data.tickets || [];
-        } else {
-          const stored = localStorage.getItem('admin_tickets');
-          tickets = stored ? JSON.parse(stored) : [];
         }
+        // Any other status: keep previously loaded tickets
       } catch (e) {
-        const stored = localStorage.getItem('admin_tickets');
-        tickets = stored ? JSON.parse(stored) : [];
+        // Network error: keep previously loaded tickets
       }
 
       renderTicketList();
