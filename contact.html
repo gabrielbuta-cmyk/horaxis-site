@@ -44,7 +44,7 @@
         <div class="form-group"><label>Full Name</label><input type="text" name="name" required></div>
         <div class="form-group"><label>Work Email</label><input type="email" name="email" required></div>
         <div class="form-group"><label>Company</label><input type="text" name="company" required></div>
-        <div class="form-group"><label>Primary ERP (e.g. SAP S/4HANA)</label><input type="text" name="erp" required></div>
+        <div class="form-group" id="erpGroup"><label id="erpLabel">Primary ERP (e.g. SAP S/4HANA)</label><input type="text" name="erp" id="erpInput" required></div>
         <div class="form-group"><label>Requirements</label><textarea name="message" style="height:100px;"></textarea></div>
         <button type="submit" id="submitBtn" style="width:100%; padding:16px; background:#EA580C; color:white; font-weight:900; border:none; border-radius:4px; cursor:pointer; text-transform:uppercase;">Submit Request</button>
         <p id="responseMsg" style="text-align:center; margin-top:15px; font-size:14px;"></p>
@@ -82,6 +82,14 @@ if (type === 'it-guide') {
   document.getElementById('formTitle').innerText = "Request IT Security Guide";
   document.getElementById('formSub').innerText = "Download our technical specs on encryption standards and on-premise data sovereignty.";
   document.getElementById('submitBtn').innerText = "Download IT Guide";
+} else if (type === 'riskguard-demo') {
+  document.getElementById('formTitle').innerText = "Book a RiskGuard Demo";
+  document.getElementById('formSub').innerText = "GxP risk management with native SAP QM integration. ISO 14971, 21 CFR Part 11, EU GMP Annex 11. Tell us about your quality environment and we'll schedule a live walkthrough.";
+  document.getElementById('submitBtn').innerText = "Request RiskGuard Demo";
+  // Reframe the ERP field for a QA-lead audience and make it optional
+  document.getElementById('erpLabel').innerText = "SAP module / QMS in use (optional)";
+  document.getElementById('erpInput').required = false;
+  document.getElementById('erpInput').placeholder = "e.g. SAP QM, TrackWise, MasterControl, none";
 }
 
 // FORM SUBMISSION

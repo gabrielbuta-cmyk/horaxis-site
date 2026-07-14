@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-P2VVF0VXL9"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-P2VVF0VXL9');</script>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Horaxis RiskGuard | GxP Risk Management for Pharma, Medical Device &amp; Food Safety</title>
+  <meta name="description" content="RiskGuard by Horaxis — the ISO 14971 risk management platform with native SAP QM integration. Auto-create PMS incidents from SAP QualityNotifications, run AIAG-VDA FMEA, HACCP, PHA, HAZOP, FTA on one workflow engine. 21 CFR Part 11 &amp; EU GMP Annex 11 electronic signatures, tamper-evident audit chain, on-premise deployment."/>
+  <meta name="keywords" content="risk management pharma, ISO 14971, 21 CFR Part 11, EU GMP Annex 11, AIAG-VDA FMEA, HACCP software, SAP QM integration, PMS incident, tamper-evident audit trail, IMDRF, GxP, medical device risk management"/>
+  <meta property="og:title" content="Horaxis RiskGuard — GxP Risk Management with Live SAP Integration"/>
+  <meta property="og:description" content="One platform, five methodologies (FMEA / PHA / FTA / HAZOP / HACCP), one audit trail. Live SAP master data, IMDRF terminology, 21 CFR Part 11 e-signatures. Built for pharma, medical device, and food safety teams."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://riskguard.horaxis.com"/>
+  <link rel="canonical" href="https://riskguard.horaxis.com"/>
+  <link rel="stylesheet" href="assets/css/styles.css"/>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Horaxis RiskGuard",
+    "applicationCategory": "BusinessApplication",
+    "applicationSubCategory": "Quality &amp; Risk Management",
+    "operatingSystem": "Docker (Linux/Windows)",
+    "description": "ISO 14971:2019 risk management platform with native SAP QM integration. Auto-creates PMS incidents from SAP QualityNotifications, resolves BOM cascade to affected finished goods, and runs AIAG-VDA FMEA, HACCP, PHA, HAZOP, and Fault Tree analyses on a unified workflow engine with 21 CFR Part 11 electronic signatures and a tamper-evident audit chain. On-premise Docker deployment.",
+    "url": "https://riskguard.horaxis.com",
+    "author": {
+      "@type": "Organization",
+      "name": "Horaxis",
+      "url": "https://horaxis.com"
+    },
+    "featureList": [
+      "SAP QM QualityNotification auto-sync to PMS incidents",
+      "Live SAP master data — suppliers with qualification / audit / ISO certs",
+      "BOM cascade to affected finished goods",
+      "IMDRF Annex A/E/F international terminology picker",
+      "AIAG-VDA seven-step FMEA — Process Flow, Structure Tree, Worksheet, Control Plan",
+      "HACCP with seven Codex steps and Critical Control Points",
+      "Preliminary Hazard Analysis (PHA)",
+      "HAZOP for process safety",
+      "Fault Tree Analysis (FTA)",
+      "21 CFR Part 11 &amp; EU GMP Annex 11 electronic signatures",
+      "Separation-of-duties enforced at the endpoint",
+      "Tamper-evident audit hash chain with one-click verify",
+      "ISO 14971 risk management report generator (PDF)",
+      "Multi-plant scoping",
+      "Re-review alerts triggered by SAP master-data changes",
+      "On-premise Docker deployment"
+    ]
+  }
+  </script>
+  <style>
+    /* RiskGuard-specific accents — layered on top of horaxis-site/styles.css */
+    .rg-badge {
+      display: inline-block;
+      background: rgba(37, 99, 235, 0.15);
+      color: #60A5FA;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .rg-suite-lockup {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .rg-suite-lockup .rg-name {
+      font-weight: 900;
+      color: #F8FAFC;
+      letter-spacing: -0.03em;
+    }
+    .rg-suite-lockup .rg-by {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-weight: 700;
+    }
+    .rg-pillar {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--orange);
+      padding: 24px;
+      border-radius: 4px;
+    }
+    .rg-pillar h3 {
+      margin: 0 0 8px;
+      font-size: 15px;
+      font-weight: 800;
+      color: #F8FAFC;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .rg-pillar p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .rg-feature {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 22px;
+      border-radius: 4px;
+    }
+    .rg-feature .rg-feature-tag {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--orange);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 8px;
+    }
+    .rg-feature h4 {
+      margin: 0 0 8px;
+      font-size: 15px;
+      font-weight: 800;
+      color: #F8FAFC;
+    }
+    .rg-feature p {
+      margin: 0;
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .rg-compliance {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      gap: 24px;
+      align-items: center;
+    }
+    .rg-compliance div {
+      text-align: center;
+    }
+    .rg-compliance strong {
+      display: block;
+      font-size: 15px;
+      color: #F8FAFC;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+    .rg-compliance small {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .rg-video-frame {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px;
+      max-width: 900px;
+      margin: 0 auto;
+      aspect-ratio: 16 / 9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .rg-video-frame video {
+      width: 100%;
+      height: 100%;
+      border-radius: 4px;
+      object-fit: contain;
+      background: #000;
+    }
+    .rg-video-placeholder {
+      text-align: center;
+      padding: 40px;
+    }
+    .rg-video-placeholder .rg-play {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 16px;
+      background: var(--orange);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: white;
+    }
+    /* Cross-link "sister site" button — subtle blue outline to distinguish */
+    .btn.sister {
+      background: transparent;
+      color: #60A5FA;
+      border: 1px solid rgba(96, 165, 250, 0.4);
+      padding: 8px 14px;
+      font-size: 12px;
+    }
+    .btn.sister:hover {
+      background: rgba(96, 165, 250, 0.08);
+      border-color: #60A5FA;
+    }
+    @media (max-width: 768px) {
+      h1.rg-hero-h1 { font-size: 40px !important; }
+      .nav-links a { font-size: 12px !important; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="container nav-inner" style="display:flex; align-items:center; justify-content:space-between; height:74px;">
+    <a href="riskguard.html" style="display:flex; align-items:center; gap:12px; text-decoration:none;">
+      <div class="brand-mark"></div>
+      <div class="rg-suite-lockup">
+        <span class="rg-name brand-text" style="font-size:22px;">RISKGUARD<span style="color:var(--orange);">.</span></span>
+        <span class="rg-by">by Horaxis</span>
+      </div>
+    </a>
+    <nav class="nav-links" style="display:flex; align-items:center; gap:22px;">
+      <a href="#pillars" style="color:#94A3B8; font-weight:600; text-decoration:none; font-size:14px;">How It Works</a>
+      <a href="#features" style="color:#94A3B8; font-weight:600; text-decoration:none; font-size:14px;">Features</a>
+      <a href="#compliance" style="color:#94A3B8; font-weight:600; text-decoration:none; font-size:14px;">Compliance</a>
+      <a href="#demo" style="color:#94A3B8; font-weight:600; text-decoration:none; font-size:14px;">Watch Demo</a>
+      <a href="https://horaxis.com" class="btn sister">← Horaxis Enterprise</a>
+      <a href="contact.html?type=riskguard-demo" class="btn primary" style="background:#EA580C; color:white; padding:10px 20px; border-radius:4px; font-weight:700; text-decoration:none; font-size:13px; text-transform:uppercase;">Book a Demo</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ── HERO ────────────────────────────────────────────────── -->
+<section style="padding:100px 0 60px; text-align:center;">
+  <div class="container">
+    <span class="rg-badge">GxP Risk Management · Built on the Horaxis Platform</span>
+    <h1 class="rg-hero-h1" style="font-size:60px; font-weight:900; line-height:1.1; margin-bottom:24px;">
+      Your Risk File.<br>
+      Your SAP System.<br>
+      <span style="color:var(--orange)">Finally Talking.</span>
+    </h1>
+    <p style="font-size:20px; color:var(--muted); max-width:820px; margin:0 auto 40px;">
+      ISO 14971 risk management with native SAP QM integration. When a QualityNotification lands in SAP, RiskGuard opens the investigation cockpit automatically — with the affected finished goods, the qualified supplier, and the traceability chain already resolved.
+    </p>
+    <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+      <a href="#demo" class="btn primary">Watch the 5-Minute Demo</a>
+      <a href="contact.html?type=riskguard-demo" class="btn secondary">Request a Pilot</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── INDUSTRY STRIP ─────────────────────────────────────── -->
+<section style="padding:36px 0; background:rgba(255,255,255,0.03); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+  <div class="container" style="text-align:center;">
+    <p style="font-size:11px; font-weight:800; color:var(--muted); letter-spacing:2px; margin-bottom:24px;">BUILT FOR REGULATED MANUFACTURING</p>
+    <div style="display:flex; justify-content:space-around; align-items:center; opacity:0.85; flex-wrap:wrap; gap:24px;">
+      <div><strong style="display:block; font-size:18px;">PHARMA</strong><small style="color:var(--muted);">ICH · ISPE · EU GMP</small></div>
+      <div><strong style="display:block; font-size:18px;">MEDICAL DEVICE</strong><small style="color:var(--muted);">ISO 14971 · MDR · FDA 21 CFR 820</small></div>
+      <div><strong style="display:block; font-size:18px;">FOOD SAFETY</strong><small style="color:var(--muted);">HACCP · FSMA · Codex</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── DEMO VIDEO ────────────────────────────────────────── -->
+<section id="demo" style="padding:80px 0;">
+  <div class="container">
+    <div style="text-align:center; margin-bottom:40px;">
+      <h2 style="font-size:36px; font-weight:900; margin-bottom:12px;">See it in <span style="color:var(--orange);">five minutes.</span></h2>
+      <p style="font-size:16px; color:var(--muted); max-width:640px; margin:0 auto;">A single walkthrough: SAP QM incident → BOM cascade → hazard cockpit → AIAG-VDA FMEA → e-signed approval → tamper-evident audit trail.</p>
+    </div>
+    <div class="rg-video-frame" style="padding:0;">
+      <iframe
+        src="https://player.vimeo.com/video/1209986467?title=0&byline=0&portrait=0&dnt=1"
+        style="width:100%; height:100%; border:0; border-radius:4px; background:#000;"
+        title="Horaxis RiskGuard — 5-minute product demo"
+        allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
+        allowfullscreen></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ── THREE PILLARS ─────────────────────────────────────── -->
+<section id="pillars" style="padding:80px 0; background:rgba(255,255,255,0.02);">
+  <div class="container">
+    <div style="text-align:center; margin-bottom:48px;">
+      <p style="font-size:11px; font-weight:800; color:var(--orange); letter-spacing:2px; margin-bottom:12px;">HOW IT WORKS</p>
+      <h2 style="font-size:36px; font-weight:900; margin:0;">Three principles. One platform.</h2>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px;">
+      <div class="rg-pillar">
+        <h3>1. Live SAP Master Data</h3>
+        <p>Suppliers, materials, and bills of material sync from SAP over OData on a scheduled pull. Qualification status, audit dates, ISO certifications, GMP class, hazard class — kept in sync from SAP. Every hazard, incident, and FMEA reads from the same source of truth.</p>
+      </div>
+      <div class="rg-pillar">
+        <h3>2. Regulator Vocabulary Built In</h3>
+        <p>Hazards are tagged with IMDRF Annex A/E/F terminology — the same lexicon FDA, EMA and MHRA inspectors use. No free text a reviewer has to interpret. AIAG-VDA seven-step FMEA. Codex Alimentarius HACCP. Standards-native, not standards-adjacent.</p>
+      </div>
+      <div class="rg-pillar">
+        <h3>3. Tamper-Evident by Design</h3>
+        <p>Every action is logged with user, timestamp, IP, and a cryptographic hash of the previous entry. Break a row, break the chain. One-click Verify Chain Integrity walks the full audit trail and hands your inspector the chain-head hash and a verification timestamp.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURES GRID ─────────────────────────────────────── -->
+<section id="features" style="padding:80px 0;">
+  <div class="container">
+    <div style="text-align:center; margin-bottom:48px;">
+      <p style="font-size:11px; font-weight:800; color:var(--orange); letter-spacing:2px; margin-bottom:12px;">CAPABILITIES</p>
+      <h2 style="font-size:36px; font-weight:900; margin:0;">Everything a QA lead needs on a Monday morning.</h2>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+
+      <div class="rg-feature">
+        <div class="rg-feature-tag">SAP QM Integration</div>
+        <h4>Auto-created PMS incidents</h4>
+        <p>SAP QualityNotifications land in RiskGuard as PMS incidents with Q1/Q2/Q3/F1 type, priority-mapped severity, linked material, batch, and supplier — no re-typing.</p>
+      </div>
+
+      <div class="rg-feature">
+        <div class="rg-feature-tag">BOM Cascade</div>
+        <h4>Impact resolved in one view</h4>
+        <p>When a raw-material incident opens, RiskGuard resolves the BOM upward and shows the finished goods that consume it. The chain SAP holds but never surfaced.</p>
+      </div>
+
+      <div class="rg-feature">
+        <div class="rg-feature-tag">Live Master Data</div>
+        <h4>Supplier + material sidebar</h4>
+        <p>Hazards linked to a supplier or material show the supplier's qualification status, last audit, ISO certifications, and the material's GMP class and hazard class — read live from the master-data store.</p>
+      </div>
+
+      <div class="rg-feature">
+        <div class="rg-feature-tag">IMDRF Terminology</div>
+        <h4>Regulator-native language</h4>
+        <p>Live search across IMDRF Annex A (Device Problems) and Annex E/F (Health Effects). Hazards stored with codes an auditor recognises, not free text.</p>
+      </div>
+
+      <div class="rg-feature">
+        <div class="rg-feature-tag">AIAG-VDA FMEA</div>
+        <h4>Seven-step, four tabs</h4>
+        <p>Process Flow, Structure Tree, Worksheet (RPN + Action Priority), Control Plan — the modern AIAG-VDA method, not the old MIL-STD-1629 spreadsheet regulators are pushing back on.</p>
+      </div>
+
+      <div class="rg-feature">
+        <div class="rg-feature-tag">Five Methodologies</div>
+        <h4>One workflow engine</h4>
+        <p>FMEA, PHA, FTA, HAZOP, HACCP — same submit/review/approve state machine, same electronic-signature discipline, same audit trail. One platform, five methodologies.</p>
+      </div>
+
+      <div class="rg-feature">
+        <div class="rg-feature-tag">21 CFR Part 11</div>
+        <h4>E-signatures with SoD enforcement</h4>
+        <p>Reviewer and approver sign with their password. The backend refuses to let the same person review and approve. Separation of duties as a permission check at the endpoint, not policy on paper.</p>
+      </div>
+
+      <div class="rg-feature">
+        <div class="rg-feature-tag">Audit Chain</div>
+        <h4>Tamper-evident hash chain</h4>
+        <p>Each audit row carries a hash of the previous row. Verify Chain Integrity walks the whole chain in seconds — hands you the head hash, row count, and the first break if any.</p>
+      </div>
+
+      <div class="rg-feature">
+        <div class="rg-feature-tag">Re-Review Alerts</div>
+        <h4>Automatic reassessment triggers</h4>
+        <p>When SAP marks a supplier's qualification as expired, a re-review alert opens on every hazard and incident that references that supplier. No manual scan, no missed exposures.</p>
+      </div>
+
+      <div class="rg-feature">
+        <div class="rg-feature-tag">ISO 14971 Report</div>
+        <h4>Regulator-ready PDF export</h4>
+        <p>One-click ISO 14971:2019 risk management report with the exact structure your notified body expects. Plus a 12-month hazard trend chart and a supplier heat map.</p>
+      </div>
+
+      <div class="rg-feature">
+        <div class="rg-feature-tag">Multi-Plant</div>
+        <h4>Global scope, local ownership</h4>
+        <p>Every hazard, FMEA, and report is scoped by plant. Quality leads see what they own — not everyone else's noise. Enterprise multi-tenant, single audit chain.</p>
+      </div>
+
+      <div class="rg-feature">
+        <div class="rg-feature-tag">On-Premise</div>
+        <h4>Your data stays in your network</h4>
+        <p>Ships as Docker containers. PostgreSQL 15, Redis 7, no external SaaS dependency. GDPR-native by design.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── COMPLIANCE STRIP ──────────────────────────────────── -->
+<section id="compliance" style="padding:60px 0; background:rgba(255,255,255,0.03); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+  <div class="container">
+    <p style="text-align:center; font-size:11px; font-weight:800; color:var(--muted); letter-spacing:2px; margin-bottom:32px;">STANDARDS-NATIVE</p>
+    <div class="rg-compliance">
+      <div><strong>ISO 14971:2019</strong><small>Risk Management</small></div>
+      <div><strong>21 CFR Part 11</strong><small>Electronic Signatures</small></div>
+      <div><strong>EU GMP Annex 11</strong><small>Computerised Systems</small></div>
+      <div><strong>AIAG-VDA FMEA</strong><small>7-Step Method</small></div>
+      <div><strong>IMDRF Annex A/E/F</strong><small>Terminology</small></div>
+      <div><strong>Codex HACCP</strong><small>7 Principles</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CLOSING CTA ───────────────────────────────────────── -->
+<section style="padding:100px 0; text-align:center;">
+  <div class="container">
+    <h2 style="font-size:40px; font-weight:900; margin-bottom:16px; line-height:1.15;">
+      A risk file made of spreadsheets<br>
+      <span style="color:var(--orange);">will not survive the next inspection.</span>
+    </h2>
+    <p style="font-size:18px; color:var(--muted); max-width:640px; margin:0 auto 36px;">
+      RiskGuard replaces it with a system regulators recognise — signed, chained, and provable.
+    </p>
+    <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+      <a href="contact.html?type=riskguard-demo" class="btn primary">Book a Live Demo</a>
+      <a href="https://horaxis.com" class="btn secondary">Explore Horaxis Enterprise</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ───────────────────────────────────────────── -->
+<footer style="background:#0B1020; border-top:1px solid #334155; padding:40px 0;">
+  <div class="container" style="max-width:1200px; margin:0 auto; padding:0 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div class="brand-mark" style="width:24px; height:24px; border-radius:4px;"></div>
+      <span style="color:#94A3B8; font-size:12px;">© 2026 Horaxis Enterprise Solutions · RiskGuard is a Horaxis product</span>
+    </div>
+    <div style="display:flex; gap:24px; font-size:12px; font-weight:700; text-transform:uppercase;">
+      <a href="https://horaxis.com" style="color:#64748B; text-decoration:none;">Horaxis</a>
+      <a href="privacy.html" style="color:#64748B; text-decoration:none;">Privacy</a>
+      <a href="terms.html" style="color:#64748B; text-decoration:none;">Terms</a>
+      <a href="data-sovereignty.html" style="color:#64748B; text-decoration:none;">Data Sovereignty</a>
+    </div>
+  </div>
+</footer>
+
+<div id="cookieBanner" class="cookie-banner" style="display:none;">
+  <h4>Privacy &amp; Security Notice</h4>
+  <p>We use essential cookies for secure session management. Review our <a href="cookies.html" style="color:var(--orange);">Cookie Policy</a>.</p>
+  <button class="btn-accept" onclick="acceptCookies()">Accept &amp; Close</button>
+</div>
+
+<script>
+  window.onload = function() { if (!localStorage.getItem('horaxis_consent')) document.getElementById('cookieBanner').style.display = 'block'; };
+  function acceptCookies() { localStorage.setItem('horaxis_consent', 'true'); document.getElementById('cookieBanner').style.display = 'none'; }
+</script>
+</body>
+</html>

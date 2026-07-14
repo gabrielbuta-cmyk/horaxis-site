@@ -310,6 +310,15 @@ export const onRequest = async (context) => {
   const { name, email, company, erp, message, type } = data;
 
   const isGuide = type === "it-guide";
+  const isRiskguard = type === "riskguard-demo";
+
+  const requestLabel = isGuide
+    ? "IT Guide Request"
+    : isRiskguard
+      ? "RiskGuard Demo Request"
+      : "New Pilot Proposal Request";
+
+  const erpFieldLabel = isRiskguard ? "SAP module / QMS in use" : "ERP System";
 
   // ── Notification email to Horaxis team ──
   const emailHtml = `
@@ -319,11 +328,11 @@ export const onRequest = async (context) => {
           <img src="https://horaxis.com/assets/img/horaxis-logo.png" width="150" alt="Horaxis">
         </div>
         <div style="padding:40px;">
-          <h2 style="margin-top:0; color:#0f172a;">${isGuide ? "IT Guide Request" : "New Pilot Proposal Request"}</h2>
+          <h2 style="margin-top:0; color:#0f172a;">${requestLabel}</h2>
           <hr style="border:0; border-top:1px solid #e2e8f0; margin:20px 0;">
           <p><strong>Lead Name:</strong> ${name}</p>
           <p><strong>Company:</strong> ${company}</p>
-          <p><strong>ERP System:</strong> ${erp}</p>
+          <p><strong>${erpFieldLabel}:</strong> ${erp || "(not provided)"}</p>
           <p><strong>Work Email:</strong> ${email}</p>
           <p><strong>Inquiry Details:</strong></p>
           <p style="background:#f8fafc; padding:15px; border-radius:4px;">${message || "(no message)"}</p>
@@ -331,6 +340,12 @@ export const onRequest = async (context) => {
       </div>
     </div>
   `;
+
+  const subjectPrefix = isGuide
+    ? "IT GUIDE REQUEST"
+    : isRiskguard
+      ? "[RiskGuard Demo]"
+      : "PROPOSAL REQUEST";
 
   await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -341,9 +356,7 @@ export const onRequest = async (context) => {
     body: JSON.stringify({
       from: "Horaxis System <info@horaxis.com>",
       to: ["demo@horaxis.com"],
-      subject: isGuide
-        ? `IT GUIDE REQUEST: ${company} (${name})`
-        : `PROPOSAL REQUEST: ${company} (${name})`,
+      subject: `${subjectPrefix}: ${company} (${name})`,
       html: emailHtml,
     }),
   });
@@ -382,6 +395,32 @@ export const onRequest = async (context) => {
             content: pdfBase64,
           },
         ],
+      }),
+    });
+  } else if (isRiskguard) {
+    // RiskGuard demo confirmation
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${env.RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "Horaxis RiskGuard <info@horaxis.com>",
+        to: [email],
+        subject: "We received your RiskGuard demo request — Horaxis",
+        html: `
+          <div style="font-family:sans-serif; padding:40px; background:#f8fafc; color:#0f172a;">
+            <h2 style="color:#0f172a; margin-top:0;">RiskGuard Demo Request Received</h2>
+            <p>Hi ${name},</p>
+            <p>Thank you for your interest in <strong>Horaxis RiskGuard</strong> — the ISO 14971 risk management platform with native SAP QM integration.</p>
+            <div style="background:white; padding:20px; border-left:4px solid #ea580c; margin:20px 0;">
+              <p style="margin:0;">Our team will contact you within 1 business day to schedule a live walkthrough. Typical demo covers: SAP QualityNotification auto-open, BOM cascade, IMDRF-tagged hazard registry, AIAG-VDA FMEA workflow, 21 CFR Part 11 e-signatures, and the tamper-evident audit chain.</p>
+            </div>
+            <p>Feel free to reply directly with any questions ahead of the call.</p>
+            <p style="color:#64748b; font-size:12px; margin-top:30px;">Horaxis Enterprise Solutions | info@horaxis.com | riskguard.horaxis.com</p>
+          </div>
+        `,
       }),
     });
   } else {
