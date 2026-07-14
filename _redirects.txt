@@ -3,7 +3,8 @@ https://www.horaxis.com/* https://horaxis.com/:splat 301!
 
 # RiskGuard subdomain — serve riskguard.html at the root of riskguard.horaxis.com
 # (URL bar preserved; other paths on the subdomain fall through to the shared site)
-https://riskguard.horaxis.com/ /riskguard.html 200
+# The `!` forces the rewrite even though index.html exists at the shared root.
+https://riskguard.horaxis.com/ /riskguard.html 200!
 
 # Clean URLs for Enterprise Marketing
 /pilot      /contact.html   200
