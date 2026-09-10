@@ -15,6 +15,87 @@ function json(data, status = 200) {
   });
 }
 
+// Licence verification (Ed25519).
+//
+// The shared HMAC secret below has a distribution problem: it must exist in the
+// customer's .env AND here, it ships blank in .env.template (so Ask Axis has
+// never worked at a customer install), and one value for everyone means a leak
+// rotates every customer at once.
+//
+// A Horaxis licence is already a customer-specific credential signed by us with
+// a key we never ship. Verifying it here needs only the PUBLIC key, so there is
+// nothing per-customer to generate, distribute or store — and an expired
+// licence loses support access on its own.
+const LICENSE_PUBLIC_KEY_HEX =
+  "db01f095fd4ad77bd1eeaf4f2922646053b87f12a825fe0657c791b108ac041e";
+
+function b64urlToBytes(s) {
+  const b64 = s.replace(/-/g, "+").replace(/_/g, "/") + "=".repeat((4 - (s.length % 4)) % 4);
+  return Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+}
+
+async function verifyLicence(blob) {
+  try {
+    const [payloadB64, sigB64] = blob.split(".");
+    if (!payloadB64 || !sigB64) return null;
+    const key = await crypto.subtle.importKey(
+      "raw",
+      Uint8Array.from(LICENSE_PUBLIC_KEY_HEX.match(/../g), (h) => parseInt(h, 16)),
+      { name: "Ed25519" },
+      false,
+      ["verify"]
+    );
+    // The signature covers the payload JSON as it was signed, not the base64.
+    const payloadBytes = b64urlToBytes(payloadB64);
+    const ok = await crypto.subtle.verify("Ed25519", key, b64urlToBytes(sigB64), payloadBytes);
+    if (!ok) return null;
+    const claims = JSON.parse(new TextDecoder().decode(payloadBytes));
+    if (claims.expires_at && new Date(claims.expires_at) < new Date()) return null;
+    return {
+      customer_id: claims.customer_code || "unknown",
+      company: claims.customer_code || "unknown",
+      license: claims.plan || "licensed",
+      version: String(claims.version || ""),
+      via: "licence",
+    };
+  } catch (e) {
+    return null;
+  }
+}
+
+// Per-customer quota. Costs roughly EUR 0.01 per message, so this exists to stop
+// a runaway loop or a leaked credential running up an unbounded bill, not to
+// ration support. A real troubleshooting session is 10-20 messages.
+const MONTHLY_QUOTA = { site: 300, small: 750, network: 2000, large: 4000, group: 8000 };
+const DEFAULT_MONTHLY = 300;
+const HOURLY_BURST = 30;
+
+async function checkQuota(env, customerId, plan) {
+  // No KV bound yet -> allow, so enabling the binding is what turns this on and
+  // a misconfiguration cannot silently lock every customer out of support.
+  if (!env.SUPPORT_KV) return { allowed: true, note: "no KV bound" };
+  const month = new Date().toISOString().slice(0, 7);
+  const hour = new Date().toISOString().slice(0, 13);
+  const mKey = `q:${customerId}:${month}`;
+  const hKey = `b:${customerId}:${hour}`;
+  const [mRaw, hRaw] = await Promise.all([env.SUPPORT_KV.get(mKey), env.SUPPORT_KV.get(hKey)]);
+  const used = parseInt(mRaw || "0", 10);
+  const burst = parseInt(hRaw || "0", 10);
+  const limit = MONTHLY_QUOTA[plan] || DEFAULT_MONTHLY;
+  if (burst >= HOURLY_BURST) {
+    return { allowed: false, reason: `Too many messages this hour (${HOURLY_BURST}). Please wait, or create a support ticket.` };
+  }
+  if (used >= limit) {
+    return { allowed: false, reason: `Monthly support-chat limit reached (${limit}). Create a support ticket and the Horaxis team will follow up.` };
+  }
+  // 40 days / 2 hours: long enough to outlive the window, short enough to expire.
+  await Promise.all([
+    env.SUPPORT_KV.put(mKey, String(used + 1), { expirationTtl: 3456000 }),
+    env.SUPPORT_KV.put(hKey, String(burst + 1), { expirationTtl: 7200 }),
+  ]);
+  return { allowed: true, used: used + 1, limit };
+}
+
 // Simple JWT verification (HS256)
 async function verifyJWT(token, secret) {
   try {
@@ -85,8 +166,11 @@ COMMON ISSUES AND FIXES:
 
 ${knowledgeBase}
 
-When you escalate an issue, format the ticket like this:
-"I've documented this and notified the Horaxis team. Ticket: HRX-XXXX. You'll receive an update within 24 hours."`;
+ESCALATION:
+You cannot create tickets. When an issue needs the Horaxis team, tell the customer
+to click the "Create Support Ticket" button and list exactly what to include
+(symptom, error text, screenshot, when it started). Never state or imply that a
+ticket exists, that anyone has been notified, or that a fix is scheduled.`;
 }
 
 export const onRequest = async (context) => {
@@ -108,14 +192,24 @@ export const onRequest = async (context) => {
   const token = authHeader.replace("Bearer ", "");
   const jwtSecret = env.SUPPORT_JWT_SECRET;
 
-  if (!jwtSecret) {
-    return json({ error: "Support system not configured" }, 500);
-  }
+  // No hard failure when the shared secret is absent: a licence-bearing request
+  // does not need it, and this is exactly the case that never worked before.
 
   // Verify JWT
-  const payload = await verifyJWT(token, jwtSecret);
+  // Two credentials accepted during the transition: a signed licence (preferred,
+  // nothing to distribute) or the legacy shared-secret JWT. The legacy path stays
+  // until every install is on a licence, so deploying this cannot break anyone.
+  let payload = await verifyLicence(token);
+  if (!payload && jwtSecret) {
+    payload = await verifyJWT(token, jwtSecret);
+  }
   if (!payload) {
     return json({ error: "Invalid or expired support token. Please access support from within the Horaxis app." }, 401);
+  }
+
+  const quota = await checkQuota(env, payload.customer_id || "unknown", payload.license);
+  if (!quota.allowed) {
+    return json({ error: quota.reason }, 429);
   }
 
   // Parse request body
@@ -126,8 +220,7 @@ export const onRequest = async (context) => {
     return json({ error: "Messages required" }, 400);
   }
 
-  // Rate limit: max 50 messages per hour per license
-  // (Simple implementation — in production use Cloudflare KV or D1)
+  // Quota is enforced above, in checkQuota, before any spend on the model.
 
   // Build Claude messages
   const claudeMessages = messages.map((msg) => {
@@ -151,55 +244,174 @@ export const onRequest = async (context) => {
   });
 
   // Knowledge base — embedded directly for reliability
-  const knowledgeBase = `## Authentication
-- Login: POST /api/auth/login. Account locked after 5 failed attempts (15 min). Password: min 8 chars, upper+lower+number+special.
-- MFA: 6-digit code, valid +/-60s, 5-min session. Session timeout: 30 min (SESSION_INACTIVITY_TIMEOUT). Token: 8h (ACCESS_TOKEN_EXPIRE_HOURS).
-- Roles: admin (full), planner (data mgmt), viewer (read-only). Rate limits: Login 10/min, Reset 5/hr, MFA 10/5min, General 100/min.
-- Fixes: "Account locked"->wait 15min. "Invalid token"->re-login. "Session expired"->re-login, increase SESSION_INACTIVITY_TIMEOUT. "Insufficient permissions"->admin upgrades role. "MFA required"->Settings>Security>Enable MFA.
+  const knowledgeBase = `## Container and command reference (EXACT names — never guess)
+Containers in a standard install: procurement-api, procurement-celery-beat, procurement-celery-worker-default, procurement-celery-worker-erp-email, procurement-celery-worker-ml, procurement-db, procurement-frontend, procurement-nginx, procurement-pgbouncer, procurement-redis-broker, procurement-redis-cache, procurement-ssl-init
+Backend/API: procurement-api   Database: procurement-db   Frontend: procurement-frontend
+Celery workers: procurement-celery-beat, procurement-celery-worker-default, procurement-celery-worker-erp-email, procurement-celery-worker-ml
+- Backend logs:   docker logs procurement-api --tail 200
+- Worker logs:    docker logs procurement-celery-worker-default --tail 200
+- Restart all:    docker compose down && docker compose up -d
+- Health (deep):  curl -k https://localhost/api/health/deep
+There is NO container called "horaxis-backend". If a customer reports
+"No such container", they were given a wrong name — correct it and apologise.
 
-## License
-Plans: Trial(3users/50suppliers/500POs/30days), Business($599/7/500/25K), Professional($1499/20/2500/250K), Enterprise($3999/unlimited).
-- "User/Supplier/PO limit reached"->upgrade plan or deactivate unused users/archive old POs.
+## What you can and cannot see (HARD RULE)
+Horaxis Enterprise is on-premise. Horaxis staff have ZERO access to customer
+systems, databases, logs, or data — no exceptions, no "on their end". Never say
+or imply that anyone will look at their logs, has looked, or can. Everything you
+need must be pasted in by the customer. Say so plainly when you ask for it.
 
-## ERP Integration
-SAP S/4HANA+ECC (RFC+OData), Dynamics 365 (OAuth2), Oracle Cloud (REST), Business Central (OAuth2).
-Required SAP services: API_PURCHASEORDER_PROCESS_SRV, API_BUSINESS_PARTNER, API_MATERIAL_DOCUMENT_SRV, API_SUPPLIERINVOICE_PROCESS_SRV, API_SALES_ORDER_SRV, API_PRODUCT_SRV, API_PURCHASING_CONTRACT_SRV, API_MATERIAL_STOCK_SRV.
-- "Failed to connect"->check host/port/creds/firewall. "No active connection"->Settings>ERP>Configure. "OData failed"->check odata_base_url, SSL, activate ICF. "password decrypt failed"->SECRET_KEY changed, re-save password. "SAP error"->check /IWFND/MAINT_SERVICE. Sync lock: 32min Redis TTL.
+## Licensing
+Licences are Ed25519-signed blobs issued by Horaxis and installed in the app.
+The app verifies with an embedded public key; entitlements come from the
+verified signature, not from the database, so editing the database changes
+nothing. An invalid or missing licence does NOT lock the app — it falls back to
+trial limits, and the reason is shown in the licence status.
+Scope: a licence covers a number of plants (organisational scope). Users,
+purchase orders and suppliers are NOT capped.
+- "Invalid license signature" -> the key was edited, or it was issued for a
+  different product. Ask them to re-paste it exactly as delivered.
+- "License expired" -> the app keeps working; renewal is a commercial matter.
+- NEVER quote prices or plan names. Licensing and pricing questions go to
+  Horaxis: the customer should create a ticket or email their contact.
 
-## Supplier Portal
-Links expire 7 days. "Invalid/expired link"->generate new. Rate limit: 20/min/IP. Workflow: create link->email->supplier opens->submits->planner approves/rejects.
+## Authentication
+- Login: POST /api/auth/login. Account locks after 5 failed attempts for 15 min.
+  Password: min 8 chars, upper + lower + number + special.
+- MFA: 6-digit TOTP, +/-60s tolerance. MFA is REQUIRED for admin accounts when
+  MFA_REQUIRED_FOR_ADMIN=true — first login forces enrolment before access.
+- Roles: admin (full), planner (data management), viewer (read-only).
+- Fixes: "Account locked" -> wait 15 min. "Session expired" -> re-login, or
+  raise SESSION_INACTIVITY_TIMEOUT. "Insufficient permissions" -> an admin
+  changes the role. "MFA required" -> Settings > Security > Enable MFA.
 
-## AI Predictions
-XGBoost, min 50 records. Retrain daily 3AM, predictions hourly. "Insufficient data"->import more PO history. "No model"->Predictions>Retrain. Risk: CRITICAL/HIGH/MEDIUM/LOW. Accuracy target: 85%.
+## SAP integration
+Supported: SAP S/4HANA and ECC (OData, plus RFC where the connector is
+installed), Dynamics 365 (OAuth2), Oracle Cloud (REST), Business Central.
+Required OData services: API_PURCHASEORDER_PROCESS_SRV, API_BUSINESS_PARTNER,
+API_MATERIAL_DOCUMENT_SRV, API_SUPPLIERINVOICE_PROCESS_SRV, API_SALES_ORDER_SRV,
+API_PRODUCT_SRV, API_PURCHASING_CONTRACT_SRV, API_MATERIAL_STOCK_SRV,
+API_BILL_OF_MATERIAL_SRV, API_INFORECORD_PROCESS_SRV.
+- HTTP 403 from the SAP gateway is ambiguous: not activated, not published, not
+  permitted, or the service name does not exist all return /IWFND/MED/170.
+  Check /IWFND/MAINT_SERVICE in SAP before assuming a permissions problem.
+- "Failed to connect" -> host, port, client, credentials, firewall.
+- "Password decrypt failed" -> SECRET_KEY changed; re-enter the ERP password.
+- Only one sync runs per customer at a time. It is held with a PostgreSQL
+  advisory lock on a direct connection (NOT through PgBouncer, and NOT a Redis
+  TTL). If syncs are refused as already running, check that DB_DIRECT_HOST and
+  DB_DIRECT_PORT point at PostgreSQL directly, and see preflight section 7.
+- Org codes (plant, company code, purchasing org) are character keys. Leading
+  zeros are significant and are never stripped.
+- Deleted SAP lines: a PO line removed in SAP is kept for traceability, marked
+  as no longer in SAP, and excluded from counts. It is not deleted locally.
 
-## Inventory
-CSV: Material_Number(required), Description, Plant, Unrestricted/Quality/Blocked/In_Transit, UoM. Status: Zero(red), Low(orange), OK(green). Daily overdue->BOM->finished goods at risk.
+## SAP write-back
+Confirmed working against S/4HANA 2025: delivery-date and quantity changes are
+written back to the purchase order. Status: Y = success, E = retries exhausted
+(needs manual action in SAP), null = still pending. 5 retries with exponential
+backoff, 2 to 32 minutes.
+- PO cancellation write-back is NOT verified end-to-end. If a customer asks
+  whether cancelling in Horaxis cancels in SAP, say it is not confirmed and
+  they should verify in SAP.
 
-## Supply Chain Risk
-Score 0-100: days late + finished goods + customer orders + value. CRITICAL(>=70), HIGH(>=45), MEDIUM(>=20), LOW(<20). Traces through BOM max 10 levels to sales orders.
+## Predictions
+Gradient-boosted model over historical purchase-order delivery outcomes.
+Minimum 50 delivered records to train. Retrain runs daily; predictions refresh
+hourly. Risk levels: CRITICAL, HIGH, MEDIUM, LOW.
+- "Insufficient data" -> import more PO history with actual delivery dates.
+- "No model" -> Predictions > Retrain.
+- All predictions HIGH/CRITICAL is usually correct, not a bug: if most open
+  lines are already past their delivery date, high risk is the right answer.
+  Check the delivery dates before treating it as a defect.
+- Predictions run in the ML Celery worker. If nothing appears, check that
+  worker is up before anything else — a task added without restarting the
+  workers will never run, because workers cache the task list at startup.
 
-## Docker/Infrastructure
-Health: /api/health (liveness), /api/health/ready (readiness), /api/health/deep (all+Celery). Components: PostgreSQL, Redis(broker+cache), PgBouncer, Nginx, Celery. Memory: 512MB/worker.
-- Restart: docker compose down && docker compose up -d. Logs: docker logs horaxis-backend --tail 100. Health: curl -k https://localhost/api/health/deep.
+## Supply chain risk and scope
+Risk score 0-100 from days late, finished goods at risk, customer orders
+affected and value. CRITICAL >= 70, HIGH >= 45, MEDIUM >= 20, LOW < 20.
+Traces through the bill of materials up to 10 levels to reach sales orders.
+Facts are shown separately from forecasts: confirmed lateness is presented as
+fact, model output as forecast. A PO that is on time counts as on track.
+Users only see the company codes and plants their licence and their user scope
+allow. "Data missing" is often scope, not loss — check the scope selector.
 
-## SSO (Azure AD, Okta, Google)
-- "Not configured"->Settings>SSO>Configure. "OIDC discovery failed"->check tenant_id/domain. "No account"->create user or enable auto_provision. State valid 10min.
+## Supplier portal, inventory, imports
+- Portal links expire after 7 days. "Invalid/expired link" -> generate a new
+  one. Workflow: create link -> email -> supplier submits -> planner approves.
+- Inventory CSV: Material_Number (required), Description, Plant, Unrestricted,
+  Quality, Blocked, In_Transit, UoM. Status: Zero (red), Low (orange), OK.
+- Imports are CSV, UTF-8. The response lists the first errors; caches are
+  invalidated and MRP recomputed afterwards.
 
-## Import
-CSV only, UTF-8. Check errors array (first 10). Post-import: caches invalidated, MRP recomputed.
+## Health and infrastructure
+Endpoints: /api/health (liveness), /api/health/ready (readiness),
+/api/health/deep (all components including Celery).
+Stack: PostgreSQL 15, PgBouncer, Redis 7 (separate broker and cache), Celery
+workers and beat, FastAPI backend, React frontend, Nginx with SSL.
+- The SSL certificate is generated per install on first start; none is shipped.
+- Nginx resolves backend and frontend names at request time, so recreating a
+  container does not require an nginx restart.
+- A read-only SAP preflight image can be run BEFORE installing the product to
+  confirm connectivity and service activation.
 
-## SAP Write-Back
-Y=success, E=retries exhausted(manual SAP needed), null=pending. 5 retries, exponential 2-32min.
+## Settings (.env)
+- ADMIN_EMAIL (default: admin@yourcompany.com)
+- ADMIN_PASSWORD
+- DB_PASSWORD
+- REDIS_PASSWORD
+- REDIS_CACHE_PASSWORD
+- SECRET_KEY
+- LICENSE_KEY (default: TRIAL-0000-0000-0000)
+- COMPANY_NAME (default: Your Company Name)
+- HTTPS_PORT (default: 443)
+- HTTP_PORT (default: 80)
+- INTERNAL_URL (default: https://localhost)
+- SUPPLIER_PORTAL_URL (default: https://localhost)
+- CORS_ORIGINS (default: https://localhost)
+- SMTP_HOST (default: smtp.gmail.com)
+- SMTP_PORT (default: 587)
+- SMTP_USERNAME (default: your-email@gmail.com)
+- SMTP_PASSWORD (default: your-app-password)
+- SMTP_FROM_EMAIL (default: noreply@yourcompany.com)
+- SMTP_FROM_NAME (default: ProcureAI)
+- ERP_TYPE (default: csv)
+- METEOSOURCE_KEY
+- ALPHAVANTAGE_KEY
+- AISSTREAM_KEY
+- METALS_DEV_KEY
+- EIA_KEY
+- GDELT_CLOUD_KEY
+- ALGORITHM (default: HS256)
+- ACCESS_TOKEN_EXPIRE_HOURS (default: 8)
+- MFA_REQUIRED_FOR_ADMIN (default: true)
+- RATE_LIMIT_PER_MINUTE (default: 100)
+- LOGIN_RATE_LIMIT_PER_MINUTE (default: 10)
+- PASSWORD_RESET_RATE_LIMIT_PER_HOUR (default: 5)
+- SUPPLIER_PORTAL_RATE_LIMIT_PER_MINUTE (default: 20)
+- DB_NAME (default: procurement)
+- DB_DIRECT_HOST (default: postgres)
+- DB_DIRECT_PORT (default: 5432)
+- DB_USER (default: postgres)
+- LOG_LEVEL (default: INFO)
+- SAP_RFC_SDK_PATH
+- SUPPORT_NOTIFICATION_EMAIL
+- SUPPORT_JWT_SECRET
+- SSL_COMMON_NAME (default: localhost)
 
-## Environment Variables
-DB: DATABASE_URL, DB_HOST(localhost), DB_PORT(5432), DB_NAME(procurement), DB_USER/DB_PASSWORD(postgres).
-Redis: REDIS_HOST:REDIS_PORT(localhost:6379)+REDIS_PASSWORD, REDIS_CACHE_HOST:REDIS_CACHE_PORT(localhost:6380).
-Security: SECRET_KEY(min 32 chars), ACCESS_TOKEN_EXPIRE_HOURS(8), SESSION_INACTIVITY_TIMEOUT(1800), LICENSE_SIGNING_SECRET.
-SMTP: SMTP_HOST, SMTP_PORT(587), SMTP_USERNAME, SMTP_PASSWORD, SMTP_FROM_EMAIL.
-ERP: ERP_TYPE(csv), ERP_HOST, ERP_CLIENT, ERP_USERNAME, ERP_PASSWORD.
+## API surface
+/api/analytics, /api/archives, /api/asn, /api/audit-logs, /api/auth, /api/auth/sso, /api/blanket-pos, /api/bom, /api/branding, /api/contracts, /api/data-health, /api/dlq, /api/erp, /api/exports, /api/external-factors, /api/imports, /api/inventory, /api/invoices, /api/license, /api/notifications, /api/overdue-alerts, /api/predictions, /api/procurement-intelligence, /api/purchase-orders, /api/sap, /api/schedule-lines, /api/scope, /api/settings, /api/setup, /api/sod, /api/spend-analytics, /api/supplier-assignments, /api/supplier-links, /api/supplier-updates, /api/suppliers, /api/supply-chain-risks, /api/support, /api/system, /api/users, /api/webhooks
 
-## Troubleshooting Checklist
-1. Login: creds>lockout(5 attempts)>disabled>MFA. 2. 401: token expired>inactive 30min>blacklisted. 3. 403: role>MFA>license features. 4. 429: rate limited>wait. 5. ERP: test connection>creds>network>logs>Redis lock. 6. Predictions: trained?>data(50+)?>retrain>Celery. 7. Portal: link expired?>status?>rate limit?>new link. 8. Email: SMTP config. 9. Health: PostgreSQL>Redis>disk>Celery. 10. Import: CSV format>columns>encoding>license.`;
+## Troubleshooting order
+1. Reproduce: exact page, exact error text, screenshot.
+2. /api/health/deep — is anything down, especially Celery workers?
+3. Backend logs for the real error; a 500 in the UI hides it.
+4. Scope — is the data actually missing, or outside the selected plant?
+5. Licence status — is it valid, and does it cover that plant?
+6. ERP — test connection, then check the SAP gateway service is active.
+7. If none of that resolves it, tell them to raise a ticket with the logs and
+   screenshot attached. Do not guess at a code-level cause.`;
 
   // Call Claude API (streaming)
   const claudeResponse = await fetch("https://api.anthropic.com/v1/messages", {
@@ -212,6 +424,7 @@ ERP: ERP_TYPE(csv), ERP_HOST, ERP_CLIENT, ERP_USERNAME, ERP_PASSWORD.
     body: JSON.stringify({
       model: "claude-haiku-4-5",
       max_tokens: 1024,
+      temperature: 0,
       system: getSystemPrompt(knowledgeBase),
       messages: claudeMessages,
     }),
