@@ -58,6 +58,13 @@
     .ticket-item .ticket-priority.low { background: #0f172a; color: #64748b; }
     .ticket-item .ticket-subject { font-size: 13px; color: #e2e8f0; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .ticket-item .ticket-company { font-size: 11px; color: #ea580c; margin: 2px 0; }
+    .support-badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; }
+    .support-badge.included { background: #1e293b; color: #94a3b8; }
+    .support-badge.standard { background: #1e3a8a; color: #bfdbfe; }
+    .support-badge.premium  { background: #4c1d95; color: #ddd6fe; }
+    .sla-ok     { color: #4ade80; font-size: 11px; font-weight: 600; }
+    .sla-warn   { color: #fbbf24; font-size: 11px; font-weight: 700; }
+    .sla-breach { color: #f87171; font-size: 11px; font-weight: 800; }
     .ticket-item .ticket-meta { font-size: 11px; color: #64748b; margin-top: 4px; display: flex; gap: 8px; align-items: center; }
 
     /* Status badges */
@@ -402,12 +409,66 @@
           <div class="ticket-company">${escapeHtml(t.company || '')}</div>
           <div class="ticket-meta">
             <span>${t.category || 'general'}</span>
-            <span>v${t.version || '?'}</span>
+            <span class="support-badge ${t.support || 'included'}">${(t.support || 'included')}</span>
             <span class="status-badge ${t.status || 'open'}">${formatStatus(t.status || 'open')}</span>
             <span>${relativeTime(t.received_at || t.timestamp)}</span>
           </div>
+          <div class="ticket-meta"><span class="${slaState(t).cls}">${slaState(t).label}</span></div>
         </div>
       `).join('');
+    }
+
+    // ── Support tier and SLA ──
+    //
+    // Every plan includes support; what a customer buys is response time. The
+    // tier and its target arrive with the ticket, taken from the signed licence,
+    // so this shows the promise that actually applies rather than treating a
+    // Premium customer paying 25% of their licence the same as a free one.
+    //
+    // Elapsed time is measured in BUSINESS hours (Mon-Fri 09:00-17:00 CET),
+    // because that is what was sold. Counting wall-clock would show a ticket
+    // raised on Friday evening as breached by Monday morning when it is not.
+    const BUSINESS_START = 9, BUSINESS_END = 17;
+
+    function businessHoursBetween(fromIso, toDate) {
+      const start = new Date(fromIso);
+      if (isNaN(start)) return null;
+      let hours = 0;
+      const cur = new Date(start);
+      while (cur < toDate) {
+        const day = cur.getDay();
+        const hour = cur.getHours() + cur.getMinutes() / 60;
+        if (day >= 1 && day <= 5 && hour >= BUSINESS_START && hour < BUSINESS_END) {
+          hours += 0.25;
+        }
+        cur.setMinutes(cur.getMinutes() + 15);
+      }
+      return hours;
+    }
+
+    function slaState(ticket) {
+      const target = typeof ticket.sla_hours === 'number' ? ticket.sla_hours : 24;
+      const answered = ticket.responded_at ? new Date(ticket.responded_at) : null;
+      const used = businessHoursBetween(ticket.received_at || ticket.timestamp,
+                                        answered || new Date());
+      if (used === null) return { label: '-', cls: 'sla-ok', used: null, target };
+      const pct = used / target;
+      let cls = 'sla-ok';
+      if (used > target) cls = 'sla-breach';
+      else if (pct >= 0.75) cls = 'sla-warn';
+      const rounded = Math.round(used * 10) / 10;
+      return {
+        label: answered
+          ? `answered in ${rounded}h / ${target}h`
+          : `${rounded}h / ${target}h elapsed`,
+        cls, used: rounded, target, answered: !!answered,
+      };
+    }
+
+    function fmtDateTime(iso) {
+      if (!iso) return '—';
+      const d = new Date(iso);
+      return isNaN(d) ? '—' : d.toLocaleString();
     }
 
     // ── Ticket detail ──
@@ -436,6 +497,10 @@
             <span><strong>Priority:</strong> ${ticket.priority || 'normal'}</span>
             <span><strong>Category:</strong> ${ticket.category || 'general'}</span>
             <span><strong>Version:</strong> ${ticket.version || 'unknown'}</span>
+            <span><strong>Support:</strong> <span class="support-badge ${ticket.support || 'included'}">${ticket.support || 'included'}</span></span>
+            <span><strong>SLA:</strong> <span class="${slaState(ticket).cls}">${slaState(ticket).label}</span></span>
+            <span><strong>Received:</strong> ${fmtDateTime(ticket.received_at || ticket.timestamp)}</span>
+            <span><strong>Answered:</strong> ${fmtDateTime(ticket.responded_at)}</span>
             <span><strong>Status:</strong> <span class="status-badge ${ticket.status || 'open'}">${formatStatus(ticket.status || 'open')}</span></span>
             <span>${relativeTime(ticket.received_at || ticket.timestamp)}</span>
           </div>

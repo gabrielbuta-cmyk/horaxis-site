@@ -60,7 +60,8 @@ export const onRequest = async (context) => {
     return json({ error: "Invalid JSON body" }, 400);
   }
 
-  const { ticket_id, subject, description, company, priority, category, version, callback_url, signature, timestamp } = body;
+  const { ticket_id, subject, description, company, priority, category, version,
+          support, sla_hours, callback_url, signature, timestamp } = body;
 
   // Validate required fields
   if (!ticket_id || !subject || !signature || !timestamp) {
@@ -98,6 +99,13 @@ export const onRequest = async (context) => {
     timestamp,
     received_at: new Date().toISOString(),
     status: "open",
+    // Which support tier this customer bought, and the first-response target it
+    // implies. Sent by the app from the SIGNED licence, so the admin panel can
+    // show the promise that actually applies instead of treating every ticket
+    // the same. Business hours, Mon-Fri 09:00-17:00 CET.
+    support: support || "included",
+    sla_hours: typeof sla_hours === "number" ? sla_hours : 24,
+    responded_at: null,
   };
 
   // Store in KV if available, otherwise log
@@ -158,6 +166,7 @@ export const onRequest = async (context) => {
                   <p><strong>Description:</strong> ${description || "No description"}</p>
                   <p><strong>Category:</strong> ${category || "General"}</p>
                   <p><strong>Version:</strong> ${version || "Unknown"}</p>
+                  <p><strong>Support:</strong> ${(support || "included").toUpperCase()} &mdash; respond within ${typeof sla_hours === "number" ? sla_hours : 24} business hours</p>
                   <p><strong>Received:</strong> ${ticket.received_at}</p>
                   <hr style="border:0; border-top:1px solid #e2e8f0; margin:20px 0;">
                   <p style="color:#64748b; font-size:12px;">Respond via the <a href="https://horaxis.com/admin">Admin Panel</a></p>
