@@ -1,0 +1,15 @@
+# Cloudflare Pages redirects. The file must be named exactly "_redirects";
+# as "_redirects.txt" (until 2026-09-30) Cloudflare ignored it entirely.
+#
+# Not here, on purpose:
+# - www -> apex: Cloudflare Pages _redirects only takes relative paths; do it
+#   with a Cloudflare Redirect Rule if www ever needs to redirect.
+# - /product -> /product.html style rewrites: Pages already serves every page
+#   without ".html" (and redirects /x.html to /x); a rewrite back to ".html"
+#   can loop.
+# - riskguard.horaxis.com routing: functions/_middleware.js.
+
+/pilot      /contact        301
+/roi        /how-it-works   301
+/pricing    /contact        301
+/legal      /privacy        301
