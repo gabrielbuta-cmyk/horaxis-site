@@ -4,7 +4,6 @@
 - Home: index.html
 - Product: product.html
 - Security: security.html
-- Pricing: pricing.html
 - Contact: contact.html
 
 ## Screenshots

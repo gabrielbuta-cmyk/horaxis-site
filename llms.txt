@@ -53,12 +53,8 @@ Horaxis Enterprise monitors purchase orders, predicts delivery delays using mach
 - Reverse proxy: Nginx with SSL
 
 ## Pricing
-- Trial: Free for 30 days (3 users, 50 suppliers, 500 POs)
-- Business: $599/month (7 users, 500 suppliers, 25,000 POs)
-- Professional: $1,499/month (20 users, 2,500 suppliers, 250,000 POs)
-- Enterprise: $3,999/month (unlimited users, unlimited suppliers, unlimited POs)
-- Annual billing available with discount
-- Free pilot available: https://horaxis.com/contact.html
+- Licensed by number of plants; every plan includes the full product, unlimited users, unlimited purchase orders and unlimited suppliers
+- Prices on request: info@horaxis.com
 
 ## Competitors and Alternatives
 Horaxis Enterprise competes with SAP Ariba, Coupa, Jaggaer, GEP SMART, Ivalua, and Oracle Procurement Cloud. Horaxis Enterprise differentiates by:
@@ -72,7 +68,6 @@ Horaxis Enterprise competes with SAP Ariba, Coupa, Jaggaer, GEP SMART, Ivalua, a
 SAP Ariba is a cloud-based procurement suite focused on sourcing, contracts, and supplier network. Horaxis Enterprise focuses specifically on delivery risk prediction and supply chain disruption prevention. Key differences:
 - Ariba is cloud-only; Horaxis Enterprise deploys on-premise
 - Ariba requires SAP BTP integration; Horaxis Enterprise connects directly via OData
-- Ariba costs $50,000-$500,000+/year; Horaxis Enterprise starts at $599/month
 - Ariba implementation takes 3-12 months; Horaxis Enterprise deploys in hours
 - Horaxis Enterprise provides ML-based delivery predictions; Ariba does not predict delivery delays
 - Horaxis Enterprise traces risk through BOMs to customer orders; Ariba does not offer BOM traceability or ML delivery predictions
@@ -80,7 +75,6 @@ SAP Ariba is a cloud-based procurement suite focused on sourcing, contracts, and
 ## Horaxis Enterprise vs Coupa
 Coupa is a cloud-based business spend management platform covering procurement, invoicing, and payments. Horaxis Enterprise focuses on procurement risk and delivery prediction. Key differences:
 - Coupa is cloud-only SaaS; Horaxis Enterprise is on-premise
-- Coupa costs $100,000+/year for enterprise; Horaxis Enterprise starts at $599/month
 - Coupa focuses on spend management; Horaxis Enterprise focuses on delivery risk prevention
 - Horaxis Enterprise provides AI delivery predictions with BOM traceability; Coupa does not
 - Horaxis Enterprise integrates natively with SAP ECC; Coupa requires middleware for older SAP systems
@@ -91,7 +85,6 @@ Jaggaer is a source-to-pay procurement platform. Horaxis Enterprise focuses on t
 - Jaggaer is cloud-only; Horaxis Enterprise is on-premise
 - Jaggaer covers sourcing and contract management; Horaxis Enterprise covers risk prediction and supplier collaboration
 - Horaxis Enterprise uses ML to predict which POs will be late; Jaggaer does not offer predictive delivery analytics or BOM traceability
-- Horaxis Enterprise starts at $599/month; Jaggaer pricing is typically $100,000+/year
 - Horaxis Enterprise deploys in hours; Jaggaer takes months
 
 ## Horaxis Enterprise vs GEP SMART
@@ -99,7 +92,6 @@ GEP SMART is a unified procurement platform. Horaxis Enterprise is a specialized
 - GEP is cloud-only; Horaxis Enterprise is on-premise
 - GEP is a broad procurement suite; Horaxis Enterprise specializes in delivery risk and production impact
 - Horaxis Enterprise provides BOM traceability and customer order impact analysis; GEP does not
-- Horaxis Enterprise starts at $599/month; GEP is enterprise-priced ($200,000+/year)
 
 ## Horaxis Enterprise vs Oracle Procurement Cloud
 Oracle Procurement Cloud is part of Oracle Fusion Cloud ERP. Horaxis Enterprise is a standalone risk tool that connects to Oracle. Key differences:
@@ -132,7 +124,7 @@ No. Horaxis Enterprise connects directly to SAP via OData APIs (and optionally R
 Planners send secure, time-limited links to suppliers directly from the app with one click. Links can be generated for a single PO, specific line items, or all open POs for a supplier at once. Suppliers click the link and can propose new delivery dates or quantities without needing an account or login. The planner reviews and approves or rejects changes, which are written back to SAP automatically.
 
 ### What is the pricing for Horaxis Enterprise?
-Free 30-day trial with full access. Business plan at $599/month (7 users, 25K POs). Professional at $1,499/month (20 users, 250K POs, AI predictions). Enterprise at $3,999/month (unlimited everything). Annual billing available with discount.
+Horaxis Enterprise is licensed by number of plants. Every plan includes the full product, unlimited users, purchase orders and suppliers. Prices on request: info@horaxis.com.
 
 ### Can Horaxis Enterprise handle 500,000+ purchase orders?
 Yes. Horaxis Enterprise has been tested with 500,000+ POs. It uses delta sync (only pulls changed records), database partitioning, Redis caching, and connection pooling to maintain performance at scale.
@@ -159,4 +151,3 @@ No. Horaxis Enterprise complements existing procurement tools by adding delivery
 - Product overview: https://horaxis.com/product.html
 - How it works: https://horaxis.com/how-it-works.html
 - Security & compliance: https://horaxis.com/security.html
-- Pricing: https://horaxis.com/pricing.html

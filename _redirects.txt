@@ -11,7 +11,7 @@ https://www.horaxis.com/* https://horaxis.com/:splat 301!
 /product    /product.html   200
 /how-it-works /how-it-works.html 200
 /roi        /how-it-works.html 301
-/pricing    /pricing.html   200
+/pricing    /contact.html   301
 /legal      /privacy.html   200
 /support    /support.html   200
 /admin      /admin.html     200
