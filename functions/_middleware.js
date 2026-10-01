@@ -12,8 +12,31 @@
  *
  * Every other path passes through context.next().
  */
+import { getSession, notFound } from "../lib/axis.js";
+
+// The Axis page answers 404 unless the visitor has a live session from /support/start
+// (2026-10-01). Every spelling of the path Pages would serve is covered.
+const AXIS_PAGE_PATHS = new Set(["/support", "/support/", "/support.html"]);
+
 export const onRequest = async (context) => {
   const url = new URL(context.request.url);
+
+  // Shared server code (gate logic, prompts, knowledge base) is bundled into the
+  // functions; the files themselves must never be served as static assets.
+  if (url.pathname.startsWith("/lib/") || url.pathname === "/lib") {
+    return notFound(context.env, context.request);
+  }
+
+  if (AXIS_PAGE_PATHS.has(url.pathname)) {
+    const s = await getSession(context.request, context.env);
+    if (!s) return notFound(context.env, context.request);
+    const res = await context.next();
+    const out = new Response(res.body, res);
+    out.headers.set("Cache-Control", "no-store");
+    out.headers.set("X-Robots-Tag", "noindex");
+    out.headers.set("Referrer-Policy", "no-referrer");
+    return out;
+  }
 
   if (url.hostname === 'riskguard.horaxis.com' && url.pathname === '/') {
     const target = new URL('/riskguard.html', url).toString();

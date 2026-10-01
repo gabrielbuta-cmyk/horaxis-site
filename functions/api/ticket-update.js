@@ -1,3 +1,4 @@
+import { ticketPutOptions } from "../../lib/axis.js";
 // Horaxis Enterprise — Ticket Update Receiver
 // Cloudflare Pages Function
 // Receives ticket updates (comments, status changes) from customer Horaxis instances
@@ -133,7 +134,7 @@ export const onRequest = async (context) => {
     }
 
     // Persist updated ticket
-    await env.TICKETS.put(`ticket:${ticket_id}`, JSON.stringify(ticket));
+    await env.TICKETS.put(`ticket:${ticket_id}`, JSON.stringify(ticket), ticketPutOptions(ticket));
   } catch (e) {
     console.error("KV update error:", e);
     return json({ error: "Failed to update ticket" }, 500);

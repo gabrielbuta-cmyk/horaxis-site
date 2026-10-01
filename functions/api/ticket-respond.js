@@ -1,3 +1,4 @@
+import { ticketPutOptions } from "../../lib/axis.js";
 // Horaxis Enterprise — Ticket Response Sender
 // Cloudflare Pages Function
 // Sends admin responses back to customer Horaxis instances
@@ -96,7 +97,7 @@ export const onRequest = async (context) => {
         ticket.status = new_status || "responded";
         ticket.responded_at = new Date().toISOString();
         ticket.last_response = message;
-        await env.TICKETS.put(`ticket:${ticket_id}`, JSON.stringify(ticket));
+        await env.TICKETS.put(`ticket:${ticket_id}`, JSON.stringify(ticket), ticketPutOptions(ticket));
       }
     } catch (e) {
       console.error("KV update error:", e);

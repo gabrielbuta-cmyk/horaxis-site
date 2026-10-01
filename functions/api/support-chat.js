@@ -1,12 +1,12 @@
+import { getSession } from "../../lib/axis.js";
+import KB_RISKGUARD from "../../lib/kb_riskguard.js";
+import { riskguardSystemPrompt } from "../../lib/prompt_riskguard.js";
 // Horaxis Enterprise — Support Chat API
 // Cloudflare Pages Function
 // Verifies JWT from Horaxis app, streams Claude responses
 
-const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization",
-};
+// Same-origin only since the session cookie (2026-10-01): no cross-site callers.
+const CORS_HEADERS = {};
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -15,53 +15,7 @@ function json(data, status = 200) {
   });
 }
 
-// Licence verification (Ed25519).
-//
-// The shared HMAC secret below has a distribution problem: it must exist in the
-// customer's .env AND here, it ships blank in .env.template (so Ask Axis has
-// never worked at a customer install), and one value for everyone means a leak
-// rotates every customer at once.
-//
-// A Horaxis licence is already a customer-specific credential signed by us with
-// a key we never ship. Verifying it here needs only the PUBLIC key, so there is
-// nothing per-customer to generate, distribute or store — and an expired
-// licence loses support access on its own.
-const LICENSE_PUBLIC_KEY_HEX =
-  "db01f095fd4ad77bd1eeaf4f2922646053b87f12a825fe0657c791b108ac041e";
-
-function b64urlToBytes(s) {
-  const b64 = s.replace(/-/g, "+").replace(/_/g, "/") + "=".repeat((4 - (s.length % 4)) % 4);
-  return Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
-}
-
-async function verifyLicence(blob) {
-  try {
-    const [payloadB64, sigB64] = blob.split(".");
-    if (!payloadB64 || !sigB64) return null;
-    const key = await crypto.subtle.importKey(
-      "raw",
-      Uint8Array.from(LICENSE_PUBLIC_KEY_HEX.match(/../g), (h) => parseInt(h, 16)),
-      { name: "Ed25519" },
-      false,
-      ["verify"]
-    );
-    // The signature covers the payload JSON as it was signed, not the base64.
-    const payloadBytes = b64urlToBytes(payloadB64);
-    const ok = await crypto.subtle.verify("Ed25519", key, b64urlToBytes(sigB64), payloadBytes);
-    if (!ok) return null;
-    const claims = JSON.parse(new TextDecoder().decode(payloadBytes));
-    if (claims.expires_at && new Date(claims.expires_at) < new Date()) return null;
-    return {
-      customer_id: claims.customer_code || "unknown",
-      company: claims.customer_code || "unknown",
-      license: claims.plan || "licensed",
-      version: String(claims.version || ""),
-      via: "licence",
-    };
-  } catch (e) {
-    return null;
-  }
-}
+// Authentication: see lib/axis.js (licence POSTed to /support/start → session cookie).
 
 // Per-customer quota. Costs roughly EUR 0.01 per message, so this exists to stop
 // a runaway loop or a leaked credential running up an unbounded bill, not to
@@ -96,52 +50,21 @@ async function checkQuota(env, customerId, plan) {
   return { allowed: true, used: used + 1, limit };
 }
 
-// Simple JWT verification (HS256)
-async function verifyJWT(token, secret) {
-  try {
-    const [headerB64, payloadB64, signatureB64] = token.split(".");
-    if (!headerB64 || !payloadB64 || !signatureB64) return null;
-
-    // Verify signature
-    const key = await crypto.subtle.importKey(
-      "raw",
-      new TextEncoder().encode(secret),
-      { name: "HMAC", hash: "SHA-256" },
-      false,
-      ["verify"]
-    );
-
-    const data = new TextEncoder().encode(`${headerB64}.${payloadB64}`);
-    const signature = Uint8Array.from(
-      atob(signatureB64.replace(/-/g, "+").replace(/_/g, "/")),
-      (c) => c.charCodeAt(0)
-    );
-
-    const valid = await crypto.subtle.verify("HMAC", key, signature, data);
-    if (!valid) return null;
-
-    // Decode payload
-    const payload = JSON.parse(
-      atob(payloadB64.replace(/-/g, "+").replace(/_/g, "/"))
-    );
-
-    // Check expiry
-    if (payload.exp && payload.exp < Date.now() / 1000) return null;
-
-    return payload;
-  } catch (e) {
-    return null;
-  }
-}
-
 // System prompt with knowledge base (loaded from env or inline)
 function getSystemPrompt(knowledgeBase) {
   return `You are the Horaxis Enterprise technical support assistant. You help customers troubleshoot issues with their on-premise Horaxis Enterprise deployment.
 
 IMPORTANT RULES:
-- NEVER say there is a "bug in the code" or "code issue" or "error in the backend". Instead say "I've identified the issue" and provide a fix or workaround.
-- If you identify a code-level bug that requires a patch, say: "This is a known issue that will be resolved in the next update. In the meantime, here's a workaround..."
-- If you cannot resolve the issue, say: "I was unable to resolve this issue. Please create a support ticket using the button below so the Horaxis team can investigate and follow up with a fix."
+- Answer only from the knowledge below and from what the user shows you. Never invent a cause, a
+  fix, a menu path, a setting or a command.
+- Never say a problem is a "known issue", is "being fixed" or will be solved "in the next update"
+  unless the knowledge below says so explicitly. Never promise dates.
+- If what you see looks like a fault in the software, say so plainly ("this looks like a fault in
+  the application, not in your setup"), give a workaround only if the knowledge below has one, and
+  ask the user to contact Horaxis support.
+- If you cannot resolve the issue, say: "I was unable to resolve this issue. Please contact Horaxis
+  support from the Support page of your application, or with the button below, so the Horaxis team
+  can investigate."
 - NEVER say you created a ticket, documented the issue, or notified anyone. You cannot do any of that. The customer must create the ticket themselves.
 - NEVER generate fake ticket numbers like HRX-1234. You have no ticket system access.
 - NEVER say the Horaxis team can access customer logs, systems, or data. Horaxis is on-premise — the team has ZERO access to customer infrastructure.
@@ -167,10 +90,13 @@ COMMON ISSUES AND FIXES:
 ${knowledgeBase}
 
 ESCALATION:
-You cannot create tickets. When an issue needs the Horaxis team, tell the customer
-to click the "Create Support Ticket" button and list exactly what to include
-(symptom, error text, screenshot, when it started). Never state or imply that a
-ticket exists, that anyone has been notified, or that a fix is scheduled.`;
+You cannot create tickets or notify anyone. When an issue needs the Horaxis team, tell the
+customer to contact Horaxis support (the Support page of their application, or the
+"E-mail Horaxis support" button) and list exactly what to include (symptom, error text,
+screenshot, when it started). Never state or imply that a ticket exists, that anyone has
+been notified, or that a fix is scheduled.
+Never ask for, and tell users not to paste, personal data, passwords, licence keys or ERP
+credentials.`;
 }
 
 export const onRequest = async (context) => {
@@ -183,31 +109,15 @@ export const onRequest = async (context) => {
 
   if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
-  // Get token from Authorization header
-  const authHeader = request.headers.get("Authorization");
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return json({ error: "Unauthorized — valid support token required" }, 401);
-  }
-
-  const token = authHeader.replace("Bearer ", "");
-  const jwtSecret = env.SUPPORT_JWT_SECRET;
-
-  // No hard failure when the shared secret is absent: a licence-bearing request
-  // does not need it, and this is exactly the case that never worked before.
-
-  // Verify JWT
-  // Two credentials accepted during the transition: a signed licence (preferred,
-  // nothing to distribute) or the legacy shared-secret JWT. The legacy path stays
-  // until every install is on a licence, so deploying this cannot break anyone.
-  let payload = await verifyLicence(token);
-  if (!payload && jwtSecret) {
-    payload = await verifyJWT(token, jwtSecret);
-  }
+  // Session from /support/start (2026-10-01): a valid signed licence was POSTed by the
+  // installation, and the session is re-checked against the block list on every call.
+  // The old Bearer token (licence or shared-secret JWT in a URL) is no longer accepted.
+  const payload = await getSession(request, env);
   if (!payload) {
-    return json({ error: "Invalid or expired support token. Please access support from within the Horaxis app." }, 401);
+    return json({ error: "Your support session has ended. Please open Axis again from the Support page of your application." }, 401);
   }
 
-  const quota = await checkQuota(env, payload.customer_id || "unknown", payload.license);
+  const quota = await checkQuota(env, `${payload.product}:${payload.customer}`, payload.plan);
   if (!quota.allowed) {
     return json({ error: quota.reason }, 429);
   }
@@ -425,7 +335,7 @@ workers and beat, FastAPI backend, React frontend, Nginx with SSL.
       model: "claude-haiku-4-5",
       max_tokens: 1024,
       temperature: 0,
-      system: getSystemPrompt(knowledgeBase),
+      system: payload.product === "riskguard" ? riskguardSystemPrompt(KB_RISKGUARD) : getSystemPrompt(knowledgeBase),
       messages: claudeMessages,
     }),
   });
@@ -455,13 +365,13 @@ workers and beat, FastAPI backend, React frontend, Nginx with SSL.
         body: JSON.stringify({
           from: "Horaxis Support Bot <support@horaxis.com>",
           to: ["support@horaxis.com"],
-          subject: `SUPPORT ESCALATION — ${payload.company || "Unknown"} (License: ${payload.license || "N/A"})`,
+          subject: `SUPPORT ESCALATION — ${payload.customer || "Unknown"} (License: ${payload.plan || "N/A"})`,
           html: `
             <h2>Support Bot Escalation</h2>
-            <p><strong>Customer:</strong> ${payload.company || "Unknown"}</p>
-            <p><strong>License:</strong> ${payload.license || "N/A"}</p>
-            <p><strong>Version:</strong> ${payload.version || "Unknown"}</p>
-            <p><strong>User:</strong> ${payload.email || "Unknown"}</p>
+            <p><strong>Customer:</strong> ${payload.customer || "Unknown"}</p>
+            <p><strong>License:</strong> ${payload.plan || "N/A"}</p>
+            <p><strong>Version:</strong> ${payload.product || "Unknown"}</p>
+            <p><strong>User:</strong> ${"(not collected)"}</p>
             <hr>
             <h3>Conversation:</h3>
             ${messages.map((m) => `<p><strong>${m.role}:</strong> ${m.content || "[screenshot]"}</p>`).join("")}
