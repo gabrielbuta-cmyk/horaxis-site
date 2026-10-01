@@ -175,7 +175,7 @@
         <span class="refresh-indicator" id="refresh-indicator"></span>
         <button id="btn-view-tickets" onclick="showView('tickets')">Tickets</button>
         <button id="btn-view-axis" onclick="showView('axis')">Axis access</button>
-        <button onclick="refreshTickets()">Refresh</button>
+        <button onclick="refreshCurrentView()">Refresh</button>
         <button onclick="logout()">Logout</button>
       </div>
     </div>
@@ -351,7 +351,13 @@
     }
 
     // ── Views: tickets / Axis access ──
+    // Refresh reloads whatever is on screen (it only reloaded tickets before).
+    let currentView = 'tickets';
+    function refreshCurrentView() {
+      if (currentView === 'axis') axisLoad(); else refreshTickets();
+    }
     function showView(view) {
+      currentView = view;
       document.getElementById('tickets-view').style.display = view === 'axis' ? 'none' : 'flex';
       document.getElementById('axis-panel').style.display = view === 'axis' ? 'block' : 'none';
       if (view === 'axis') axisLoad();
