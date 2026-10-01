@@ -23,7 +23,11 @@ export const onRequest = async (context) => {
 
   // Shared server code (gate logic, prompts, knowledge base) is bundled into the
   // functions; the files themselves must never be served as static assets.
-  if (url.pathname.startsWith("/lib/") || url.pathname === "/lib") {
+  // Same for the functions' source and the repository's own files (README, package
+  // manifests), which a static host would otherwise hand out.
+  const HIDDEN = ["/lib", "/functions", "/node_modules"];
+  const HIDDEN_FILES = new Set(["/README.md", "/package.json", "/package-lock.json"]);
+  if (HIDDEN.some((d) => url.pathname === d || url.pathname.startsWith(d + "/")) || HIDDEN_FILES.has(url.pathname)) {
     return notFound(context.env, context.request);
   }
 
