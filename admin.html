@@ -173,12 +173,32 @@
       </div>
       <div class="actions">
         <span class="refresh-indicator" id="refresh-indicator"></span>
+        <button id="btn-view-tickets" onclick="showView('tickets')">Tickets</button>
+        <button id="btn-view-axis" onclick="showView('axis')">Axis access</button>
         <button onclick="refreshTickets()">Refresh</button>
         <button onclick="logout()">Logout</button>
       </div>
     </div>
 
-    <div class="admin-main">
+    <!-- Axis access (2026-10-01): block a customer or one leaked licence. Takes effect at
+         once, including Axis sessions that are already open. -->
+    <div id="axis-panel" style="display:none; padding:24px; max-width:900px;">
+      <h3 style="margin:0 0 6px;">Axis access</h3>
+      <p style="color:#94a3b8; font-size:13px; margin:0 0 18px;">
+        Block a customer to close Axis for them immediately — open sessions end at once, and new
+        attempts get "page not found". Use the customer code exactly as it appears in their licence.
+      </p>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
+        <input id="block-customer" placeholder="Customer code (e.g. GABITEST2)" style="flex:1; min-width:220px; padding:8px 10px; border-radius:6px; border:1px solid #334155; background:#0f172a; color:#e2e8f0;"/>
+        <input id="block-reason" placeholder="Reason (optional)" style="flex:2; min-width:220px; padding:8px 10px; border-radius:6px; border:1px solid #334155; background:#0f172a; color:#e2e8f0;"/>
+        <button class="btn" onclick="axisBlock()">Block</button>
+      </div>
+      <div id="axis-msg" style="font-size:13px; min-height:18px; margin-bottom:14px;"></div>
+      <h4 style="margin:0 0 8px;">Blocked</h4>
+      <div id="axis-list" style="font-size:13px;"></div>
+    </div>
+
+    <div class="admin-main" id="tickets-view">
       <div class="ticket-list">
         <div class="ticket-list-header">
           <div class="header-row">
@@ -328,6 +348,69 @@
         el.textContent = 'Updated ' + new Date().toLocaleTimeString();
         setTimeout(() => { if (el) el.textContent = ''; }, 5000);
       }
+    }
+
+    // ── Views: tickets / Axis access ──
+    function showView(view) {
+      document.getElementById('tickets-view').style.display = view === 'axis' ? 'none' : 'flex';
+      document.getElementById('axis-panel').style.display = view === 'axis' ? 'block' : 'none';
+      if (view === 'axis') axisLoad();
+    }
+
+    async function axisCall(body) {
+      const res = await fetch(`${API_BASE}/axis-block`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ admin_password: adminPassword, ...body }),
+      });
+      if (res.status === 401) { logout(); throw new Error('Signed out: the admin password was refused.'); }
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
+      return data;
+    }
+
+    function axisMsg(text, ok) {
+      const el = document.getElementById('axis-msg');
+      el.textContent = text; el.style.color = ok ? '#34d399' : '#f87171';
+    }
+
+    async function axisLoad() {
+      const list = document.getElementById('axis-list');
+      list.textContent = 'Loading…';
+      try {
+        const data = await axisCall({ action: 'list' });
+        const rows = data.blocked || [];
+        if (!rows.length) { list.innerHTML = '<p style="color:#94a3b8;">Nobody is blocked.</p>'; return; }
+        list.innerHTML = rows.map(r => {
+          const isCust = r.key.startsWith('block:cust:');
+          const who = isCust ? r.key.slice('block:cust:'.length) : ('licence ' + r.key.slice('block:lic:'.length, 'block:lic:'.length + 12) + '…');
+          const arg = isCust ? `{customer:'${escapeAttr(who)}'}` : `{licence_hash:'${escapeAttr(r.key.slice('block:lic:'.length))}'}`;
+          return `<div style="display:flex; justify-content:space-between; align-items:center; gap:12px; padding:8px 10px; border:1px solid #1e293b; border-radius:6px; margin-bottom:6px;">
+            <div><strong>${escapeHtml(who)}</strong>
+              <span style="color:#94a3b8;"> · blocked ${escapeHtml(fmtDateTime(r.blocked_at || ''))}${r.reason ? ' · ' + escapeHtml(r.reason) : ''}</span></div>
+            <button class="btn" onclick="axisUnblock(${arg})">Unblock</button></div>`;
+        }).join('');
+      } catch (e) { list.textContent = ''; axisMsg(e.message, false); }
+    }
+
+    async function axisBlock() {
+      const customer = document.getElementById('block-customer').value.trim();
+      const reason = document.getElementById('block-reason').value.trim();
+      if (!customer) { axisMsg('Enter a customer code.', false); return; }
+      if (!confirm(`Block Axis for "${customer}"? Their open sessions end immediately.`)) return;
+      try {
+        await axisCall({ action: 'block', customer, reason });
+        axisMsg(`Blocked: ${customer}`, true);
+        document.getElementById('block-customer').value = ''; document.getElementById('block-reason').value = '';
+        axisLoad();
+      } catch (e) { axisMsg(e.message, false); }
+    }
+
+    async function axisUnblock(target) {
+      try {
+        await axisCall({ action: 'unblock', ...target });
+        axisMsg('Unblocked.', true);
+        axisLoad();
+      } catch (e) { axisMsg(e.message, false); }
     }
 
     // ── Tabs ──
