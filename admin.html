@@ -384,10 +384,10 @@
           const isCust = r.key.startsWith('block:cust:');
           const who = isCust ? r.key.slice('block:cust:'.length) : ('licence ' + r.key.slice('block:lic:'.length, 'block:lic:'.length + 12) + '…');
           const arg = isCust ? `{customer:'${escapeAttr(who)}'}` : `{licence_hash:'${escapeAttr(r.key.slice('block:lic:'.length))}'}`;
-          return `<div style="display:flex; justify-content:space-between; align-items:center; gap:12px; padding:8px 10px; border:1px solid #1e293b; border-radius:6px; margin-bottom:6px;">
+          return `<div data-block-row style="display:flex; justify-content:space-between; align-items:center; gap:12px; padding:8px 10px; border:1px solid #1e293b; border-radius:6px; margin-bottom:6px;">
             <div><strong>${escapeHtml(who)}</strong>
               <span style="color:#94a3b8;"> · blocked ${escapeHtml(fmtDateTime(r.blocked_at || ''))}${r.reason ? ' · ' + escapeHtml(r.reason) : ''}</span></div>
-            <button class="btn" onclick="axisUnblock(${arg})">Unblock</button></div>`;
+            <button class="btn" onclick="axisUnblock(${arg}, this)">Unblock</button></div>`;
         }).join('');
       } catch (e) { list.textContent = ''; axisMsg(e.message, false); }
     }
@@ -399,18 +399,28 @@
       if (!confirm(`Block Axis for "${customer}"? Their open sessions end immediately.`)) return;
       try {
         await axisCall({ action: 'block', customer, reason });
-        axisMsg(`Blocked: ${customer}`, true);
+        axisMsg(`Blocked: ${customer}. It can take up to a minute to apply everywhere and to show in the list.`, true);
         document.getElementById('block-customer').value = ''; document.getElementById('block-reason').value = '';
-        axisLoad();
+        setTimeout(axisLoad, 1500);
       } catch (e) { axisMsg(e.message, false); }
     }
 
-    async function axisUnblock(target) {
+    // Cloudflare's KV list is eventually consistent: right after a change it can still
+    // return the old entries for up to about a minute. So the screen is updated from
+    // what we just did, not re-read at once — otherwise Unblock looks like it did nothing.
+    async function axisUnblock(target, btn) {
+      if (btn) { btn.disabled = true; btn.textContent = 'Unblocking…'; }
       try {
         await axisCall({ action: 'unblock', ...target });
-        axisMsg('Unblocked.', true);
-        axisLoad();
-      } catch (e) { axisMsg(e.message, false); }
+        if (btn) btn.closest('div[data-block-row]').remove();
+        if (!document.querySelector('#axis-list [data-block-row]')) {
+          document.getElementById('axis-list').innerHTML = '<p style="color:#94a3b8;">Nobody is blocked.</p>';
+        }
+        axisMsg('Unblocked. It can take up to a minute to apply everywhere.', true);
+      } catch (e) {
+        if (btn) { btn.disabled = false; btn.textContent = 'Unblock'; }
+        axisMsg(e.message, false);
+      }
     }
 
     // ── Tabs ──
