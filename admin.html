@@ -582,7 +582,9 @@
 
     function renderTicketDetail(ticket) {
       const detail = document.getElementById('ticket-detail');
-      const hasCallback = ticket.callback_url && ticket.callback_url.length > 0;
+      // Relay tickets (2026-10-01) need no callback: the reply is queued and the
+      // customer's installation picks it up. Legacy tickets still need one.
+      const hasCallback = !!ticket.relay || (ticket.callback_url && ticket.callback_url.length > 0);
 
       // Build conversation history from comments array + last_response fallback
       const comments = buildConversation(ticket);

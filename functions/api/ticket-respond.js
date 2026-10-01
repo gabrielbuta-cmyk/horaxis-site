@@ -1,4 +1,4 @@
-import { ticketPutOptions } from "../../lib/axis.js";
+import { ticketPutOptions, queueRelayReply } from "../../lib/axis.js";
 // Horaxis Enterprise — Ticket Response Sender
 // Cloudflare Pages Function
 // Sends admin responses back to customer Horaxis instances
@@ -56,14 +56,38 @@ export const onRequest = async (context) => {
 
   const { ticket_id, message, callback_url, admin_password, new_status } = body;
 
-  // Validate required fields
-  if (!ticket_id || !message || !callback_url || !admin_password) {
-    return json({ error: "Missing required fields: ticket_id, message, callback_url, admin_password" }, 400);
+  // Validate required fields (callback_url only for legacy tickets, checked below)
+  if (!ticket_id || !message || !admin_password) {
+    return json({ error: "Missing required fields: ticket_id, message, admin_password" }, 400);
   }
 
   // Verify admin password
   if (!env.ADMIN_PASSWORD || admin_password !== env.ADMIN_PASSWORD) {
     return json({ error: "Invalid admin password" }, 401);
+  }
+
+  // Relay tickets (2026-10-01, docs/support-relay.md): the reply is queued here and
+  // the customer's installation picks it up by polling. Nothing has to reach into the
+  // customer's network, so this works behind any firewall.
+  if (env.TICKETS) {
+    const raw = await env.TICKETS.get(`ticket:${ticket_id}`);
+    const t = raw ? JSON.parse(raw) : null;
+    if (t && t.relay) {
+      const q = await queueRelayReply(env, t, { message, new_status });
+      t.comments = Array.isArray(t.comments) ? t.comments : [];
+      t.comments.push({ id: `${ticket_id}-${q.seq}`, author: "Horaxis Support", message: String(message).slice(0, 8000),
+                        timestamp: q.created_at });
+      if (new_status) t.status = new_status;
+      else if (t.status === "open") t.status = "in_progress";
+      t.responded_at = t.responded_at || q.created_at;
+      t.last_response = String(message).slice(0, 8000);
+      await env.TICKETS.put(`ticket:${ticket_id}`, JSON.stringify(t), ticketPutOptions(t));
+      return json({ status: "sent", delivery: "queued for the customer's installation" });
+    }
+  }
+
+  if (!callback_url) {
+    return json({ error: "Missing callback_url for a legacy ticket" }, 400);
   }
 
   // Verify secret is configured

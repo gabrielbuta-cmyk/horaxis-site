@@ -25,7 +25,7 @@ export const onRequest = async (context) => {
   // functions; the files themselves must never be served as static assets.
   // Same for the functions' source and the repository's own files (README, package
   // manifests), which a static host would otherwise hand out.
-  const HIDDEN = ["/lib", "/functions", "/node_modules"];
+  const HIDDEN = ["/lib", "/functions", "/node_modules", "/docs"];
   const HIDDEN_FILES = new Set(["/README.md", "/package.json", "/package-lock.json"]);
   if (HIDDEN.some((d) => url.pathname === d || url.pathname.startsWith(d + "/")) || HIDDEN_FILES.has(url.pathname)) {
     return notFound(context.env, context.request);
