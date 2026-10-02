@@ -60,7 +60,8 @@ returned `cursor` for the next poll. Replies older than 30 days are no longer re
 
 ### Errors
 `400` bad body · `401` licence invalid/expired · `403` blocked, or not the ticket's owner
-· `429` too many calls (more than 120 per hour per owner).
+· `429` too many calls (more than 120 per hour per owner). `poll` is not counted: the
+counter is a KV write, and polling every minute would use up the daily write quota.
 
 ## Horaxis side (support admin page)
 Replies typed on horaxis.com/admin for a relay ticket are stored on the ticket and in the

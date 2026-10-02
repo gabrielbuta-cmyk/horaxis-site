@@ -80,7 +80,10 @@ export const onRequestPost = async ({ request, env }) => {
   if (!lic) return json({ error: "Licence invalid or expired" }, 401);
   if (await isBlocked(env, await sha256Hex(licence), lic.customer)) return json({ error: "Blocked" }, 403);
   const owner = relayOwner(lic);
-  if (await rateLimited(env, owner)) return json({ error: "Too many requests" }, 429);
+  // The rate counter is a KV WRITE. A poll changes nothing and comes every minute from
+  // each install with an open ticket (1,440 a day) - counting it used up the free
+  // tier's 1,000 writes a day on its own (2026-10-02). Polls cost reads only.
+  if (body.action !== "poll" && await rateLimited(env, owner)) return json({ error: "Too many requests" }, 429);
   const productName = lic.product === "riskguard" ? "RiskGuard" : "Horaxis Enterprise";
 
   switch (body.action) {
